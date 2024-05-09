@@ -12,14 +12,14 @@ public class RegisterDTO extends BaseRequest {
 
     @NotEmpty(message = "昵称不可为空")
     @ApiModelProperty(value = "昵称")
-    private String nickname;
+    private String nickName;
 
     @NotEmpty(message = "密码不可为空")
     @ApiModelProperty(value = "密码")
     private String password;
 
     @ApiModelProperty(value = "头像")
-    private String avatar;
+    private String headImage;
 
     @ApiModelProperty(value = "电话号码")
     private String phoneNum;

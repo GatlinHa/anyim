@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @ApiModel("根据账号找人请求的参数")
-public class FindByIdDTO extends BaseRequest {
+public class FindByAccountDTO extends BaseRequest {
 
 //    @NotEmpty(message = "昵称不可为空")
 //    @ApiModelProperty(value = "昵称")

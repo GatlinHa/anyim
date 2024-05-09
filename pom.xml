@@ -24,7 +24,7 @@
         <aliyun-spring-boot.version>1.0.0</aliyun-spring-boot.version>
         <spring-boot.version>2.7.6</spring-boot.version>
         <spring-cloud-alibaba.version>2021.0.5.0</spring-cloud-alibaba.version>
-        <swagger.version>2.9.2</swagger.version>
+        <swagger.version>2.7.0</swagger.version>
     </properties>
 
     <modules>
@@ -60,6 +60,7 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <!--swagger2的依赖-->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>

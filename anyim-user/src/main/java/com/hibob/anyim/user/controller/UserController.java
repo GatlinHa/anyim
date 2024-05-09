@@ -15,13 +15,55 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @Slf4j
-@Api(tags = "用户信息处理的相关接口")
+@Api(tags = "用户登录，注册和查询相关的接口")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
+
+    @ApiOperation(value = "账号唯一性校验", notes = "用户指定账号时，检查账号字符串是否已经存在")
+    @PostMapping("/validateAccount")
+    public IMHttpResponse validateAccount(@Valid @RequestBody ValidateAccountDTO dto) {
+        return userService.validateAccount(dto);
+    }
+
+    @ApiOperation(value = "用户注册", notes = "用户注册")
+    @PostMapping("/register")
+    public IMHttpResponse register(@Valid @RequestBody RegisterDTO dto) {
+        return userService.register(dto);
+    }
+
+    @ApiOperation(value = "用户注销", notes = "用户注销")
+    @PostMapping("/deregister")
+    public IMHttpResponse deregister(@Valid @RequestBody DeregisterDTO dto) {
+        return userService.deregister(dto);
+    }
+
+    @ApiOperation(value = "用户登录", notes = "用户登录")
+    @PostMapping("/login")
+    public IMHttpResponse login(@Valid @RequestBody LoginDTO dto) {
+        return userService.login(dto);
+    }
+
+    @ApiOperation(value = "用户登出", notes = "用户登出")
+    @PostMapping("/logout")
+    public IMHttpResponse logout(@Valid @RequestBody LogoutDTO dto) {
+        return userService.logout(dto);
+    }
+
+    @ApiOperation(value = "修改密码", notes = "修改密码")
+    @PostMapping("/modifyPwd")
+    public IMHttpResponse modifyPwd(@Valid @RequestBody ModifyPwdDTO dto) {
+        return userService.modifyPwd(dto);
+    }
+
+    @ApiOperation(value = "用户登录", notes = "用户登录")
+    @PostMapping("/refreshToken")
+    public IMHttpResponse refreshToken(@Valid @RequestBody RefreshTokenDTO dto) {
+        return userService.refreshToken(dto);
+    }
 
     @ApiOperation(value = "查询自己信息", notes = "查询自己信息")
     @PostMapping("/querySelf")
@@ -48,9 +90,9 @@ public class UserController {
     }
 
     @ApiOperation(value = "根据账号找人", notes = "根据账号找人")
-    @PostMapping("/findById")
-    public IMHttpResponse findById(@Valid @RequestBody FindByIdDTO dto) {
-        return userService.findById(dto);
+    @PostMapping("/findByAccount")
+    public IMHttpResponse findByAccount(@Valid @RequestBody FindByAccountDTO dto) {
+        return userService.findByAccount(dto);
     }
 
 }

@@ -13,7 +13,7 @@ public class BaseRequest {
 
     @Size(max = 64, message = "账号长度不能大于64字符")
     @ApiModelProperty(value = "账号")
-    private String accountId;
+    private String account;
 
     @ApiModelProperty(value = "设备ID")
     private Long deviceId;

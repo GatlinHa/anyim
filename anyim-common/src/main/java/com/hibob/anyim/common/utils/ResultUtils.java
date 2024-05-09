@@ -20,4 +20,11 @@ public final class ResultUtils {
         response.setData(data);
         return response;
     }
+
+    public static IMHttpResponse error(int code, String desc) {
+        IMHttpResponse response = new IMHttpResponse();
+        response.setCode(code);
+        response.setDesc(desc);
+        return response;
+    }
 }

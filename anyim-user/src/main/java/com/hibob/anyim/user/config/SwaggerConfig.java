@@ -1,7 +1,6 @@
 package com.hibob.anyim.user.config;
 
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -38,8 +37,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("anyim-user api doc")
-                .description("anyim-user api doc")
+                .title("微服务的api接口文档")
+                .description("anyim-user服务的api接口文档")
                 .contact(new Contact("bob", "", ""))
                 .version("1.0")
                 .build();
