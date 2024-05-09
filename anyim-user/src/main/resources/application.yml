@@ -1,0 +1,17 @@
+server:
+  port: 9001
+
+spring:
+  application:
+    name: anyim-user
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        import-check:
+          enabled: false
+      discovery:
+        server-addr: localhost:8848
