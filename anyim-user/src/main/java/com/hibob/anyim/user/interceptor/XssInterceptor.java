@@ -1,6 +1,6 @@
 package com.hibob.anyim.user.interceptor;
 
-import com.hibob.anyim.common.utils.XssUtils;
+import com.hibob.anyim.common.utils.XssUtil;
 import com.hibob.anyim.user.enums.ServiceErrorCode;
 import com.hibob.anyim.user.exception.ServiceException;
 import lombok.SneakyThrows;
@@ -23,7 +23,7 @@ public class XssInterceptor implements HandlerInterceptor {
         Map<String, String[]> paramMap = request.getParameterMap();
         for (String[] values : paramMap.values()) {
             for (String value : values) {
-                if (XssUtils.checkXss(value)) {
+                if (XssUtil.checkXss(value)) {
                     throw new ServiceException(ServiceErrorCode.ERROR_XSS);
                 }
             }

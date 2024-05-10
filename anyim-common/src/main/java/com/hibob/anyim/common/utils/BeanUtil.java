@@ -2,9 +2,9 @@ package com.hibob.anyim.common.utils;
 
 import org.springframework.util.ReflectionUtils;
 
-public final class BeanUtils {
+public final class BeanUtil {
 
-    private BeanUtils() {
+    private BeanUtil() {
     }
 
     public static <T> T copyProperties(Object source, Class<T> targetClass) {

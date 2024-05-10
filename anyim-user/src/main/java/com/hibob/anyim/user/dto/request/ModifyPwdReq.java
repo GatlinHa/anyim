@@ -1,12 +1,12 @@
-package com.hibob.anyim.user.dto;
+package com.hibob.anyim.user.dto.request;
 
 import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 @Data
-@ApiModel("查询别人信息请求的参数")
-public class QueryDTO extends BaseRequest {
+@ApiModel("修改密码请求的参数")
+public class ModifyPwdReq extends BaseRequest {
 
 //    @NotEmpty(message = "昵称不可为空")
 //    @ApiModelProperty(value = "昵称")

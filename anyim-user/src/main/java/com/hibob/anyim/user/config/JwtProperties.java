@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtProperties {
 
-    @Value("${jwt.accessToken.expireIn}")
-    private Integer accessTokenExpireIn;
+    @Value("${jwt.accessToken.expire}")
+    private Integer accessTokenExpire;
 
     @Value("${jwt.accessToken.secret}")
     private String accessTokenSecret;
 
-    @Value("${jwt.refreshToken.expireIn}")
-    private Integer refreshTokenExpireIn;
+    @Value("${jwt.refreshToken.expire}")
+    private Integer refreshTokenExpire;
 
     @Value("${jwt.refreshToken.secret}")
     private String refreshTokenSecret;

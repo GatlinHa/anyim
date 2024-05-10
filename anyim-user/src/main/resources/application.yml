@@ -35,8 +35,8 @@ mybatis-plus:
 
 jwt:
   accessToken:
-    expireIn: 1800 #半个小时
-    secret: MIIBIjANBgkq
+    expire: 1800 #半个小时
+    secret: HZHDhdfjdfj
   refreshToken:
-    expireIn: 604800 #7天
-    secret: IKDiqVmn0VFU
+    expire: 604800 #7天
+    secret: GHBsfh2sags

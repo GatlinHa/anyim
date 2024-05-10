@@ -2,8 +2,8 @@ package com.hibob.anyim.common.utils;
 
 import com.hibob.anyim.common.model.IMHttpResponse;
 
-public final class ResultUtils {
-    private ResultUtils() {
+public final class ResultUtil {
+    private ResultUtil() {
     }
 
     public static IMHttpResponse success() {
