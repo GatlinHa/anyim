@@ -33,4 +33,5 @@ public class RegisterReq extends BaseRequest {
 
     @ApiModelProperty(value = "邀请码")
     private String inviteCode;
+
 }

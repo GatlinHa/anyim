@@ -39,13 +39,6 @@ public class UserController {
         return userService.register(dto);
     }
 
-    /**
-     * 用户注销，需要将token加入到黑名单中
-     *
-     * @param accessToken
-     * @param dto
-     * @return
-     */
     @ApiOperation(value = "用户注销", notes = "用户注销")
     @PostMapping("/deregister")
     public IMHttpResponse deregister(@RequestHeader("accessToken") String accessToken, @Valid @RequestBody DeregisterReq dto) {

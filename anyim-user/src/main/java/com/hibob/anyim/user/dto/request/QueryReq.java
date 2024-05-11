@@ -2,26 +2,29 @@ package com.hibob.anyim.user.dto.request;
 
 import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
 @ApiModel("查询别人信息请求的参数")
 public class QueryReq extends BaseRequest {
 
-//    @NotEmpty(message = "昵称不可为空")
-//    @ApiModelProperty(value = "昵称")
-//    private String nickname;
-//
-//    @NotEmpty(message = "密码不可为空")
-//    @ApiModelProperty(value = "密码")
-//    private String password;
-//
-//    @ApiModelProperty(value = "头像")
-//    private String avatar;
-//
-//    @ApiModelProperty(value = "电话号码")
-//    private String phoneNum;
-//
-//    @ApiModelProperty(value = "邀请码")
-//    private String inviteCode;
+    @ApiModelProperty(value = "昵称")
+    private String nickName;
+
+    @ApiModelProperty(value = "头像")
+    private String headImage;
+
+    @ApiModelProperty(value = "头像缩略图")
+    private String headImageThumb;
+
+    @ApiModelProperty(value = "性别")
+    private int sex;
+
+    @ApiModelProperty(value = "级别")
+    private int level;
+
+    @ApiModelProperty(value = "个性签名")
+    private String signature;
+
 }

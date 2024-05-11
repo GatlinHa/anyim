@@ -1,15 +1,15 @@
-package com.hibob.anyim.user.dto.request;
+package com.hibob.anyim.user.dto.vo;
 
-import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
-
 @Data
-@ApiModel("修改自己信息请求的参数")
-public class ModifySelfReq extends BaseRequest {
+@ApiModel("查询别人信息返回的参数")
+public class UserVO {
+
+    @ApiModelProperty(value = "账号")
+    private String account;
 
     @ApiModelProperty(value = "昵称")
     private String nickName;

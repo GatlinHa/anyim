@@ -27,7 +27,6 @@ public class MvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/error",
                         "/user/login",
-                        "/user/logout",
                         "/user/register",
                         "/user/refreshToken",
                         "/user/validateAccount",
