@@ -29,10 +29,10 @@ public class XssInterceptor implements HandlerInterceptor {
             }
         }
         //  检查body
-//        String body = getBody(request);
-//        if (XssUtils.checkXss(body)) {
-//            throw new ServiceException(ServiceErrorCode.ERROR_XSS);
-//        }
+        String body = getBody(request);
+        if (XssUtil.checkXss(body)) {
+            throw new ServiceException(ServiceErrorCode.ERROR_XSS);
+        }
         return true;
     }
 

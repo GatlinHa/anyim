@@ -11,10 +11,6 @@ import lombok.Data;
 @ApiModel("Http短连接请求公共参数")
 public class BaseRequest {
 
-    @Size(max = 255, message = "账号长度不能大于255字符")
-    @ApiModelProperty(value = "accessToken")
-    private String accessToken;
-
     //TODO 参数太多，影响测试效率，先注掉
 //    @ApiModelProperty(value = "设备ID")
 //    private Long deviceId;

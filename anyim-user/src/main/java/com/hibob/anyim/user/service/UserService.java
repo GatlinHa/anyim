@@ -8,6 +8,7 @@ import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.common.utils.JwtUtil;
 import com.hibob.anyim.common.utils.ResultUtil;
+import com.hibob.anyim.user.constants.RedisKey;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.dto.response.LoginRes;
 import com.hibob.anyim.user.dto.response.RefreshTokenRes;
@@ -18,8 +19,11 @@ import com.hibob.anyim.user.session.UserSession;
 import com.hibob.anyim.user.config.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
 
 
 @Slf4j
@@ -29,11 +33,13 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtProperties jwtProperties;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public IMHttpResponse validateAccount(ValidateAccountReq dto) {
         log.info("LoginService--validateAccount");
         User user = findByAccount(dto.getAccount());
         if (user != null) {
+            log.info("account exist");
             return ResultUtil.error(ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.desc());
         }
@@ -44,6 +50,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("LoginService--register");
         User user = findByAccount(dto.getAccount());
         if (user != null) {
+            log.info("account exist");
             return ResultUtil.error(ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.desc());
         }
@@ -51,6 +58,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         // 把dto转成User对象
         user = BeanUtil.copyProperties(dto, User.class);
         if (user == null) {
+            log.error("BeanUtil.copyProperties error");
             return ResultUtil.error(ServiceErrorCode.ERROR_SERVICE_EXCEPTION.code(), ServiceErrorCode.ERROR_SERVICE_EXCEPTION.desc());
         }
 
@@ -59,24 +67,42 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success();
     }
 
-    public IMHttpResponse deregister(DeregisterReq dto) {
+    public IMHttpResponse deregister(String accessToken, DeregisterReq dto) {
         log.info("LoginService--deregister");
-        // 在redis中用token拿account
-        // 验证token
-        // 通过account删除数据
-        // 删除redis中的token，相当于退出登录状态
+        UserSession session = UserSession.getSession();
+        if (session == null) {
+            log.info("no login");
+            return ResultUtil.error(ServiceErrorCode.ERROR_NO_LOGIN.code(),
+                    ServiceErrorCode.ERROR_NO_LOGIN.desc());
+        }
+
+        String account = session.getAccount();
+        this.remove(Wrappers.<User>lambdaQuery().eq(User::getAccount, account));
+
+        String key = RedisKey.USER_ACTIVE_TOKEN + account;
+        redisTemplate.delete(key);
 
         return ResultUtil.success();
     }
 
     public IMHttpResponse login(LoginReq dto) {
         log.info("LoginService--login");
-        User user = findByAccount(dto.getAccount());
+        String account = dto.getAccount();
+        String key = RedisKey.USER_ACTIVE_TOKEN + account;
+        if (redisTemplate.hasKey(key)) {
+            log.info("multi login");
+            return ResultUtil.error(ServiceErrorCode.ERROR_MULTI_LOGIN.code(),
+                    ServiceErrorCode.ERROR_MULTI_LOGIN.desc());
+        }
+
+        User user = findByAccount(account);
         if (user == null) {
+            log.info("no register");
             return ResultUtil.error(ServiceErrorCode.ERROR_NO_REGISTER.code(),
                     ServiceErrorCode.ERROR_NO_REGISTER.desc());
         }
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            log.info("password error");
             return ResultUtil.error(ServiceErrorCode.ERROR_AUTHENTICATION.code(),
                     ServiceErrorCode.ERROR_AUTHENTICATION.desc());
         }
@@ -102,6 +128,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         res.setRefreshToken(refreshToken);
         res.setRefreshTokenExpires(jwtProperties.getRefreshTokenExpire());
 
+        redisTemplate.opsForValue().set(key, accessToken, Duration.ofSeconds(jwtProperties.getAccessTokenExpire()));
+
         return ResultUtil.success(res);
     }
 
@@ -115,22 +143,23 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success();
     }
 
-    public IMHttpResponse refreshToken(RefreshTokenReq dto) {
+    public IMHttpResponse refreshToken(String refreshToken, RefreshTokenReq dto) {
         log.info("LoginService--refreshToken");
 
-        if (!JwtUtil.checkSign(dto.getRefreshToken(), jwtProperties.getRefreshTokenSecret())) {
+        if (!JwtUtil.checkSign(refreshToken, jwtProperties.getRefreshTokenSecret())) {
+            log.info("refreshToken error");
             return ResultUtil.error(ServiceErrorCode.ERROR_REFRESH_TOKEN.code(),
                     ServiceErrorCode.ERROR_REFRESH_TOKEN.desc());
         }
 
-        String account = JwtUtil.getAccount(dto.getRefreshToken());
-        String info = JwtUtil.getInfo(dto.getRefreshToken());
+        String account = JwtUtil.getAccount(refreshToken);
+        String info = JwtUtil.getInfo(refreshToken);
         String accessToken = JwtUtil.sign(
                 account,
                 info,
                 jwtProperties.getAccessTokenExpire(),
                 jwtProperties.getAccessTokenSecret());
-        String refreshToken = JwtUtil.sign(
+        String newRefreshToken = JwtUtil.sign(
                 account,
                 info,
                 jwtProperties.getRefreshTokenExpire(),
@@ -139,8 +168,11 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         RefreshTokenRes res = new RefreshTokenRes();
         res.setAccessToken(accessToken);
         res.setAccessTokenExpires(jwtProperties.getAccessTokenExpire());
-        res.setRefreshToken(refreshToken);
+        res.setRefreshToken(newRefreshToken);
         res.setRefreshTokenExpires(jwtProperties.getRefreshTokenExpire());
+
+        String key = RedisKey.USER_ACTIVE_TOKEN + account;
+        redisTemplate.opsForValue().set(key, accessToken, Duration.ofSeconds(jwtProperties.getAccessTokenExpire()));
 
         return ResultUtil.success(res);
     }

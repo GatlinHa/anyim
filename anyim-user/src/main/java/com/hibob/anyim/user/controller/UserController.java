@@ -7,10 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,6 +20,13 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * 账号唯一性校验，场景是用户注册时，输入用户名后，离开焦点时，检查用户名是否已经存在
+     * 因此，不应该校验token
+     * TODO 但是，如果没有限制，又有接口被恶意调用，会导致数据库压力过大
+     * @param dto
+     * @return
+     */
     @ApiOperation(value = "账号唯一性校验", notes = "用户指定账号时，检查账号字符串是否已经存在")
     @PostMapping("/validateAccount")
     public IMHttpResponse validateAccount(@Valid @RequestBody ValidateAccountReq dto) {
@@ -35,10 +39,17 @@ public class UserController {
         return userService.register(dto);
     }
 
+    /**
+     * 用户注销，需要将token加入到黑名单中
+     *
+     * @param accessToken
+     * @param dto
+     * @return
+     */
     @ApiOperation(value = "用户注销", notes = "用户注销")
     @PostMapping("/deregister")
-    public IMHttpResponse deregister(@Valid @RequestBody DeregisterReq dto) {
-        return userService.deregister(dto);
+    public IMHttpResponse deregister(@RequestHeader("accessToken") String accessToken, @Valid @RequestBody DeregisterReq dto) {
+        return userService.deregister(accessToken, dto);
     }
 
     @ApiOperation(value = "用户登录", notes = "用户登录")
@@ -59,10 +70,17 @@ public class UserController {
         return userService.modifyPwd(dto);
     }
 
+    /**
+     * 刷新token
+     * accessToken都是通过拦截器校验的，refreshToken只有这个场景用，没必要通过拦截器校验
+     * @param refreshToken
+     * @param dto
+     * @return
+     */
     @ApiOperation(value = "用户登录", notes = "用户登录")
     @PostMapping("/refreshToken")
-    public IMHttpResponse refreshToken(@Valid @RequestBody RefreshTokenReq dto) {
-        return userService.refreshToken(dto);
+    public IMHttpResponse refreshToken(@RequestHeader("refreshToken") String refreshToken, @Valid @RequestBody RefreshTokenReq dto) {
+        return userService.refreshToken(refreshToken, dto);
     }
 
     @ApiOperation(value = "查询自己信息", notes = "查询自己信息")

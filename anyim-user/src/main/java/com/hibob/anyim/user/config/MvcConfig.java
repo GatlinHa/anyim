@@ -24,11 +24,18 @@ public class MvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/error");
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login", "/logout", "/register", "/refreshToken",
-                        "/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
+                .excludePathPatterns(
+                        "/error",
+                        "/user/login",
+                        "/user/logout",
+                        "/user/register",
+                        "/user/refreshToken",
+                        "/user/validateAccount",
+                        "/swagger-resources/**",
+                        "/webjars/**",
+                        "/v2/**",
+                        "/swagger-ui.html/**"
+                );
     }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 }
