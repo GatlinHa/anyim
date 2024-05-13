@@ -6,7 +6,6 @@ import com.hibob.anyim.user.client.UserAgent;
 import com.hibob.anyim.user.dto.request.LoginReq;
 import com.hibob.anyim.user.dto.request.RegisterReq;
 import com.hibob.anyim.user.entity.User;
-import com.hibob.anyim.user.enums.ServiceErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -62,8 +62,8 @@ public class LoginTest {
         ResponseEntity<IMHttpResponse> res5 = UserAgent.sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user01, LoginReq.class));
         UserAgent.forceDeleteUser(testRestTemplate, port, user01);
 
-        assertTrue(res1.getBody().getCode() == ServiceErrorCode.ERROR_NO_REGISTER.code());
-        assertTrue(res3.getBody().getCode() == ServiceErrorCode.ERROR_PASSWORD.code());
+        assertTrue(res1.getStatusCode() == HttpStatus.UNAUTHORIZED);
+        assertTrue(res3.getStatusCode() == HttpStatus.UNAUTHORIZED);
         assertTrue(res4.getBody().getCode() == 0);
         assertTrue(res5.getBody().getCode() == 0);
     }

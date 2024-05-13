@@ -5,7 +5,6 @@ import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.user.client.UserAgent;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.entity.User;
-import com.hibob.anyim.user.enums.ServiceErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -77,7 +76,7 @@ public class RefreshTokenTest {
         // forceDeleteUser
         UserAgent.forceDeleteUser(testRestTemplate, port, user01);
 
-        assertTrue(res3.getBody().getCode() == ServiceErrorCode.ERROR_REFRESH_TOKEN.code());
+        assertTrue(res3.getStatusCode() == HttpStatus.UNAUTHORIZED);
         assertTrue(res4.getBody().getCode() == 0);
         assertTrue(res5.getStatusCode() == HttpStatus.UNAUTHORIZED);
         assertTrue(res6.getBody().getCode() == 0);

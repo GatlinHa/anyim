@@ -7,7 +7,6 @@ import com.hibob.anyim.user.client.UserAgent;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.dto.vo.UserVO;
 import com.hibob.anyim.user.entity.User;
-import com.hibob.anyim.user.enums.ServiceErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -87,10 +86,10 @@ public class ModifyPwdTest {
         ResponseEntity<IMHttpResponse> res8 = UserAgent.sendRequest(testRestTemplate, port, getHeaderForAccessToken(res7), BeanUtil.copyProperties(user01, QuerySelfReq.class));
         UserAgent.forceDeleteUser(testRestTemplate, port, user01_newPwd);
 
-        assertTrue(res3.getBody().getCode() == ServiceErrorCode.ERROR_PASSWORD.code());
+        assertTrue(res3.getStatusCode() == HttpStatus.UNAUTHORIZED);
         assertTrue(res4.getBody().getCode() == 0);
         assertTrue(res5.getStatusCode() == HttpStatus.UNAUTHORIZED);
-        assertTrue(res6.getBody().getCode() == ServiceErrorCode.ERROR_PASSWORD.code());
+        assertTrue(res6.getStatusCode() == HttpStatus.UNAUTHORIZED);
         assertTrue(res7.getBody().getCode() == 0);
         assertTrue(JSON.parseObject(JSON.toJSONString(res8.getBody().getData()), UserVO.class).getNickName().equals(user01.getNickName()));
     }

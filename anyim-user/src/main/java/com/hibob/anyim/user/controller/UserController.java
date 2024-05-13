@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,37 +30,37 @@ public class UserController {
      */
     @ApiOperation(value = "账号唯一性校验", notes = "用户指定账号时，检查账号字符串是否已经存在")
     @PostMapping("/validateAccount")
-    public IMHttpResponse validateAccount(@Valid @RequestBody ValidateAccountReq dto) {
+    public ResponseEntity<IMHttpResponse> validateAccount(@Valid @RequestBody ValidateAccountReq dto) {
         return userService.validateAccount(dto);
     }
 
     @ApiOperation(value = "用户注册", notes = "用户注册")
     @PostMapping("/register")
-    public IMHttpResponse register(@Valid @RequestBody RegisterReq dto) {
+    public ResponseEntity<IMHttpResponse> register(@Valid @RequestBody RegisterReq dto) {
         return userService.register(dto);
     }
 
     @ApiOperation(value = "用户注销", notes = "用户注销")
     @PostMapping("/deregister")
-    public IMHttpResponse deregister(@RequestHeader("accessToken") String accessToken, @Valid @RequestBody DeregisterReq dto) {
+    public ResponseEntity<IMHttpResponse> deregister(@RequestHeader("accessToken") String accessToken, @Valid @RequestBody DeregisterReq dto) {
         return userService.deregister(accessToken, dto);
     }
 
     @ApiOperation(value = "用户登录", notes = "用户登录")
     @PostMapping("/login")
-    public IMHttpResponse login(@Valid @RequestBody LoginReq dto) {
+    public ResponseEntity<IMHttpResponse> login(@Valid @RequestBody LoginReq dto) {
         return userService.login(dto);
     }
 
     @ApiOperation(value = "用户登出", notes = "用户登出")
     @PostMapping("/logout")
-    public IMHttpResponse logout(@Valid @RequestBody LogoutReq dto) {
+    public ResponseEntity<IMHttpResponse> logout(@Valid @RequestBody LogoutReq dto) {
         return userService.logout(dto);
     }
 
     @ApiOperation(value = "修改密码", notes = "修改密码")
     @PostMapping("/modifyPwd")
-    public IMHttpResponse modifyPwd(@Valid @RequestBody ModifyPwdReq dto) {
+    public ResponseEntity<IMHttpResponse> modifyPwd(@Valid @RequestBody ModifyPwdReq dto) {
         return userService.modifyPwd(dto);
     }
 
@@ -72,31 +73,31 @@ public class UserController {
      */
     @ApiOperation(value = "用户登录", notes = "用户登录")
     @PostMapping("/refreshToken")
-    public IMHttpResponse refreshToken(@RequestHeader("refreshToken") String refreshToken, @Valid @RequestBody RefreshTokenReq dto) {
+    public ResponseEntity<IMHttpResponse> refreshToken(@RequestHeader("refreshToken") String refreshToken, @Valid @RequestBody RefreshTokenReq dto) {
         return userService.refreshToken(refreshToken, dto);
     }
 
     @ApiOperation(value = "查询自己信息", notes = "查询自己信息")
     @PostMapping("/querySelf")
-    public IMHttpResponse querySelf(@Valid @RequestBody QuerySelfReq dto) {
+    public ResponseEntity<IMHttpResponse> querySelf(@Valid @RequestBody QuerySelfReq dto) {
         return userService.querySelf(dto);
     }
 
     @ApiOperation(value = "修改自己信息", notes = "修改自己信息")
     @PostMapping("/modifySelf")
-    public IMHttpResponse modifySelf(@Valid @RequestBody ModifySelfReq dto) {
+    public ResponseEntity<IMHttpResponse> modifySelf(@Valid @RequestBody ModifySelfReq dto) {
         return userService.modifySelf(dto);
     }
 
     @ApiOperation(value = "查询别人信息", notes = "查询别人信息")
     @PostMapping("/query")
-    public IMHttpResponse query(@Valid @RequestBody QueryReq dto) {
+    public ResponseEntity<IMHttpResponse> query(@Valid @RequestBody QueryReq dto) {
         return userService.query(dto);
     }
 
     @ApiOperation(value = "根据昵称找人", notes = "根据昵称找人")
     @PostMapping("/findByNick")
-    public IMHttpResponse findByNick(@Valid @RequestBody FindByNickReq dto) {
+    public ResponseEntity<IMHttpResponse> findByNick(@Valid @RequestBody FindByNickReq dto) {
         return userService.findByNick(dto);
     }
 

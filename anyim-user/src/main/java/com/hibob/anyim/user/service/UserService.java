@@ -20,6 +20,8 @@ import com.hibob.anyim.user.config.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,23 +39,25 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     private final JwtProperties jwtProperties;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public IMHttpResponse validateAccount(ValidateAccountReq dto) {
+    public ResponseEntity<IMHttpResponse> validateAccount(ValidateAccountReq dto) {
         log.info("LoginService--validateAccount");
         User user = getOneByAccount(dto.getAccount());
         if (user != null) {
             log.info("account exist");
-            return ResultUtil.error(ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
+            return ResultUtil.error(HttpStatus.OK,
+                    ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.desc());
         }
         return ResultUtil.success();
     }
 
-    public IMHttpResponse register(RegisterReq dto) {
+    public ResponseEntity<IMHttpResponse> register(RegisterReq dto) {
         log.info("LoginService--register");
         User user = getOneByAccount(dto.getAccount());
         if (user != null) {
             log.info("account exist");
-            return ResultUtil.error(ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
+            return ResultUtil.error(HttpStatus.OK,
+                    ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.desc());
         }
 
@@ -61,7 +65,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         user = BeanUtil.copyProperties(dto, User.class);
         if (user == null) {
             log.error("BeanUtil.copyProperties error");
-            return ResultUtil.error(ServiceErrorCode.ERROR_SERVICE_EXCEPTION.code(), ServiceErrorCode.ERROR_SERVICE_EXCEPTION.desc());
+            return ResultUtil.error(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -69,7 +73,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success();
     }
 
-    public IMHttpResponse deregister(String accessToken, DeregisterReq dto) {
+    public ResponseEntity<IMHttpResponse> deregister(String accessToken, DeregisterReq dto) {
         log.info("LoginService--deregister");
         UserSession session = UserSession.getSession();
         String account = session.getAccount();
@@ -81,7 +85,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success();
     }
 
-    public IMHttpResponse login(LoginReq dto) {
+    public ResponseEntity<IMHttpResponse> login(LoginReq dto) {
         log.info("LoginService--login");
         String account = dto.getAccount();
         String key = RedisKey.USER_ACTIVE_TOKEN + account;
@@ -95,13 +99,11 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         User user = getOneByAccount(account);
         if (user == null) {
             log.info("no register");
-            return ResultUtil.error(ServiceErrorCode.ERROR_NO_REGISTER.code(),
-                    ServiceErrorCode.ERROR_NO_REGISTER.desc());
+            return ResultUtil.error(HttpStatus.UNAUTHORIZED);
         }
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             log.info("password error");
-            return ResultUtil.error(ServiceErrorCode.ERROR_PASSWORD.code(),
-                    ServiceErrorCode.ERROR_PASSWORD.desc());
+            return ResultUtil.error(HttpStatus.UNAUTHORIZED);
         }
 
         UserSession session = new UserSession();
@@ -130,7 +132,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success(vo);
     }
 
-    public IMHttpResponse logout(LogoutReq dto) {
+    public ResponseEntity<IMHttpResponse> logout(LogoutReq dto) {
         log.info("LoginService--logout");
         UserSession session = UserSession.getSession();
         String account = session.getAccount();
@@ -140,15 +142,14 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success();
     }
 
-    public IMHttpResponse modifyPwd(ModifyPwdReq dto) {
+    public ResponseEntity<IMHttpResponse> modifyPwd(ModifyPwdReq dto) {
         log.info("LoginService--modifyPwd");
         UserSession session = UserSession.getSession();
         String account = session.getAccount();
         User user = getOneByAccount(account);
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
             log.info("password error");
-            return ResultUtil.error(ServiceErrorCode.ERROR_PASSWORD.code(),
-                    ServiceErrorCode.ERROR_PASSWORD.desc());
+            return ResultUtil.error(HttpStatus.UNAUTHORIZED);
         }
         this.update(Wrappers.<User>lambdaUpdate()
                 .eq(User::getAccount, account)
@@ -162,13 +163,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success();
     }
 
-    public IMHttpResponse refreshToken(String refreshToken, RefreshTokenReq dto) {
+    public ResponseEntity<IMHttpResponse> refreshToken(String refreshToken, RefreshTokenReq dto) {
         log.info("LoginService--refreshToken");
 
         if (!JwtUtil.checkSign(refreshToken, jwtProperties.getRefreshTokenSecret())) {
             log.info("refreshToken error");
-            return ResultUtil.error(ServiceErrorCode.ERROR_REFRESH_TOKEN.code(),
-                    ServiceErrorCode.ERROR_REFRESH_TOKEN.desc());
+            return ResultUtil.error(HttpStatus.UNAUTHORIZED);
         }
 
         String account = JwtUtil.getAccount(refreshToken);
@@ -196,36 +196,34 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success(vo);
     }
 
-    public IMHttpResponse querySelf(QuerySelfReq dto) {
+    public ResponseEntity<IMHttpResponse> querySelf(QuerySelfReq dto) {
         log.info("UserService--querySelf");
         UserSession session = UserSession.getSession();
         String account = session.getAccount();
         User user = getOneByAccount(account);
         if (user == null) {
             log.error("user not found");
-            return ResultUtil.error(ServiceErrorCode.ERROR_NO_REGISTER.code(),
-                    ServiceErrorCode.ERROR_NO_REGISTER.desc());
+            return ResultUtil.error(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // 把User对象转成返回对象
         UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
         if (vo == null) {
             log.error("BeanUtil.copyProperties error");
-            return ResultUtil.error(ServiceErrorCode.ERROR_SERVICE_EXCEPTION.code(), ServiceErrorCode.ERROR_SERVICE_EXCEPTION.desc());
+            return ResultUtil.error(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return ResultUtil.success(vo);
     }
 
-    public IMHttpResponse modifySelf(ModifySelfReq dto) {
+    public ResponseEntity<IMHttpResponse> modifySelf(ModifySelfReq dto) {
         log.info("UserService--modifySelf");
         UserSession session = UserSession.getSession();
         String account = session.getAccount();
         User user = getOneByAccount(account);
         if (user == null) {
             log.error("user not found");
-            return ResultUtil.error(ServiceErrorCode.ERROR_NO_REGISTER.code(),
-                    ServiceErrorCode.ERROR_NO_REGISTER.desc());
+            return ResultUtil.error(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         this.update(Wrappers.<User>lambdaUpdate()
@@ -241,26 +239,25 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success();
     }
 
-    public IMHttpResponse query(QueryReq dto) {
+    public ResponseEntity<IMHttpResponse> query(QueryReq dto) {
         log.info("UserService--query");
         User user = getOneByAccount(dto.getAccount());
         if (user == null) {
             log.error("user not found");
-            return ResultUtil.error(ServiceErrorCode.ERROR_NO_REGISTER.code(),
-                    ServiceErrorCode.ERROR_NO_REGISTER.desc());
+            return ResultUtil.success();
         }
 
         // 把User对象转成返回对象
         UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
         if (vo == null) {
             log.error("BeanUtil.copyProperties error");
-            return ResultUtil.error(ServiceErrorCode.ERROR_SERVICE_EXCEPTION.code(), ServiceErrorCode.ERROR_SERVICE_EXCEPTION.desc());
+            return ResultUtil.error(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return ResultUtil.success(vo);
     }
 
-    public IMHttpResponse findByNick(FindByNickReq dto) {
+    public ResponseEntity<IMHttpResponse> findByNick(FindByNickReq dto) {
         // TODO 这里要分页查询
         log.info("UserService--findByNick");
         String nickNameKeyWords = dto.getNickNameKeyWords();

@@ -7,7 +7,6 @@ import com.hibob.anyim.user.client.UserAgent;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.dto.vo.UserVO;
 import com.hibob.anyim.user.entity.User;
-import com.hibob.anyim.user.enums.ServiceErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -85,9 +84,9 @@ public class QueryTest {
 
         assertTrue(res1.getStatusCode() == HttpStatus.UNAUTHORIZED);
         assertTrue(res3.getStatusCode() == HttpStatus.UNAUTHORIZED);
-        assertTrue(res5.getBody().getCode() == ServiceErrorCode.ERROR_NO_REGISTER.code());
+        assertTrue(res5.getBody().getData() == null);
         assertTrue(JSON.parseObject(JSON.toJSONString(res7.getBody().getData()), UserVO.class).getNickName().equals(user02.getNickName()));
-        assertTrue(res8.getBody().getCode() == ServiceErrorCode.ERROR_NO_REGISTER.code());
+        assertTrue(res8.getBody().getData() == null);
 
     }
 
