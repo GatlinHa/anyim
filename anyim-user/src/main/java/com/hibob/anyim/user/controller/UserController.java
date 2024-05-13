@@ -100,10 +100,5 @@ public class UserController {
         return userService.findByNick(dto);
     }
 
-    @ApiOperation(value = "根据账号找人", notes = "根据账号找人")
-    @PostMapping("/findByAccount")
-    public IMHttpResponse findByAccount(@Valid @RequestBody FindByAccountReq dto) {
-        return userService.findByAccount(dto);
-    }
 
 }

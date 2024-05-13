@@ -4,12 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.hibob.anyim.common.utils.JwtUtil;
 import com.hibob.anyim.user.config.JwtProperties;
 import com.hibob.anyim.user.constants.RedisKey;
-import com.hibob.anyim.user.enums.ServiceErrorCode;
-import com.hibob.anyim.user.exception.ServiceException;
 import com.hibob.anyim.user.session.UserSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -35,22 +34,26 @@ public class AuthInterceptor implements HandlerInterceptor {
         //从 http 请求头中取出 token
         String token = request.getHeader("accessToken");
         // 校验token非空
+        // TODO token失败都应该返回鉴权失败的status
         if (!StringUtils.hasLength(token)) {
             log.error("未登陆，url:{}", request.getRequestURI());
-            throw new ServiceException(ServiceErrorCode.ERROR_NO_LOGIN);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return false;
         }
 
         //验证 token
         if (!JwtUtil.checkSign(token, jwtProperties.getAccessTokenSecret())) {
             log.error("token已失效，url:{}", request.getRequestURI());
-            throw new ServiceException(ServiceErrorCode.ERROR_ACCESS_TOKEN_EXPIRED);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return false;
         }
 
         String account = JwtUtil.getAccount(token);
         String key = RedisKey.USER_ACTIVE_TOKEN + account;
         if (!redisTemplate.hasKey(key) || !redisTemplate.opsForValue().get(key).equals(token)) {
             log.error("token已删除，url:{}", request.getRequestURI());
-            throw new ServiceException(ServiceErrorCode.ERROR_ACCESS_TOKEN_DELETED);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return false;
         }
 
         // 存放session

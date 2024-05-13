@@ -85,11 +85,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("LoginService--login");
         String account = dto.getAccount();
         String key = RedisKey.USER_ACTIVE_TOKEN + account;
-        if (redisTemplate.hasKey(key)) {
-            log.info("multi login");
-            return ResultUtil.error(ServiceErrorCode.ERROR_MULTI_LOGIN.code(),
-                    ServiceErrorCode.ERROR_MULTI_LOGIN.desc());
-        }
+        // TODO 先不校验重复登录，后面多设备场景需要同账号多登录状态
+//        if (redisTemplate.hasKey(key)) {
+//            log.info("multi login");
+//            return ResultUtil.error(ServiceErrorCode.ERROR_MULTI_LOGIN.code(),
+//                    ServiceErrorCode.ERROR_MULTI_LOGIN.desc());
+//        }
 
         User user = getOneByAccount(account);
         if (user == null) {
@@ -153,6 +154,10 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 .eq(User::getAccount, account)
                 .set(User::getPassword, passwordEncoder.encode(dto.getPassword()))
                 .set(User::getUpdateTime, new Date(System.currentTimeMillis())));
+
+        // 修改密码之后应该设为登出状态
+        String key = RedisKey.USER_ACTIVE_TOKEN + account;
+        redisTemplate.delete(key);
 
         return ResultUtil.success();
     }
@@ -238,9 +243,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public IMHttpResponse query(QueryReq dto) {
         log.info("UserService--query");
-        UserSession session = UserSession.getSession();
-        String account = session.getAccount();
-        User user = getOneByAccount(account);
+        User user = getOneByAccount(dto.getAccount());
         if (user == null) {
             log.error("user not found");
             return ResultUtil.error(ServiceErrorCode.ERROR_NO_REGISTER.code(),
@@ -257,23 +260,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success(vo);
     }
 
-
     public IMHttpResponse findByNick(FindByNickReq dto) {
+        // TODO 这里要分页查询
         log.info("UserService--findByNick");
-        UserSession session = UserSession.getSession();
-        String nickName = session.getNickName();
+        String nickNameKeyWords = dto.getNickNameKeyWords();
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(User::getNickName, nickName);
-        List<User> lists = this.list(queryWrapper);
-        return ResultUtil.success(lists);
-    }
-
-    public IMHttpResponse findByAccount(FindByAccountReq dto) {
-        log.info("UserService--findByAccount");
-        UserSession session = UserSession.getSession();
-        String account = session.getAccount();
-        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(User::getAccount, account);
+        queryWrapper.like(User::getNickName, nickNameKeyWords);
         List<User> lists = this.list(queryWrapper);
         return ResultUtil.success(lists);
     }

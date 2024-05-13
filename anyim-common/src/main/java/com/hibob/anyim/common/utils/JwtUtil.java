@@ -7,10 +7,12 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import java.util.Date;
+import java.util.UUID;
 
 public final class JwtUtil {
 
     private final static String CLAIM_NAME = "info";
+    private final static String SPILT = ">>";
 
     private JwtUtil() {
     }
@@ -26,17 +28,20 @@ public final class JwtUtil {
      */
     public static String sign(String account, String info, long expireIn, String secret) {
         try {
+            account = account + SPILT + UUID.randomUUID();
             Date date = new Date(System.currentTimeMillis() + expireIn * 1000);
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.create()
+            String ret = JWT.create()
                     //将account保存到token里面
                     .withAudience(account)
                     //存放自定义数据
                     .withClaim(CLAIM_NAME, info)
                     //过期时间
                     .withExpiresAt(date)
+                    .withKeyId("1")
                     //token的密钥
                     .sign(algorithm);
+            return ret;
         } catch (Exception e) {
             return null;
         }
@@ -50,7 +55,8 @@ public final class JwtUtil {
      */
     public static String getAccount(String token) {
         try {
-            return JWT.decode(token).getAudience().get(0);
+            String s = JWT.decode(token).getAudience().get(0);
+            return s.split(SPILT)[0];
         } catch (JWTDecodeException e) {
             return null;
         }
