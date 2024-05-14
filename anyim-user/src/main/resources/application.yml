@@ -1,9 +1,12 @@
 server:
-  port: 8001
+  port: 8002
 
 spring:
   application:
     name: anyim-user
+  profiles:
+    active: dev
+
   cloud:
     nacos:
       config:
@@ -20,6 +23,7 @@ spring:
     password: 123456
 
 
+# 解决这个错误：org.springframework.context.ApplicationContextException: Failed to start bean 'documentationPluginsBootstrapper';
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

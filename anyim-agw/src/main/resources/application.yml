@@ -1,0 +1,34 @@
+server:
+  port: 80
+
+spring:
+  application:
+    name: anyim-agw
+  profiles:
+    active: dev
+
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        import-check:
+          enabled: false
+      discovery:
+        server-addr: localhost:8848
+    gateway:
+      discovery:
+        locator:
+#          enabled: true # 默认false，开启后创建默认路由，可以通过服务名称进行服务转发，不用显示地配置
+#          interval: 10000 # 默认30000ms，设置定时拉取服务信息的时间间隔为10秒
+      routes:
+        - id: anyim-user
+          uri: lb://anyim-user
+          predicates:
+            - Path=/user/**
+  main:
+#    解决这个问题：Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway at this time
+#    这个错误信息是因为你的项目中同时存在Spring MVC和Spring Cloud Gateway，这两者是不兼容的。
+#    Spring Cloud Gateway是基于Spring WebFlux构建的，Spring WebFlux是一个非阻塞的反应式web框架，而Spring MVC是一个阻塞的框架，它包含在spring-boot-starter-web依赖中。 要解决这个问题，你需要做以下其中一项：
+#    ①：如果不需要，从你的pom.xml中移除spring-boot-starter-web依赖。
+#    ②：如果你在同一个应用中需要Spring MVC和Spring Cloud Gateway，你可以在你的application.yml或application.properties文件中将web应用类型设置为REACTIVE。
+    web-application-type: reactive # 它会导致@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})上面的exclude无效
