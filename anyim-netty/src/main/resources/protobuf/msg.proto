@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package com.hibob.anyim.netty.protobuf;
+
+option java_multiple_files = true;
+option java_package = "com.hibob.anyim.netty.protobuf";
+
+message Msg {
+  Header header = 1;
+  Body body = 2;
+  optional Extension extension = 3;
+}
+
+message Header {
+  int32 magic = 1;
+  int32 version = 2;
+  int32 msgType = 3;
+  bool isExtension = 4;
+}
+
+message Body {
+  int32 fromId = 1;
+  int32 fromDev = 2;
+  int32 toId = 3;
+  int32 toDev = 4;
+  int32 seq = 5;
+  string content = 6;
+}
+
+message Extension {
+  map<string, string> extensionMap = 1;
+}

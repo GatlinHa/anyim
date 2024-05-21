@@ -1,9 +1,9 @@
 server:
-  port: 8001
+  port: 8000
 
 spring:
   application:
-    name: anyim-user
+    name: anyim-netty
   profiles:
     active: dev
 
@@ -16,17 +16,6 @@ spring:
       discovery:
         server-addr: localhost:8848
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/anyim?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true
-    username: root
-    password: 123456
-
-
-# 解决这个错误：org.springframework.context.ApplicationContextException: Failed to start bean 'documentationPluginsBootstrapper';
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
 
   redis:
     host: 127.0.0.1
@@ -41,9 +30,9 @@ spring:
     timeout: 1200
 
 
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+websocket:
+  port: 8100
+  path: /ws
 
 jwt:
   accessToken:
