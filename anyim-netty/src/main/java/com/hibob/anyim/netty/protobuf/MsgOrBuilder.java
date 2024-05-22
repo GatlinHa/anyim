@@ -24,17 +24,17 @@ public interface MsgOrBuilder extends
   com.hibob.anyim.netty.protobuf.HeaderOrBuilder getHeaderOrBuilder();
 
   /**
-   * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
    * @return Whether the body field is set.
    */
   boolean hasBody();
   /**
-   * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
    * @return The body.
    */
   com.hibob.anyim.netty.protobuf.Body getBody();
   /**
-   * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
    */
   com.hibob.anyim.netty.protobuf.BodyOrBuilder getBodyOrBuilder();
 

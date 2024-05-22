@@ -1,9 +1,9 @@
 package com.hibob.anyim.user.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.JwtUtil;
 import com.hibob.anyim.user.config.JwtProperties;
-import com.hibob.anyim.user.constants.RedisKey;
 import com.hibob.anyim.user.session.UserSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

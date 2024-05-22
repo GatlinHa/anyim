@@ -71,7 +71,7 @@ public class UserController {
      * @param dto
      * @return
      */
-    @ApiOperation(value = "用户登录", notes = "用户登录")
+    @ApiOperation(value = "刷新token", notes = "刷新token")
     @PostMapping("/refreshToken")
     public ResponseEntity<IMHttpResponse> refreshToken(@RequestHeader("refreshToken") String refreshToken, @Valid @RequestBody RefreshTokenReq dto) {
         return userService.refreshToken(refreshToken, dto);

@@ -33,6 +33,7 @@ spring:
 websocket:
   port: 8100
   path: /ws
+  log-level: DEBUG  # LoggingHandler的日志级别
 
 jwt:
   accessToken:

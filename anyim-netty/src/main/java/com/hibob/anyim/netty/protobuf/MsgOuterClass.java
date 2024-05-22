@@ -59,21 +59,21 @@ public final class MsgOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n\tmsg.proto\022\036com.hibob.anyim.netty.proto" +
-      "buf\"\302\001\n\003Msg\0226\n\006header\030\001 \001(\0132&.com.hibob." +
-      "anyim.netty.protobuf.Header\0222\n\004body\030\002 \001(" +
-      "\0132$.com.hibob.anyim.netty.protobuf.Body\022" +
-      "A\n\textension\030\003 \001(\0132).com.hibob.anyim.net" +
-      "ty.protobuf.ExtensionH\000\210\001\001B\014\n\n_extension" +
-      "\"N\n\006Header\022\r\n\005magic\030\001 \001(\005\022\017\n\007version\030\002 \001" +
-      "(\005\022\017\n\007msgType\030\003 \001(\005\022\023\n\013isExtension\030\004 \001(\010" +
-      "\"b\n\004Body\022\016\n\006fromId\030\001 \001(\005\022\017\n\007fromDev\030\002 \001(" +
-      "\005\022\014\n\004toId\030\003 \001(\005\022\r\n\005toDev\030\004 \001(\005\022\013\n\003seq\030\005 " +
-      "\001(\005\022\017\n\007content\030\006 \001(\t\"\223\001\n\tExtension\022Q\n\014ex" +
-      "tensionMap\030\001 \003(\0132;.com.hibob.anyim.netty" +
-      ".protobuf.Extension.ExtensionMapEntry\0323\n" +
-      "\021ExtensionMapEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value" +
-      "\030\002 \001(\t:\0028\001B\"\n\036com.hibob.anyim.netty.prot" +
-      "obufP\001b\006proto3"
+      "buf\"\320\001\n\003Msg\0226\n\006header\030\001 \001(\0132&.com.hibob." +
+      "anyim.netty.protobuf.Header\0227\n\004body\030\002 \001(" +
+      "\0132$.com.hibob.anyim.netty.protobuf.BodyH" +
+      "\000\210\001\001\022A\n\textension\030\003 \001(\0132).com.hibob.anyi" +
+      "m.netty.protobuf.ExtensionH\001\210\001\001B\007\n\005_body" +
+      "B\014\n\n_extension\"N\n\006Header\022\r\n\005magic\030\001 \001(\005\022" +
+      "\017\n\007version\030\002 \001(\005\022\017\n\007msgType\030\003 \001(\005\022\023\n\013isE" +
+      "xtension\030\004 \001(\010\"b\n\004Body\022\016\n\006fromId\030\001 \001(\005\022\017" +
+      "\n\007fromDev\030\002 \001(\005\022\014\n\004toId\030\003 \001(\005\022\r\n\005toDev\030\004" +
+      " \001(\005\022\013\n\003seq\030\005 \001(\005\022\017\n\007content\030\006 \001(\t\"\223\001\n\tE" +
+      "xtension\022Q\n\014extensionMap\030\001 \003(\0132;.com.hib" +
+      "ob.anyim.netty.protobuf.Extension.Extens" +
+      "ionMapEntry\0323\n\021ExtensionMapEntry\022\013\n\003key\030" +
+      "\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001B\"\n\036com.hibob.an" +
+      "yim.netty.protobufP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

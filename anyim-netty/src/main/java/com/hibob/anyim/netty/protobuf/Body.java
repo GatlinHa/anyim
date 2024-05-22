@@ -5,6 +5,10 @@
 package com.hibob.anyim.netty.protobuf;
 
 /**
+ * <pre>
+ * 当msgType为单聊时
+ * </pre>
+ *
  * Protobuf type {@code com.hibob.anyim.netty.protobuf.Body}
  */
 public final class Body extends
@@ -348,6 +352,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * 当msgType为单聊时
+   * </pre>
+   *
    * Protobuf type {@code com.hibob.anyim.netty.protobuf.Body}
    */
   public static final class Builder extends

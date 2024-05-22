@@ -29,11 +29,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-<!--        从别处代码抄过来，有这个依赖，注释掉之后发现也能运行，后面观察-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-jdbc</artifactId>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -44,12 +39,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <!-- 引入redis -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
         <!--TODO org.apache.commons.compress.utils.IOUtils依赖包，后面引入minio后自带了这个包-->

@@ -1,10 +1,13 @@
 package com.hibob.anyim.netty.client;
 
 import com.hibob.anyim.netty.client.handler.ClientHandler;
+import com.hibob.anyim.netty.constants.Const;
+import com.hibob.anyim.netty.enums.MsgType;
+import com.hibob.anyim.netty.protobuf.Body;
+import com.hibob.anyim.netty.protobuf.Header;
 import com.hibob.anyim.netty.protobuf.Msg;
 import com.hibob.anyim.netty.server.handler.ByteBufToWebSocketFrame;
 import com.hibob.anyim.netty.server.handler.WebSocketToByteBufEncoder;
-import com.hibob.anyim.netty.utils.MsgUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -36,6 +39,7 @@ public class NettyClient {
         URI uri = new URI("ws://localhost:8100/ws");
         DefaultHttpHeaders headers = new DefaultHttpHeaders();
         headers.add(HttpHeaderNames.AUTHORIZATION, "123");
+        headers.add("account", "test001");
         try {
             bootstrap
                     .group(group)
@@ -73,16 +77,22 @@ public class NettyClient {
                 if ("exit".equals(line)) {
                     break;
                 }
-                channelFuture.channel().writeAndFlush(MsgUtil.getMsg(0x12345678,
-                        0,
-                        0,
-                        false,
-                        1,
-                        1,
-                        2,
-                        2,
-                        1,
-                        line)).addListener((ChannelFutureListener) future -> {
+                Header header = Header.newBuilder()
+                        .setMagic(Const.MAGIC)
+                        .setVersion(0)
+                        .setMsgType(MsgType.CHAT.code())
+                        .setIsExtension(false)
+                        .build();
+                Body body = Body.newBuilder()
+                        .setFromId(1)
+                        .setFromDev(1)
+                        .setToId(2)
+                        .setToDev(2)
+                        .setSeq(1)
+                        .setContent(line)
+                        .build();
+                Msg msg = Msg.newBuilder().setHeader(header).setBody(body).build();
+                channelFuture.channel().writeAndFlush(msg).addListener((ChannelFutureListener) future -> {
                             if (future.isSuccess()) {
                                 log.info("send success");
                             }

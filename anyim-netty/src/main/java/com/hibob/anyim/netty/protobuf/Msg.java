@@ -71,7 +71,7 @@ private static final long serialVersionUID = 0L;
   public static final int BODY_FIELD_NUMBER = 2;
   private com.hibob.anyim.netty.protobuf.Body body_;
   /**
-   * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
    * @return Whether the body field is set.
    */
   @java.lang.Override
@@ -79,7 +79,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
    * @return The body.
    */
   @java.lang.Override
@@ -87,7 +87,7 @@ private static final long serialVersionUID = 0L;
     return body_ == null ? com.hibob.anyim.netty.protobuf.Body.getDefaultInstance() : body_;
   }
   /**
-   * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
    */
   @java.lang.Override
   public com.hibob.anyim.netty.protobuf.BodyOrBuilder getBodyOrBuilder() {
@@ -636,14 +636,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         com.hibob.anyim.netty.protobuf.Body, com.hibob.anyim.netty.protobuf.Body.Builder, com.hibob.anyim.netty.protobuf.BodyOrBuilder> bodyBuilder_;
     /**
-     * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
      * @return Whether the body field is set.
      */
     public boolean hasBody() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
      * @return The body.
      */
     public com.hibob.anyim.netty.protobuf.Body getBody() {
@@ -654,7 +654,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
      */
     public Builder setBody(com.hibob.anyim.netty.protobuf.Body value) {
       if (bodyBuilder_ == null) {
@@ -670,7 +670,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
      */
     public Builder setBody(
         com.hibob.anyim.netty.protobuf.Body.Builder builderForValue) {
@@ -684,7 +684,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
      */
     public Builder mergeBody(com.hibob.anyim.netty.protobuf.Body value) {
       if (bodyBuilder_ == null) {
@@ -705,7 +705,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
      */
     public Builder clearBody() {
       bitField0_ = (bitField0_ & ~0x00000002);
@@ -718,7 +718,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
      */
     public com.hibob.anyim.netty.protobuf.Body.Builder getBodyBuilder() {
       bitField0_ |= 0x00000002;
@@ -726,7 +726,7 @@ private static final long serialVersionUID = 0L;
       return getBodyFieldBuilder().getBuilder();
     }
     /**
-     * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
      */
     public com.hibob.anyim.netty.protobuf.BodyOrBuilder getBodyOrBuilder() {
       if (bodyBuilder_ != null) {
@@ -737,7 +737,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.hibob.anyim.netty.protobuf.Body, com.hibob.anyim.netty.protobuf.Body.Builder, com.hibob.anyim.netty.protobuf.BodyOrBuilder> 

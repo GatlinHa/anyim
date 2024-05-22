@@ -1,27 +1,28 @@
 package com.hibob.anyim.netty.server.handler;
 
-import io.netty.buffer.ByteBuf;
+import com.hibob.anyim.common.constants.RedisKey;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
-import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
-import java.util.Map;
-
+import static io.netty.handler.codec.http.HttpResponseStatus.FORBIDDEN;
 import static io.netty.handler.codec.http.HttpResponseStatus.UNAUTHORIZED;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 @Slf4j
-public class LoginHandler extends SimpleChannelInboundHandler<HttpRequest> {
+public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpRequest> {
+    private final RedisTemplate<String, Object> redisTemplate;
     private String path;
-    public LoginHandler(String path) {
+
+    public AuthorizationHandler(RedisTemplate<String, Object> redisTemplate, String path) {
         super();
+        this.redisTemplate = redisTemplate;
         this.path = path;
     }
     @Override
@@ -29,14 +30,28 @@ public class LoginHandler extends SimpleChannelInboundHandler<HttpRequest> {
         log.info("do LoginHandler ");
         String uri = msg.uri();
         String authCode = msg.headers().get(HttpHeaderNames.AUTHORIZATION);
+        String account = msg.headers().get("account");
+        String tokenKey = RedisKey.USER_ACTIVE_TOKEN + account;
+        String cacheToken = (String) redisTemplate.opsForValue().get(tokenKey);
         if (!StringUtils.hasLength(uri)
                 || !StringUtils.hasLength(authCode)
-                || !uri.equals(this.path)
-                || !authCode.equals("123")) {
+                || !StringUtils.hasLength(account)
+//                || !StringUtils.hasLength(cacheToken)  TODO 临时测试
+//                || !uri.equals(this.path)
+//                || !authCode.equals(cacheToken)
+        ) {
             log.info("Login validate error");
             HttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, UNAUTHORIZED, ByteBufAllocator.DEFAULT.heapBuffer());
             ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
         }
+
+        String channelKey = RedisKey.NETTY_ACTIVE_CHANNEL + authCode;
+        if (redisTemplate.hasKey(channelKey)) {
+            log.info("Repeated login");
+            HttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, FORBIDDEN, ByteBufAllocator.DEFAULT.heapBuffer());
+            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+        }
+
         log.info("Login validate success");
         ctx.fireChannelRead(msg);
     }
