@@ -68,6 +68,28 @@ public class NettyClient {
                         }
                     });
             ChannelFuture channelFuture = bootstrap.connect(uri.getHost(), uri.getPort()).sync();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            Header header = Header.newBuilder()
+                                    .setMagic(Const.MAGIC)
+                                    .setVersion(0)
+                                    .setMsgType(MsgType.HEART_BEAT)
+                                    .build();
+                            Msg msgOut = Msg.newBuilder().setHeader(header).build();
+                            channelFuture.channel().writeAndFlush(msgOut);
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }).start();
+
             Scanner scanner = new Scanner(System.in);
             while (true) {
                 String line = scanner.nextLine();

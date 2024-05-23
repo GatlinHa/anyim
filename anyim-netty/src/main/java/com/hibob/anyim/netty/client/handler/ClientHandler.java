@@ -28,7 +28,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
                     .setIsExtension(false)
                     .build();
             Msg msg = Msg.newBuilder().setHeader(header).build();
-            ctx.channel().writeAndFlush(msg).addListener(future -> {
+            ctx.writeAndFlush(msg).addListener(future -> {
                if (future.isSuccess()) {
                    log.info("send hello success!");
                }

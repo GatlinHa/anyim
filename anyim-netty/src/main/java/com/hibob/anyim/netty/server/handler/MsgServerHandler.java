@@ -32,29 +32,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
 
         String token = (String) ctx.channel().attr(AttributeKey.valueOf(Const.AUTHORIZATION_KEY)).get();
         String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + token;
-        int magic = msg.getHeader().getMagic();
-        if (magic != Const.MAGIC) {
-            // 非法消息，直接关闭连接
-            log.info("error magic.");
-            Header header = Header.newBuilder()
-                    .setMagic(Const.MAGIC)
-                    .setVersion(0)
-                    .setMsgType(MsgType.CLOSE_BY_ERROR_MAGIC)
-                    .setIsExtension(false)
-                    .build();
-            Msg msgOut = Msg.newBuilder().setHeader(header).build();
-            ctx.channel().writeAndFlush(msgOut);
-            ctx.channel().close().addListener(future -> {
-                if (future.isSuccess()) {
-                    redisTemplate.delete(routeKey);
-                    getLocalRoute().remove(routeKey);
-                    log.info("close channel success.");
-                } else {
-                    log.info("close channel failed. cause is {}", future.cause());
-                }
-            });
-            return;
-        }
+        if (!validateMagic(ctx, msg, routeKey)) return;
 
         MsgType msgType = msg.getHeader().getMsgType();
         log.info("message type is: {}", msgType);
@@ -65,7 +43,13 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
                 log.info("save route success. token is {}", token);
                 break;
             case HEART_BEAT:
-                // TODO 回复一个心跳
+                Header header = Header.newBuilder()
+                        .setMagic(Const.MAGIC)
+                        .setVersion(0)
+                        .setMsgType(MsgType.HEART_BEAT)
+                        .build();
+                Msg msgOut = Msg.newBuilder().setHeader(header).build();
+                ctx.writeAndFlush(msgOut);
                 break;
             case CHAT:
                 // TODO
@@ -89,12 +73,39 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
                 .setToId("2")
                 .setToDev("2")
                 .setSeq(1)
-                .setContent("收到消息类型是：" + msg.getHeader().getMsgType() + "，消息内容是：" + msg.getChatBody().getContent())
+                .setContent("receive msg type is: " + msg.getHeader().getMsgType() + ", content is: " + msg.getChatBody().getContent())
                 .build();
 
         Msg msgOut = Msg.newBuilder().setHeader(header).setChatBody(body).build();
         log.info("MsgServerHandler send a response msg is: {}", msgOut);
-        ctx.channel().writeAndFlush(msgOut);
+        ctx.writeAndFlush(msgOut);
+    }
+
+    private boolean validateMagic(ChannelHandlerContext ctx, Msg msg, String routeKey) {
+        int magic = msg.getHeader().getMagic();
+        if (magic != Const.MAGIC) {
+            // 非法消息，直接关闭连接
+            log.info("error magic.");
+            Header header = Header.newBuilder()
+                    .setMagic(Const.MAGIC)
+                    .setVersion(0)
+                    .setMsgType(MsgType.CLOSE_BY_ERROR_MAGIC)
+                    .setIsExtension(false)
+                    .build();
+            Msg msgOut = Msg.newBuilder().setHeader(header).build();
+            ctx.writeAndFlush(msgOut);
+            ctx.close().addListener(future -> {
+                if (future.isSuccess()) {
+                    redisTemplate.delete(routeKey);
+                    getLocalRoute().remove(routeKey);
+                    log.info("close channel success.");
+                } else {
+                    log.info("close channel failed. cause is {}", future.cause());
+                }
+            });
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -118,8 +129,8 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
                     .setIsExtension(false)
                     .build();
             Msg msg = Msg.newBuilder().setHeader(header).build();
-            ctx.channel().writeAndFlush(msg);
-            ctx.channel().close().addListener(future -> {
+            ctx.writeAndFlush(msg);
+            ctx.close().addListener(future -> {
                 if (future.isSuccess()) {
                     log.info("close channel success.");
                     // TODO 要删除路由表记录
