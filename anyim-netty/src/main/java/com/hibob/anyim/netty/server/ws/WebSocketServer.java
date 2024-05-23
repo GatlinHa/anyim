@@ -25,6 +25,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -43,6 +45,8 @@ public class WebSocketServer implements NettyServer {
     @Value("${websocket.log-level}")
     private String logLevel;
 
+    private static Map<String, Channel> localRoute = new ConcurrentHashMap<>();
+
     private volatile boolean ready = false;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workGroup;
@@ -56,6 +60,10 @@ public class WebSocketServer implements NettyServer {
     @Override
     public void stop() {
 
+    }
+
+    public static Map<String, Channel> getLocalRoute() {
+        return localRoute;
     }
 
     @Override
@@ -73,8 +81,8 @@ public class WebSocketServer implements NettyServer {
                         @Override
                         protected void initChannel(Channel channel) throws Exception {
                             ChannelPipeline pipeline = channel.pipeline();
-                            pipeline.addLast(new IdleStateHandler(120, 0, 0, TimeUnit.SECONDS)); // 用来判断 是不是读 空闲时间过长，或写空闲时间过长 (读，写，读写空闲时间限制) 0表示不关心
                             pipeline.addLast(new LoggingHandler(LogLevel.valueOf(logLevel.toUpperCase()))); // 增加日志打印的handler，这里要配合logback的日志级别配置文件，把LoggingHandler的全限定名的日志级别也改为debug
+                            pipeline.addLast(new IdleStateHandler(60, 0, 0, TimeUnit.SECONDS)); // 用来判断 是不是读 空闲时间过长，或写空闲时间过长 (读，写，读写空闲时间限制) 0表示不关心
                             pipeline.addLast(new HttpServerCodec()); //HTTP协议编解码器，用于处理HTTP请求和响应的编码和解码。其主要作用是将HTTP请求和响应消息转换为Netty的ByteBuf对象，并将其传递到下一个处理器进行处理。
                             pipeline.addLast(new HttpObjectAggregator(65535)); //加了这行会导致postman出现1006错误 用于HTTP服务端，将来自客户端的HTTP请求和响应消息聚合成一个完整的消息，以便后续的处理。
                             pipeline.addLast(new ChunkedWriteHandler()); // 支持分块写入  在网络通信中，如果要传输的数据量较大，直接将数据一次性写入到网络缓冲区可能会导致内存占用过大或者网络拥塞等问题
@@ -87,7 +95,7 @@ public class WebSocketServer implements NettyServer {
                             pipeline.addLast(new ByteBufToWebSocketFrame()); //编码：ByteBuf -> WebSocketFrame(二进制)
                             pipeline.addLast(new ProtobufVarint32LengthFieldPrepender()); //编码：处理半包黏包，参数类型是ByteBuf
                             pipeline.addLast(new ProtobufEncoder()); //编码：Msg -> ByteBuf
-                            pipeline.addLast(new MsgServerHandler()); // 业务处理理器，读写都是Msg
+                            pipeline.addLast(new MsgServerHandler(redisTemplate)); // 业务处理理器，读写都是Msg
                         }
                     });
 
@@ -98,7 +106,7 @@ public class WebSocketServer implements NettyServer {
             log.error("WebSocket Server start failed on port: {}", port);
         }
         finally {
-            log.debug("shutdown gracefully");
+            log.info("shutdown gracefully");
             bossGroup.shutdownGracefully();
             workGroup.shutdownGracefully();
         }

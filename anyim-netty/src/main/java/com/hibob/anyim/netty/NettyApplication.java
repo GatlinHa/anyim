@@ -26,6 +26,7 @@ public class NettyApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         //启动netty
         log.info("启动netty服务===================================");
+        // TODO 获取Nacos中注册的实例id
         nettyServer.start();
     }
 }

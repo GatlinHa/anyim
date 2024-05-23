@@ -2,10 +2,7 @@ package com.hibob.anyim.netty.client;
 
 import com.hibob.anyim.netty.client.handler.ClientHandler;
 import com.hibob.anyim.netty.constants.Const;
-import com.hibob.anyim.netty.enums.MsgType;
-import com.hibob.anyim.netty.protobuf.Body;
-import com.hibob.anyim.netty.protobuf.Header;
-import com.hibob.anyim.netty.protobuf.Msg;
+import com.hibob.anyim.netty.protobuf.*;
 import com.hibob.anyim.netty.server.handler.ByteBufToWebSocketFrame;
 import com.hibob.anyim.netty.server.handler.WebSocketToByteBufEncoder;
 import io.netty.bootstrap.Bootstrap;
@@ -80,18 +77,18 @@ public class NettyClient {
                 Header header = Header.newBuilder()
                         .setMagic(Const.MAGIC)
                         .setVersion(0)
-                        .setMsgType(MsgType.CHAT.code())
+                        .setMsgType(MsgType.CHAT)
                         .setIsExtension(false)
                         .build();
-                Body body = Body.newBuilder()
-                        .setFromId(1)
-                        .setFromDev(1)
-                        .setToId(2)
-                        .setToDev(2)
+                ChatBody body = ChatBody.newBuilder()
+                        .setFromId("1")
+                        .setFromDev("1")
+                        .setToId("2")
+                        .setToDev("2")
                         .setSeq(1)
                         .setContent(line)
                         .build();
-                Msg msg = Msg.newBuilder().setHeader(header).setBody(body).build();
+                Msg msg = Msg.newBuilder().setHeader(header).setChatBody(body).build();
                 channelFuture.channel().writeAndFlush(msg).addListener((ChannelFutureListener) future -> {
                             if (future.isSuccess()) {
                                 log.info("send success");

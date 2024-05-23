@@ -42,6 +42,48 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
+  private int bodyCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object body_;
+  public enum BodyCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    CHATBODY(2),
+    GROUPCHATBODY(3),
+    BODY_NOT_SET(0);
+    private final int value;
+    private BodyCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static BodyCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static BodyCase forNumber(int value) {
+      switch (value) {
+        case 2: return CHATBODY;
+        case 3: return GROUPCHATBODY;
+        case 0: return BODY_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public BodyCase
+  getBodyCase() {
+    return BodyCase.forNumber(
+        bodyCase_);
+  }
+
   public static final int HEADER_FIELD_NUMBER = 1;
   private com.hibob.anyim.netty.protobuf.Header header_;
   /**
@@ -68,44 +110,80 @@ private static final long serialVersionUID = 0L;
     return header_ == null ? com.hibob.anyim.netty.protobuf.Header.getDefaultInstance() : header_;
   }
 
-  public static final int BODY_FIELD_NUMBER = 2;
-  private com.hibob.anyim.netty.protobuf.Body body_;
+  public static final int CHATBODY_FIELD_NUMBER = 2;
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
-   * @return Whether the body field is set.
+   * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
+   * @return Whether the chatBody field is set.
    */
   @java.lang.Override
-  public boolean hasBody() {
-    return ((bitField0_ & 0x00000002) != 0);
+  public boolean hasChatBody() {
+    return bodyCase_ == 2;
   }
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
-   * @return The body.
+   * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
+   * @return The chatBody.
    */
   @java.lang.Override
-  public com.hibob.anyim.netty.protobuf.Body getBody() {
-    return body_ == null ? com.hibob.anyim.netty.protobuf.Body.getDefaultInstance() : body_;
+  public com.hibob.anyim.netty.protobuf.ChatBody getChatBody() {
+    if (bodyCase_ == 2) {
+       return (com.hibob.anyim.netty.protobuf.ChatBody) body_;
+    }
+    return com.hibob.anyim.netty.protobuf.ChatBody.getDefaultInstance();
   }
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+   * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
    */
   @java.lang.Override
-  public com.hibob.anyim.netty.protobuf.BodyOrBuilder getBodyOrBuilder() {
-    return body_ == null ? com.hibob.anyim.netty.protobuf.Body.getDefaultInstance() : body_;
+  public com.hibob.anyim.netty.protobuf.ChatBodyOrBuilder getChatBodyOrBuilder() {
+    if (bodyCase_ == 2) {
+       return (com.hibob.anyim.netty.protobuf.ChatBody) body_;
+    }
+    return com.hibob.anyim.netty.protobuf.ChatBody.getDefaultInstance();
   }
 
-  public static final int EXTENSION_FIELD_NUMBER = 3;
+  public static final int GROUPCHATBODY_FIELD_NUMBER = 3;
+  /**
+   * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+   * @return Whether the groupChatBody field is set.
+   */
+  @java.lang.Override
+  public boolean hasGroupChatBody() {
+    return bodyCase_ == 3;
+  }
+  /**
+   * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+   * @return The groupChatBody.
+   */
+  @java.lang.Override
+  public com.hibob.anyim.netty.protobuf.GroupChatBody getGroupChatBody() {
+    if (bodyCase_ == 3) {
+       return (com.hibob.anyim.netty.protobuf.GroupChatBody) body_;
+    }
+    return com.hibob.anyim.netty.protobuf.GroupChatBody.getDefaultInstance();
+  }
+  /**
+   * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+   */
+  @java.lang.Override
+  public com.hibob.anyim.netty.protobuf.GroupChatBodyOrBuilder getGroupChatBodyOrBuilder() {
+    if (bodyCase_ == 3) {
+       return (com.hibob.anyim.netty.protobuf.GroupChatBody) body_;
+    }
+    return com.hibob.anyim.netty.protobuf.GroupChatBody.getDefaultInstance();
+  }
+
+  public static final int EXTENSION_FIELD_NUMBER = 99;
   private com.hibob.anyim.netty.protobuf.Extension extension_;
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
    * @return Whether the extension field is set.
    */
   @java.lang.Override
   public boolean hasExtension() {
-    return ((bitField0_ & 0x00000004) != 0);
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
    * @return The extension.
    */
   @java.lang.Override
@@ -113,7 +191,7 @@ private static final long serialVersionUID = 0L;
     return extension_ == null ? com.hibob.anyim.netty.protobuf.Extension.getDefaultInstance() : extension_;
   }
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
    */
   @java.lang.Override
   public com.hibob.anyim.netty.protobuf.ExtensionOrBuilder getExtensionOrBuilder() {
@@ -137,11 +215,14 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getHeader());
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(2, getBody());
+    if (bodyCase_ == 2) {
+      output.writeMessage(2, (com.hibob.anyim.netty.protobuf.ChatBody) body_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeMessage(3, getExtension());
+    if (bodyCase_ == 3) {
+      output.writeMessage(3, (com.hibob.anyim.netty.protobuf.GroupChatBody) body_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(99, getExtension());
     }
     getUnknownFields().writeTo(output);
   }
@@ -156,13 +237,17 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getHeader());
     }
+    if (bodyCase_ == 2) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, (com.hibob.anyim.netty.protobuf.ChatBody) body_);
+    }
+    if (bodyCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, (com.hibob.anyim.netty.protobuf.GroupChatBody) body_);
+    }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getBody());
-    }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getExtension());
+        .computeMessageSize(99, getExtension());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -184,15 +269,23 @@ private static final long serialVersionUID = 0L;
       if (!getHeader()
           .equals(other.getHeader())) return false;
     }
-    if (hasBody() != other.hasBody()) return false;
-    if (hasBody()) {
-      if (!getBody()
-          .equals(other.getBody())) return false;
-    }
     if (hasExtension() != other.hasExtension()) return false;
     if (hasExtension()) {
       if (!getExtension()
           .equals(other.getExtension())) return false;
+    }
+    if (!getBodyCase().equals(other.getBodyCase())) return false;
+    switch (bodyCase_) {
+      case 2:
+        if (!getChatBody()
+            .equals(other.getChatBody())) return false;
+        break;
+      case 3:
+        if (!getGroupChatBody()
+            .equals(other.getGroupChatBody())) return false;
+        break;
+      case 0:
+      default:
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -209,13 +302,21 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + HEADER_FIELD_NUMBER;
       hash = (53 * hash) + getHeader().hashCode();
     }
-    if (hasBody()) {
-      hash = (37 * hash) + BODY_FIELD_NUMBER;
-      hash = (53 * hash) + getBody().hashCode();
-    }
     if (hasExtension()) {
       hash = (37 * hash) + EXTENSION_FIELD_NUMBER;
       hash = (53 * hash) + getExtension().hashCode();
+    }
+    switch (bodyCase_) {
+      case 2:
+        hash = (37 * hash) + CHATBODY_FIELD_NUMBER;
+        hash = (53 * hash) + getChatBody().hashCode();
+        break;
+      case 3:
+        hash = (37 * hash) + GROUPCHATBODY_FIELD_NUMBER;
+        hash = (53 * hash) + getGroupChatBody().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -348,7 +449,6 @@ private static final long serialVersionUID = 0L;
       if (com.google.protobuf.GeneratedMessage
               .alwaysUseFieldBuilders) {
         getHeaderFieldBuilder();
-        getBodyFieldBuilder();
         getExtensionFieldBuilder();
       }
     }
@@ -361,16 +461,19 @@ private static final long serialVersionUID = 0L;
         headerBuilder_.dispose();
         headerBuilder_ = null;
       }
-      body_ = null;
-      if (bodyBuilder_ != null) {
-        bodyBuilder_.dispose();
-        bodyBuilder_ = null;
+      if (chatBodyBuilder_ != null) {
+        chatBodyBuilder_.clear();
+      }
+      if (groupChatBodyBuilder_ != null) {
+        groupChatBodyBuilder_.clear();
       }
       extension_ = null;
       if (extensionBuilder_ != null) {
         extensionBuilder_.dispose();
         extensionBuilder_ = null;
       }
+      bodyCase_ = 0;
+      body_ = null;
       return this;
     }
 
@@ -398,6 +501,7 @@ private static final long serialVersionUID = 0L;
     public com.hibob.anyim.netty.protobuf.Msg buildPartial() {
       com.hibob.anyim.netty.protobuf.Msg result = new com.hibob.anyim.netty.protobuf.Msg(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -411,19 +515,26 @@ private static final long serialVersionUID = 0L;
             : headerBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.body_ = bodyBuilder_ == null
-            ? body_
-            : bodyBuilder_.build();
-        to_bitField0_ |= 0x00000002;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.extension_ = extensionBuilder_ == null
             ? extension_
             : extensionBuilder_.build();
-        to_bitField0_ |= 0x00000004;
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(com.hibob.anyim.netty.protobuf.Msg result) {
+      result.bodyCase_ = bodyCase_;
+      result.body_ = this.body_;
+      if (bodyCase_ == 2 &&
+          chatBodyBuilder_ != null) {
+        result.body_ = chatBodyBuilder_.build();
+      }
+      if (bodyCase_ == 3 &&
+          groupChatBodyBuilder_ != null) {
+        result.body_ = groupChatBodyBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -441,11 +552,21 @@ private static final long serialVersionUID = 0L;
       if (other.hasHeader()) {
         mergeHeader(other.getHeader());
       }
-      if (other.hasBody()) {
-        mergeBody(other.getBody());
-      }
       if (other.hasExtension()) {
         mergeExtension(other.getExtension());
+      }
+      switch (other.getBodyCase()) {
+        case CHATBODY: {
+          mergeChatBody(other.getChatBody());
+          break;
+        }
+        case GROUPCHATBODY: {
+          mergeGroupChatBody(other.getGroupChatBody());
+          break;
+        }
+        case BODY_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -482,18 +603,25 @@ private static final long serialVersionUID = 0L;
             } // case 10
             case 18: {
               input.readMessage(
-                  getBodyFieldBuilder().getBuilder(),
+                  getChatBodyFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000002;
+              bodyCase_ = 2;
               break;
             } // case 18
             case 26: {
               input.readMessage(
-                  getExtensionFieldBuilder().getBuilder(),
+                  getGroupChatBodyFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000004;
+              bodyCase_ = 3;
               break;
             } // case 26
+            case 794: {
+              input.readMessage(
+                  getExtensionFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 794
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -509,6 +637,21 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int bodyCase_ = 0;
+    private java.lang.Object body_;
+    public BodyCase
+        getBodyCase() {
+      return BodyCase.forNumber(
+          bodyCase_);
+    }
+
+    public Builder clearBody() {
+      bodyCase_ = 0;
+      body_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private com.hibob.anyim.netty.protobuf.Header header_;
@@ -632,139 +775,302 @@ private static final long serialVersionUID = 0L;
       return headerBuilder_;
     }
 
-    private com.hibob.anyim.netty.protobuf.Body body_;
     private com.google.protobuf.SingleFieldBuilder<
-        com.hibob.anyim.netty.protobuf.Body, com.hibob.anyim.netty.protobuf.Body.Builder, com.hibob.anyim.netty.protobuf.BodyOrBuilder> bodyBuilder_;
+        com.hibob.anyim.netty.protobuf.ChatBody, com.hibob.anyim.netty.protobuf.ChatBody.Builder, com.hibob.anyim.netty.protobuf.ChatBodyOrBuilder> chatBodyBuilder_;
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
-     * @return Whether the body field is set.
+     * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
+     * @return Whether the chatBody field is set.
      */
-    public boolean hasBody() {
-      return ((bitField0_ & 0x00000002) != 0);
+    @java.lang.Override
+    public boolean hasChatBody() {
+      return bodyCase_ == 2;
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
-     * @return The body.
+     * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
+     * @return The chatBody.
      */
-    public com.hibob.anyim.netty.protobuf.Body getBody() {
-      if (bodyBuilder_ == null) {
-        return body_ == null ? com.hibob.anyim.netty.protobuf.Body.getDefaultInstance() : body_;
+    @java.lang.Override
+    public com.hibob.anyim.netty.protobuf.ChatBody getChatBody() {
+      if (chatBodyBuilder_ == null) {
+        if (bodyCase_ == 2) {
+          return (com.hibob.anyim.netty.protobuf.ChatBody) body_;
+        }
+        return com.hibob.anyim.netty.protobuf.ChatBody.getDefaultInstance();
       } else {
-        return bodyBuilder_.getMessage();
+        if (bodyCase_ == 2) {
+          return chatBodyBuilder_.getMessage();
+        }
+        return com.hibob.anyim.netty.protobuf.ChatBody.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
      */
-    public Builder setBody(com.hibob.anyim.netty.protobuf.Body value) {
-      if (bodyBuilder_ == null) {
+    public Builder setChatBody(com.hibob.anyim.netty.protobuf.ChatBody value) {
+      if (chatBodyBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         body_ = value;
+        onChanged();
       } else {
-        bodyBuilder_.setMessage(value);
+        chatBodyBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
-      onChanged();
+      bodyCase_ = 2;
       return this;
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
      */
-    public Builder setBody(
-        com.hibob.anyim.netty.protobuf.Body.Builder builderForValue) {
-      if (bodyBuilder_ == null) {
+    public Builder setChatBody(
+        com.hibob.anyim.netty.protobuf.ChatBody.Builder builderForValue) {
+      if (chatBodyBuilder_ == null) {
         body_ = builderForValue.build();
+        onChanged();
       } else {
-        bodyBuilder_.setMessage(builderForValue.build());
+        chatBodyBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
-      onChanged();
+      bodyCase_ = 2;
       return this;
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
      */
-    public Builder mergeBody(com.hibob.anyim.netty.protobuf.Body value) {
-      if (bodyBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-          body_ != null &&
-          body_ != com.hibob.anyim.netty.protobuf.Body.getDefaultInstance()) {
-          getBodyBuilder().mergeFrom(value);
+    public Builder mergeChatBody(com.hibob.anyim.netty.protobuf.ChatBody value) {
+      if (chatBodyBuilder_ == null) {
+        if (bodyCase_ == 2 &&
+            body_ != com.hibob.anyim.netty.protobuf.ChatBody.getDefaultInstance()) {
+          body_ = com.hibob.anyim.netty.protobuf.ChatBody.newBuilder((com.hibob.anyim.netty.protobuf.ChatBody) body_)
+              .mergeFrom(value).buildPartial();
         } else {
           body_ = value;
         }
-      } else {
-        bodyBuilder_.mergeFrom(value);
-      }
-      if (body_ != null) {
-        bitField0_ |= 0x00000002;
         onChanged();
-      }
-      return this;
-    }
-    /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
-     */
-    public Builder clearBody() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      body_ = null;
-      if (bodyBuilder_ != null) {
-        bodyBuilder_.dispose();
-        bodyBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
-     */
-    public com.hibob.anyim.netty.protobuf.Body.Builder getBodyBuilder() {
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return getBodyFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
-     */
-    public com.hibob.anyim.netty.protobuf.BodyOrBuilder getBodyOrBuilder() {
-      if (bodyBuilder_ != null) {
-        return bodyBuilder_.getMessageOrBuilder();
       } else {
-        return body_ == null ?
-            com.hibob.anyim.netty.protobuf.Body.getDefaultInstance() : body_;
+        if (bodyCase_ == 2) {
+          chatBodyBuilder_.mergeFrom(value);
+        } else {
+          chatBodyBuilder_.setMessage(value);
+        }
+      }
+      bodyCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
+     */
+    public Builder clearChatBody() {
+      if (chatBodyBuilder_ == null) {
+        if (bodyCase_ == 2) {
+          bodyCase_ = 0;
+          body_ = null;
+          onChanged();
+        }
+      } else {
+        if (bodyCase_ == 2) {
+          bodyCase_ = 0;
+          body_ = null;
+        }
+        chatBodyBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
+     */
+    public com.hibob.anyim.netty.protobuf.ChatBody.Builder getChatBodyBuilder() {
+      return getChatBodyFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
+     */
+    @java.lang.Override
+    public com.hibob.anyim.netty.protobuf.ChatBodyOrBuilder getChatBodyOrBuilder() {
+      if ((bodyCase_ == 2) && (chatBodyBuilder_ != null)) {
+        return chatBodyBuilder_.getMessageOrBuilder();
+      } else {
+        if (bodyCase_ == 2) {
+          return (com.hibob.anyim.netty.protobuf.ChatBody) body_;
+        }
+        return com.hibob.anyim.netty.protobuf.ChatBody.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+     * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        com.hibob.anyim.netty.protobuf.Body, com.hibob.anyim.netty.protobuf.Body.Builder, com.hibob.anyim.netty.protobuf.BodyOrBuilder> 
-        getBodyFieldBuilder() {
-      if (bodyBuilder_ == null) {
-        bodyBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.hibob.anyim.netty.protobuf.Body, com.hibob.anyim.netty.protobuf.Body.Builder, com.hibob.anyim.netty.protobuf.BodyOrBuilder>(
-                getBody(),
+        com.hibob.anyim.netty.protobuf.ChatBody, com.hibob.anyim.netty.protobuf.ChatBody.Builder, com.hibob.anyim.netty.protobuf.ChatBodyOrBuilder> 
+        getChatBodyFieldBuilder() {
+      if (chatBodyBuilder_ == null) {
+        if (!(bodyCase_ == 2)) {
+          body_ = com.hibob.anyim.netty.protobuf.ChatBody.getDefaultInstance();
+        }
+        chatBodyBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            com.hibob.anyim.netty.protobuf.ChatBody, com.hibob.anyim.netty.protobuf.ChatBody.Builder, com.hibob.anyim.netty.protobuf.ChatBodyOrBuilder>(
+                (com.hibob.anyim.netty.protobuf.ChatBody) body_,
                 getParentForChildren(),
                 isClean());
         body_ = null;
       }
-      return bodyBuilder_;
+      bodyCase_ = 2;
+      onChanged();
+      return chatBodyBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        com.hibob.anyim.netty.protobuf.GroupChatBody, com.hibob.anyim.netty.protobuf.GroupChatBody.Builder, com.hibob.anyim.netty.protobuf.GroupChatBodyOrBuilder> groupChatBodyBuilder_;
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+     * @return Whether the groupChatBody field is set.
+     */
+    @java.lang.Override
+    public boolean hasGroupChatBody() {
+      return bodyCase_ == 3;
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+     * @return The groupChatBody.
+     */
+    @java.lang.Override
+    public com.hibob.anyim.netty.protobuf.GroupChatBody getGroupChatBody() {
+      if (groupChatBodyBuilder_ == null) {
+        if (bodyCase_ == 3) {
+          return (com.hibob.anyim.netty.protobuf.GroupChatBody) body_;
+        }
+        return com.hibob.anyim.netty.protobuf.GroupChatBody.getDefaultInstance();
+      } else {
+        if (bodyCase_ == 3) {
+          return groupChatBodyBuilder_.getMessage();
+        }
+        return com.hibob.anyim.netty.protobuf.GroupChatBody.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+     */
+    public Builder setGroupChatBody(com.hibob.anyim.netty.protobuf.GroupChatBody value) {
+      if (groupChatBodyBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        body_ = value;
+        onChanged();
+      } else {
+        groupChatBodyBuilder_.setMessage(value);
+      }
+      bodyCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+     */
+    public Builder setGroupChatBody(
+        com.hibob.anyim.netty.protobuf.GroupChatBody.Builder builderForValue) {
+      if (groupChatBodyBuilder_ == null) {
+        body_ = builderForValue.build();
+        onChanged();
+      } else {
+        groupChatBodyBuilder_.setMessage(builderForValue.build());
+      }
+      bodyCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+     */
+    public Builder mergeGroupChatBody(com.hibob.anyim.netty.protobuf.GroupChatBody value) {
+      if (groupChatBodyBuilder_ == null) {
+        if (bodyCase_ == 3 &&
+            body_ != com.hibob.anyim.netty.protobuf.GroupChatBody.getDefaultInstance()) {
+          body_ = com.hibob.anyim.netty.protobuf.GroupChatBody.newBuilder((com.hibob.anyim.netty.protobuf.GroupChatBody) body_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          body_ = value;
+        }
+        onChanged();
+      } else {
+        if (bodyCase_ == 3) {
+          groupChatBodyBuilder_.mergeFrom(value);
+        } else {
+          groupChatBodyBuilder_.setMessage(value);
+        }
+      }
+      bodyCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+     */
+    public Builder clearGroupChatBody() {
+      if (groupChatBodyBuilder_ == null) {
+        if (bodyCase_ == 3) {
+          bodyCase_ = 0;
+          body_ = null;
+          onChanged();
+        }
+      } else {
+        if (bodyCase_ == 3) {
+          bodyCase_ = 0;
+          body_ = null;
+        }
+        groupChatBodyBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+     */
+    public com.hibob.anyim.netty.protobuf.GroupChatBody.Builder getGroupChatBodyBuilder() {
+      return getGroupChatBodyFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+     */
+    @java.lang.Override
+    public com.hibob.anyim.netty.protobuf.GroupChatBodyOrBuilder getGroupChatBodyOrBuilder() {
+      if ((bodyCase_ == 3) && (groupChatBodyBuilder_ != null)) {
+        return groupChatBodyBuilder_.getMessageOrBuilder();
+      } else {
+        if (bodyCase_ == 3) {
+          return (com.hibob.anyim.netty.protobuf.GroupChatBody) body_;
+        }
+        return com.hibob.anyim.netty.protobuf.GroupChatBody.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        com.hibob.anyim.netty.protobuf.GroupChatBody, com.hibob.anyim.netty.protobuf.GroupChatBody.Builder, com.hibob.anyim.netty.protobuf.GroupChatBodyOrBuilder> 
+        getGroupChatBodyFieldBuilder() {
+      if (groupChatBodyBuilder_ == null) {
+        if (!(bodyCase_ == 3)) {
+          body_ = com.hibob.anyim.netty.protobuf.GroupChatBody.getDefaultInstance();
+        }
+        groupChatBodyBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            com.hibob.anyim.netty.protobuf.GroupChatBody, com.hibob.anyim.netty.protobuf.GroupChatBody.Builder, com.hibob.anyim.netty.protobuf.GroupChatBodyOrBuilder>(
+                (com.hibob.anyim.netty.protobuf.GroupChatBody) body_,
+                getParentForChildren(),
+                isClean());
+        body_ = null;
+      }
+      bodyCase_ = 3;
+      onChanged();
+      return groupChatBodyBuilder_;
     }
 
     private com.hibob.anyim.netty.protobuf.Extension extension_;
     private com.google.protobuf.SingleFieldBuilder<
         com.hibob.anyim.netty.protobuf.Extension, com.hibob.anyim.netty.protobuf.Extension.Builder, com.hibob.anyim.netty.protobuf.ExtensionOrBuilder> extensionBuilder_;
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
      * @return Whether the extension field is set.
      */
     public boolean hasExtension() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
      * @return The extension.
      */
     public com.hibob.anyim.netty.protobuf.Extension getExtension() {
@@ -775,7 +1081,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
      */
     public Builder setExtension(com.hibob.anyim.netty.protobuf.Extension value) {
       if (extensionBuilder_ == null) {
@@ -786,12 +1092,12 @@ private static final long serialVersionUID = 0L;
       } else {
         extensionBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
      */
     public Builder setExtension(
         com.hibob.anyim.netty.protobuf.Extension.Builder builderForValue) {
@@ -800,16 +1106,16 @@ private static final long serialVersionUID = 0L;
       } else {
         extensionBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
      */
     public Builder mergeExtension(com.hibob.anyim.netty.protobuf.Extension value) {
       if (extensionBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000008) != 0) &&
           extension_ != null &&
           extension_ != com.hibob.anyim.netty.protobuf.Extension.getDefaultInstance()) {
           getExtensionBuilder().mergeFrom(value);
@@ -820,16 +1126,16 @@ private static final long serialVersionUID = 0L;
         extensionBuilder_.mergeFrom(value);
       }
       if (extension_ != null) {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         onChanged();
       }
       return this;
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
      */
     public Builder clearExtension() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       extension_ = null;
       if (extensionBuilder_ != null) {
         extensionBuilder_.dispose();
@@ -839,15 +1145,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
      */
     public com.hibob.anyim.netty.protobuf.Extension.Builder getExtensionBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return getExtensionFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
      */
     public com.hibob.anyim.netty.protobuf.ExtensionOrBuilder getExtensionOrBuilder() {
       if (extensionBuilder_ != null) {
@@ -858,7 +1164,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+     * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.hibob.anyim.netty.protobuf.Extension, com.hibob.anyim.netty.protobuf.Extension.Builder, com.hibob.anyim.netty.protobuf.ExtensionOrBuilder> 

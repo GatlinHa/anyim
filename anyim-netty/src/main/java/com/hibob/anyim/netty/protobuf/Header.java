@@ -26,6 +26,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private Header() {
+    msgType_ = 0;
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -66,12 +67,19 @@ private static final long serialVersionUID = 0L;
   public static final int MSGTYPE_FIELD_NUMBER = 3;
   private int msgType_ = 0;
   /**
-   * <code>int32 msgType = 3;</code>
+   * <code>.com.hibob.anyim.netty.protobuf.MsgType msgType = 3;</code>
+   * @return The enum numeric value on the wire for msgType.
+   */
+  @java.lang.Override public int getMsgTypeValue() {
+    return msgType_;
+  }
+  /**
+   * <code>.com.hibob.anyim.netty.protobuf.MsgType msgType = 3;</code>
    * @return The msgType.
    */
-  @java.lang.Override
-  public int getMsgType() {
-    return msgType_;
+  @java.lang.Override public com.hibob.anyim.netty.protobuf.MsgType getMsgType() {
+    com.hibob.anyim.netty.protobuf.MsgType result = com.hibob.anyim.netty.protobuf.MsgType.forNumber(msgType_);
+    return result == null ? com.hibob.anyim.netty.protobuf.MsgType.UNRECOGNIZED : result;
   }
 
   public static final int ISEXTENSION_FIELD_NUMBER = 4;
@@ -105,8 +113,8 @@ private static final long serialVersionUID = 0L;
     if (version_ != 0) {
       output.writeInt32(2, version_);
     }
-    if (msgType_ != 0) {
-      output.writeInt32(3, msgType_);
+    if (msgType_ != com.hibob.anyim.netty.protobuf.MsgType.HELLO.getNumber()) {
+      output.writeEnum(3, msgType_);
     }
     if (isExtension_ != false) {
       output.writeBool(4, isExtension_);
@@ -128,9 +136,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, version_);
     }
-    if (msgType_ != 0) {
+    if (msgType_ != com.hibob.anyim.netty.protobuf.MsgType.HELLO.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, msgType_);
+        .computeEnumSize(3, msgType_);
     }
     if (isExtension_ != false) {
       size += com.google.protobuf.CodedOutputStream
@@ -155,8 +163,7 @@ private static final long serialVersionUID = 0L;
         != other.getMagic()) return false;
     if (getVersion()
         != other.getVersion()) return false;
-    if (getMsgType()
-        != other.getMsgType()) return false;
+    if (msgType_ != other.msgType_) return false;
     if (getIsExtension()
         != other.getIsExtension()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -175,7 +182,7 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + VERSION_FIELD_NUMBER;
     hash = (53 * hash) + getVersion();
     hash = (37 * hash) + MSGTYPE_FIELD_NUMBER;
-    hash = (53 * hash) + getMsgType();
+    hash = (53 * hash) + msgType_;
     hash = (37 * hash) + ISEXTENSION_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
         getIsExtension());
@@ -379,8 +386,8 @@ private static final long serialVersionUID = 0L;
       if (other.getVersion() != 0) {
         setVersion(other.getVersion());
       }
-      if (other.getMsgType() != 0) {
-        setMsgType(other.getMsgType());
+      if (other.msgType_ != 0) {
+        setMsgTypeValue(other.getMsgTypeValue());
       }
       if (other.getIsExtension() != false) {
         setIsExtension(other.getIsExtension());
@@ -422,7 +429,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 16
             case 24: {
-              msgType_ = input.readInt32();
+              msgType_ = input.readEnum();
               bitField0_ |= 0x00000004;
               break;
             } // case 24
@@ -512,29 +519,50 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int msgType_ ;
+    private int msgType_ = 0;
     /**
-     * <code>int32 msgType = 3;</code>
-     * @return The msgType.
+     * <code>.com.hibob.anyim.netty.protobuf.MsgType msgType = 3;</code>
+     * @return The enum numeric value on the wire for msgType.
      */
-    @java.lang.Override
-    public int getMsgType() {
+    @java.lang.Override public int getMsgTypeValue() {
       return msgType_;
     }
     /**
-     * <code>int32 msgType = 3;</code>
-     * @param value The msgType to set.
+     * <code>.com.hibob.anyim.netty.protobuf.MsgType msgType = 3;</code>
+     * @param value The enum numeric value on the wire for msgType to set.
      * @return This builder for chaining.
      */
-    public Builder setMsgType(int value) {
-
+    public Builder setMsgTypeValue(int value) {
       msgType_ = value;
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 msgType = 3;</code>
+     * <code>.com.hibob.anyim.netty.protobuf.MsgType msgType = 3;</code>
+     * @return The msgType.
+     */
+    @java.lang.Override
+    public com.hibob.anyim.netty.protobuf.MsgType getMsgType() {
+      com.hibob.anyim.netty.protobuf.MsgType result = com.hibob.anyim.netty.protobuf.MsgType.forNumber(msgType_);
+      return result == null ? com.hibob.anyim.netty.protobuf.MsgType.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.MsgType msgType = 3;</code>
+     * @param value The msgType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMsgType(com.hibob.anyim.netty.protobuf.MsgType value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000004;
+      msgType_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.com.hibob.anyim.netty.protobuf.MsgType msgType = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearMsgType() {

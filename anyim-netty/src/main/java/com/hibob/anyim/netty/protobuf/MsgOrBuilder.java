@@ -24,32 +24,49 @@ public interface MsgOrBuilder extends
   com.hibob.anyim.netty.protobuf.HeaderOrBuilder getHeaderOrBuilder();
 
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
-   * @return Whether the body field is set.
+   * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
+   * @return Whether the chatBody field is set.
    */
-  boolean hasBody();
+  boolean hasChatBody();
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
-   * @return The body.
+   * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
+   * @return The chatBody.
    */
-  com.hibob.anyim.netty.protobuf.Body getBody();
+  com.hibob.anyim.netty.protobuf.ChatBody getChatBody();
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+   * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
    */
-  com.hibob.anyim.netty.protobuf.BodyOrBuilder getBodyOrBuilder();
+  com.hibob.anyim.netty.protobuf.ChatBodyOrBuilder getChatBodyOrBuilder();
 
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+   * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+   * @return Whether the groupChatBody field is set.
+   */
+  boolean hasGroupChatBody();
+  /**
+   * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+   * @return The groupChatBody.
+   */
+  com.hibob.anyim.netty.protobuf.GroupChatBody getGroupChatBody();
+  /**
+   * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
+   */
+  com.hibob.anyim.netty.protobuf.GroupChatBodyOrBuilder getGroupChatBodyOrBuilder();
+
+  /**
+   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
    * @return Whether the extension field is set.
    */
   boolean hasExtension();
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
    * @return The extension.
    */
   com.hibob.anyim.netty.protobuf.Extension getExtension();
   /**
-   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 3;</code>
+   * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
    */
   com.hibob.anyim.netty.protobuf.ExtensionOrBuilder getExtensionOrBuilder();
+
+  com.hibob.anyim.netty.protobuf.Msg.BodyCase getBodyCase();
 }

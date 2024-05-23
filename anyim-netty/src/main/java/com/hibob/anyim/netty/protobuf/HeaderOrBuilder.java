@@ -21,10 +21,15 @@ public interface HeaderOrBuilder extends
   int getVersion();
 
   /**
-   * <code>int32 msgType = 3;</code>
+   * <code>.com.hibob.anyim.netty.protobuf.MsgType msgType = 3;</code>
+   * @return The enum numeric value on the wire for msgType.
+   */
+  int getMsgTypeValue();
+  /**
+   * <code>.com.hibob.anyim.netty.protobuf.MsgType msgType = 3;</code>
    * @return The msgType.
    */
-  int getMsgType();
+  com.hibob.anyim.netty.protobuf.MsgType getMsgType();
 
   /**
    * <code>bool isExtension = 4;</code>

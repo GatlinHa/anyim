@@ -7,25 +7,49 @@ option java_package = "com.hibob.anyim.netty.protobuf";
 
 message Msg {
   Header header = 1;
-  optional Body body = 2;
-  optional Extension extension = 3;
+  oneof body {
+    ChatBody chatBody = 2;
+    GroupChatBody groupChatBody = 3;
+  }
+  optional Extension extension = 99;
+}
+
+enum MsgType {
+  HELLO = 0;
+  HEART_BEAT = 1;
+  CHAT = 2;
+  GROUP_CHAT = 3;
+
+  CLOSE_BY_READ_IDLE = 10;
+  CLOSE_BY_ERROR_MAGIC = 11;
+
+  DEFAULT = 99;
 }
 
 message Header {
   int32 magic = 1;
   int32 version = 2;
-  int32 msgType = 3;
+  MsgType msgType = 3;
   bool isExtension = 4;
 }
 
-//当msgType为单聊时
-message Body {
-  int32 fromId = 1;
-  int32 fromDev = 2;
-  int32 toId = 3;
-  int32 toDev = 4;
+//当msgType为CHAT时
+message ChatBody {
+  string fromId = 1;
+  string fromDev = 2;
+  string toId = 3;
+  string toDev = 4;
   int32 seq = 5;
   string content = 6;
+}
+
+//当msgType为GROUP_CHAT时
+message GroupChatBody {
+  string fromId = 1;
+  string fromDev = 2;
+  string toGroupId = 3;
+  int32 seq = 4;
+  string content = 5;
 }
 
 message Extension {

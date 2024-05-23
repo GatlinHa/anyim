@@ -32,9 +32,9 @@ public class RedisKey {
     public static final String USER_ACTIVE_TOKEN = USER_PREFIX + "activeToken:";
 
     /**
-     * 已建连的Netty连接
+     * Netty在活全局路由表的Key
      */
-    public static final String NETTY_ACTIVE_CHANNEL = NETTY_PREFIX + "activeChannel:";
+    public static final String NETTY_GLOBAL_ROUTE = NETTY_PREFIX + "route:";
 
 
 }
