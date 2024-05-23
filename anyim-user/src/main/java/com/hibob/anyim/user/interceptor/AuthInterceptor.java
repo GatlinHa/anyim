@@ -2,6 +2,7 @@ package com.hibob.anyim.user.interceptor;
 
 import com.alibaba.fastjson.JSON;
 import com.hibob.anyim.common.constants.RedisKey;
+import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.common.utils.JwtUtil;
 import com.hibob.anyim.user.config.JwtProperties;
 import com.hibob.anyim.user.session.UserSession;
@@ -48,8 +49,10 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        String account = JwtUtil.getAccount(token);
-        String key = RedisKey.USER_ACTIVE_TOKEN + account;
+        String info = JwtUtil.getInfo(token);
+        UserSession userSession = JSON.parseObject(info, UserSession.class);
+        String uniqueId = userSession.getUniqueId();
+        String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         if (!redisTemplate.hasKey(key) || !redisTemplate.opsForValue().get(key).equals(token)) {
             log.error("token已删除，url:{}", request.getRequestURI());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -57,8 +60,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         // 存放session
-        String strJson = JwtUtil.getInfo(token);
-        UserSession userSession = JSON.parseObject(strJson, UserSession.class);
         request.setAttribute("session", userSession);
         return true;
     }

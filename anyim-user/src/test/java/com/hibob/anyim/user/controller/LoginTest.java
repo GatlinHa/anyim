@@ -4,8 +4,8 @@ import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.user.client.UserAgent;
 import com.hibob.anyim.user.dto.request.LoginReq;
+import com.hibob.anyim.user.dto.request.LogoutReq;
 import com.hibob.anyim.user.dto.request.RegisterReq;
-import com.hibob.anyim.user.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URISyntaxException;
 
+import static com.hibob.anyim.user.client.UserAgent.getHeaderForAccessToken;
 import static org.junit.Assert.assertTrue;
 
 @Slf4j
@@ -32,23 +33,24 @@ public class LoginTest {
     @LocalServerPort
     private int port;
 
-    private static User user01;
-    private static User user01_errorPwd;
+    private static UserAgent user01;
+    private static UserAgent user01_errorPwd;
 
     @BeforeClass
     public static void beforeClass() {
         log.info("===>正在执行Test，beforeClass");
-        user01 = new User();
+        user01 = new UserAgent();
         user01.setAccount("account_test01");
         user01.setNickName("nick_name_test01");
         user01.setPassword("password_test01");
+        user01.setClientId("client_id_test01");
 
-        user01_errorPwd = BeanUtil.copyProperties(user01, User.class);
+        user01_errorPwd = BeanUtil.copyProperties(user01, UserAgent.class);
         user01_errorPwd.setPassword("error_password");
     }
 
     /**
-     * 未注册登录 -> 注册 -> 登录密码错误 -> 登录 -> 重复登录也成功 -> forceDeleteUser
+     * 未注册登录 -> 注册 -> 登录密码错误 -> 登录成功 -> 重复登录失败 -> forceDeleteUser
      * @throws URISyntaxException
      */
     @Test
@@ -60,12 +62,12 @@ public class LoginTest {
         ResponseEntity<IMHttpResponse> res3 = UserAgent.sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user01_errorPwd, LoginReq.class));
         ResponseEntity<IMHttpResponse> res4 = UserAgent.sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user01, LoginReq.class));
         ResponseEntity<IMHttpResponse> res5 = UserAgent.sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user01, LoginReq.class));
-        UserAgent.forceDeleteUser(testRestTemplate, port, user01);
+        UserAgent.forceDeleteUser(testRestTemplate, port, user01, getHeaderForAccessToken(res4));
 
         assertTrue(res1.getStatusCode() == HttpStatus.UNAUTHORIZED);
         assertTrue(res3.getStatusCode() == HttpStatus.UNAUTHORIZED);
         assertTrue(res4.getBody().getCode() == 0);
-        assertTrue(res5.getBody().getCode() == 0);
+        assertTrue(res5.getStatusCode() == HttpStatus.FORBIDDEN);
     }
 
 }

@@ -16,3 +16,15 @@ CREATE TABLE `anyim_user`(
     INDEX `idx_account`(account),
     INDEX `idx_nick_name`(nick_name)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户信息表';
+
+CREATE TABLE `anyim_client`(
+    `unique_id` VARCHAR(255) NOT NULL COMMENT '客户端唯一ID，account+|+客户端生成的uuid',
+    `account` VARCHAR(255) NOT NULL COMMENT '账号',
+    `client_type` TINYINT(1) DEFAULT -1 COMMENT '客户端类型 0:android 1:ios 2:web -1:未知',
+    `client_name` VARCHAR(255) DEFAULT '' COMMENT '客户端名称',
+    `client_version` VARCHAR(255) DEFAULT '' COMMENT '客户端版本',
+    `last_login_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '最后登录时间',
+    `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    PRIMARY KEY(`unique_id`),
+    INDEX `idx_account`(account)
+) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '客户端表';

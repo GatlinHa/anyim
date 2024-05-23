@@ -2,7 +2,6 @@ package com.hibob.anyim.user.session;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -15,6 +14,11 @@ public class UserSession {
      * 账号
      */
     private String account;
+
+    /*
+    * 客户端ID
+     */
+    private String uniqueId;
 
     /**
      * 用户名称

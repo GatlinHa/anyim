@@ -2,23 +2,28 @@ package com.hibob.anyim.user.service;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.common.utils.BeanUtil;
+import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.common.utils.JwtUtil;
 import com.hibob.anyim.common.utils.ResultUtil;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.dto.vo.TokensVO;
 import com.hibob.anyim.user.dto.vo.UserVO;
+import com.hibob.anyim.user.entity.Client;
 import com.hibob.anyim.user.entity.User;
 import com.hibob.anyim.user.enums.ServiceErrorCode;
+import com.hibob.anyim.user.mapper.ClientMapper;
 import com.hibob.anyim.user.mapper.UserMapper;
 import com.hibob.anyim.user.session.UserSession;
 import com.hibob.anyim.user.config.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +43,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     private final PasswordEncoder passwordEncoder;
     private final JwtProperties jwtProperties;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ClientMapper clientMapper;
 
     public ResponseEntity<IMHttpResponse> validateAccount(ValidateAccountReq dto) {
         log.info("LoginService--validateAccount");
@@ -77,9 +83,10 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("LoginService--deregister");
         UserSession session = UserSession.getSession();
         String account = session.getAccount();
+        String uniqueId = session.getUniqueId();
         this.remove(Wrappers.<User>lambdaQuery().eq(User::getAccount, account));
 
-        String key = RedisKey.USER_ACTIVE_TOKEN + account;
+        String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         redisTemplate.delete(key);
 
         return ResultUtil.success();
@@ -88,13 +95,15 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     public ResponseEntity<IMHttpResponse> login(LoginReq dto) {
         log.info("LoginService--login");
         String account = dto.getAccount();
-        String key = RedisKey.USER_ACTIVE_TOKEN + account;
-        // TODO 先不校验重复登录，后面多设备场景需要同账号多登录状态
-//        if (redisTemplate.hasKey(key)) {
-//            log.info("multi login");
-//            return ResultUtil.error(ServiceErrorCode.ERROR_MULTI_LOGIN.code(),
-//                    ServiceErrorCode.ERROR_MULTI_LOGIN.desc());
-//        }
+        String uniqueId = CommonUtil.conUniqueId(account, dto.getClientId());
+        String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
+        if (redisTemplate.hasKey(key)) {
+            log.info("multi login");
+            return ResultUtil.error(
+                    HttpStatus.FORBIDDEN,
+                    ServiceErrorCode.ERROR_MULTI_LOGIN.code(),
+                    ServiceErrorCode.ERROR_MULTI_LOGIN.desc());
+        }
 
         User user = getOneByAccount(account);
         if (user == null) {
@@ -106,8 +115,18 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             return ResultUtil.error(HttpStatus.UNAUTHORIZED);
         }
 
+        Client client = getOneByUniqueId(uniqueId);
+        if (client == null) {
+            log.info("client not found");
+            insertClient(dto, uniqueId);
+        }
+        else {
+            updateClient(uniqueId);
+        }
+
         UserSession session = new UserSession();
         session.setAccount(user.getAccount());
+        session.setUniqueId(uniqueId);
         session.setNickName(user.getNickName());
         String strJson = JSON.toJSONString(session);
         String accessToken = JwtUtil.sign(
@@ -136,7 +155,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("LoginService--logout");
         UserSession session = UserSession.getSession();
         String account = session.getAccount();
-        String key = RedisKey.USER_ACTIVE_TOKEN + account;
+        String uniqueId = session.getUniqueId();
+        String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         redisTemplate.delete(key);
 
         return ResultUtil.success();
@@ -146,6 +166,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("LoginService--modifyPwd");
         UserSession session = UserSession.getSession();
         String account = session.getAccount();
+        String uniqueId = session.getUniqueId();
         User user = getOneByAccount(account);
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
             log.info("password error");
@@ -157,7 +178,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 .set(User::getUpdateTime, new Date(System.currentTimeMillis())));
 
         // 修改密码之后应该设为登出状态
-        String key = RedisKey.USER_ACTIVE_TOKEN + account;
+        String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         redisTemplate.delete(key);
 
         return ResultUtil.success();
@@ -190,7 +211,9 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         vo.setRefreshToken(newRefreshToken);
         vo.setRefreshTokenExpires(jwtProperties.getRefreshTokenExpire());
 
-        String key = RedisKey.USER_ACTIVE_TOKEN + account;
+        UserSession userSession = JSON.parseObject(info, UserSession.class);
+        String uniqueId = userSession.getUniqueId();
+        String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         redisTemplate.opsForValue().set(key, accessToken, Duration.ofSeconds(jwtProperties.getAccessTokenExpire()));
 
         return ResultUtil.success(vo);
@@ -271,6 +294,33 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(User::getAccount, account);
         return this.getOne(queryWrapper);
+    }
+
+    private Client getOneByUniqueId(String uniqueId) {
+        LambdaQueryWrapper<Client> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Client::getUniqueId, uniqueId);
+        List<Client> clients = clientMapper.selectList(queryWrapper);
+        if (clients.size() > 0) {
+            return clients.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
+    private int insertClient(LoginReq dto, String uniqueId) {
+        Client client = BeanUtil.copyProperties(dto, Client.class);
+        client.setUniqueId(uniqueId);
+        client.setCreatedTime(new Date(System.currentTimeMillis()));
+        client.setLastLoginTime(new Date(System.currentTimeMillis()));
+        return clientMapper.insert(client);
+    }
+
+    private int updateClient(String uniqueId) {
+        LambdaUpdateWrapper<Client> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(Client::getLastLoginTime, new Date(System.currentTimeMillis()));
+        updateWrapper.eq(Client::getUniqueId, uniqueId);
+        return clientMapper.update(updateWrapper);
     }
     
 }

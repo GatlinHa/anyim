@@ -5,7 +5,6 @@ import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.user.client.UserAgent;
 import com.hibob.anyim.user.dto.request.RegisterReq;
 import com.hibob.anyim.user.dto.request.ValidateAccountReq;
-import com.hibob.anyim.user.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -32,7 +31,7 @@ public class ValidateAccountTest {
     @LocalServerPort
     private int port;
 
-    private static User user01;
+    private static UserAgent user01;
     /**
      * 数据准备
      * @throws URISyntaxException
@@ -40,10 +39,11 @@ public class ValidateAccountTest {
     @BeforeClass
     public static void beforeClass() {
         log.info("===>正在执行Test，beforeClass");
-        user01 = new User();
+        user01 = new UserAgent();
         user01.setAccount("account_test01");
         user01.setNickName("nick_name_test01");
         user01.setPassword("password_test01");
+        user01.setClientId("client_id_test01");
     }
 
     /**

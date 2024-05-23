@@ -7,6 +7,8 @@ import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.dto.vo.TokensVO;
 import com.hibob.anyim.user.entity.User;
 import com.hibob.anyim.user.enums.ServiceErrorCode;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
@@ -17,7 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class UserAgent {
+@Data
+@EqualsAndHashCode(callSuper=false)
+public class UserAgent extends User{
+
+    private String clientId;
 
     private static final Map<Class, String> uriMap = new HashMap<>();
 
@@ -70,15 +76,30 @@ public class UserAgent {
     }
 
     /**
-     * 测试前清除账号，校验账号唯一性 -> 存在 -> 登录 -> 注销 -> 校验账号唯一性
+     * 在未登录状态下，测试前清除账号，校验账号唯一性 -> 存在 -> 登录 -> 注销 -> 校验账号唯一性
      */
-    public static void forceDeleteUser(TestRestTemplate testRestTemplate, int port, User user) throws URISyntaxException {
+    public static void forceDeleteUser(TestRestTemplate testRestTemplate, int port, UserAgent user) throws URISyntaxException {
         ResponseEntity<IMHttpResponse> res1 = sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user, ValidateAccountReq.class));
         if (res1.getBody().getCode() == ServiceErrorCode.ERROR_ACCOUNT_EXIST.code()) {
             ResponseEntity<IMHttpResponse> res2 = sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user, LoginReq.class));
             ResponseEntity<IMHttpResponse> res3 = sendRequest(testRestTemplate, port, getHeaderForAccessToken(res2), BeanUtil.copyProperties(user, DeregisterReq.class));
             ResponseEntity<IMHttpResponse> res4 = sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user, ValidateAccountReq.class));
             if (res4.getStatusCode() != HttpStatus.OK || res4.getBody().getCode() == ServiceErrorCode.ERROR_ACCOUNT_EXIST.code()) {
+                log.info("===>删除用户[{}]失败！", user.getAccount());
+                throw new RuntimeException("删除用户失败");
+            }
+        }
+    }
+
+    /**
+     * 在已登录状态下，测试前清除账号，校验账号唯一性 -> 存在 -> 登录 -> 注销 -> 校验账号唯一性
+     */
+    public static void forceDeleteUser(TestRestTemplate testRestTemplate, int port, UserAgent user, HttpHeaders accessTokenHeaders) throws URISyntaxException {
+        ResponseEntity<IMHttpResponse> res1 = sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user, ValidateAccountReq.class));
+        if (res1.getBody().getCode() == ServiceErrorCode.ERROR_ACCOUNT_EXIST.code()) {
+            ResponseEntity<IMHttpResponse> res2 = sendRequest(testRestTemplate, port, accessTokenHeaders, BeanUtil.copyProperties(user, DeregisterReq.class));
+            ResponseEntity<IMHttpResponse> res3 = sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user, ValidateAccountReq.class));
+            if (res3.getStatusCode() != HttpStatus.OK || res3.getBody().getCode() == ServiceErrorCode.ERROR_ACCOUNT_EXIST.code()) {
                 log.info("===>删除用户[{}]失败！", user.getAccount());
                 throw new RuntimeException("删除用户失败");
             }

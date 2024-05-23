@@ -24,8 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.net.URISyntaxException;
 
 import static com.hibob.anyim.user.client.UserAgent.getHeaderForAccessToken;
-import static com.hibob.anyim.user.enums.ServiceErrorCode.ERROR_ACCOUNT_EXIST;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @Slf4j
@@ -38,15 +36,16 @@ public class DeregisterTest {
     @LocalServerPort
     private int port;
 
-    private static User user01;
+    private static UserAgent user01;
 
     @BeforeClass
     public static void beforeClass() {
         log.info("===>正在执行Test，beforeClass");
-        user01 = new User();
+        user01 = new UserAgent();
         user01.setAccount("account_test01");
         user01.setNickName("nick_name_test01");
         user01.setPassword("password_test01");
+        user01.setClientId("client_id_test01");
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.hibob.anyim.netty.server.handler;
 
 import com.hibob.anyim.common.constants.RedisKey;
+import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.netty.constants.Const;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelFutureListener;
@@ -31,15 +32,15 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
         log.info("do AuthorizationHandler ");
         String uri = msg.uri();
         String token = msg.headers().get(HttpHeaderNames.AUTHORIZATION);
-        String account = msg.headers().get("account");
-        String tokenKey = RedisKey.USER_ACTIVE_TOKEN + account;
+        String uniqueId = CommonUtil.conUniqueId(msg.headers().get("account"), msg.headers().get("clientId"));
+        String tokenKey = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         String cacheToken = (String) redisTemplate.opsForValue().get(tokenKey);
         if (!StringUtils.hasLength(uri)
                 || !StringUtils.hasLength(token)
-                || !StringUtils.hasLength(account)
-//                || !StringUtils.hasLength(cacheToken)  TODO 临时测试
-//                || !uri.equals(this.path)
-//                || !authCode.equals(cacheToken)
+                || !StringUtils.hasLength(uniqueId)
+                || !StringUtils.hasLength(cacheToken)
+                || !uri.equals(this.path)
+                || !token.equals(cacheToken)
         ) {
             log.info("Authorization validate error");
             HttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, UNAUTHORIZED, ByteBufAllocator.DEFAULT.heapBuffer());

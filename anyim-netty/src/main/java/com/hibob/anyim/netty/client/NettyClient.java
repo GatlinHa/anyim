@@ -36,7 +36,8 @@ public class NettyClient {
         URI uri = new URI("ws://localhost:8100/ws");
         DefaultHttpHeaders headers = new DefaultHttpHeaders();
         headers.add(HttpHeaderNames.AUTHORIZATION, "123");
-        headers.add("account", "test001");
+        headers.add("account", "account_001");
+        headers.add("clientId", "client_001");
         try {
             bootstrap
                     .group(group)

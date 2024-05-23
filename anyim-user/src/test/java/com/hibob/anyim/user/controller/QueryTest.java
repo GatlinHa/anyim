@@ -6,7 +6,6 @@ import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.user.client.UserAgent;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.dto.vo.UserVO;
-import com.hibob.anyim.user.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,21 +34,23 @@ public class QueryTest {
     @LocalServerPort
     private int port;
 
-    private static User user01;
-    private static User user02;
+    private static UserAgent user01;
+    private static UserAgent user02;
 
     @BeforeClass
     public static void beforeClass() {
         log.info("===>正在执行Test，beforeClass");
-        user01 = new User();
+        user01 = new UserAgent();
         user01.setAccount("account_test01");
         user01.setNickName("nick_name_test01");
         user01.setPassword("password_test01");
+        user01.setClientId("client_id_test01");
 
-        user02 = new User();
+        user02 = new UserAgent();
         user02.setAccount("account_test02");
         user02.setNickName("nick_name_test02");
         user02.setPassword("password_test02");
+        user02.setClientId("client_id_test02");
     }
 
     /**
@@ -79,7 +80,7 @@ public class QueryTest {
         UserAgent.forceDeleteUser(testRestTemplate, port, user02);
         // 9.查询user02
         ResponseEntity<IMHttpResponse> res8 = UserAgent.sendRequest(testRestTemplate, port, getHeaderForAccessToken(res4), BeanUtil.copyProperties(user02, QueryReq.class));
-        UserAgent.forceDeleteUser(testRestTemplate, port, user01);
+        UserAgent.forceDeleteUser(testRestTemplate, port, user01, getHeaderForAccessToken(res4));
 
 
         assertTrue(res1.getStatusCode() == HttpStatus.UNAUTHORIZED);

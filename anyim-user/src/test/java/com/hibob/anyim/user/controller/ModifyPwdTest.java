@@ -6,7 +6,6 @@ import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.user.client.UserAgent;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.dto.vo.UserVO;
-import com.hibob.anyim.user.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,22 +33,23 @@ public class ModifyPwdTest {
     @LocalServerPort
     private int port;
 
-    private static User user01;
-    private static User user01_errorPwd;
-    private static User user01_newPwd;
+    private static UserAgent user01;
+    private static UserAgent user01_errorPwd;
+    private static UserAgent user01_newPwd;
 
     @BeforeClass
     public static void beforeClass() {
         log.info("===>正在执行Test，beforeClass");
-        user01 = new User();
+        user01 = new UserAgent();
         user01.setAccount("account_test01");
         user01.setNickName("nick_name_test01");
         user01.setPassword("password_test01");
+        user01.setClientId("client_id_test01");
 
-        user01_errorPwd = BeanUtil.copyProperties(user01, User.class);
+        user01_errorPwd = BeanUtil.copyProperties(user01, UserAgent.class);
         user01_errorPwd.setPassword("error_password");
 
-        user01_newPwd = BeanUtil.copyProperties(user01, User.class);
+        user01_newPwd = BeanUtil.copyProperties(user01, UserAgent.class);
         user01_newPwd.setPassword("new_password");
     }
 
@@ -84,7 +84,7 @@ public class ModifyPwdTest {
         ResponseEntity<IMHttpResponse> res6 = UserAgent.sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user01, LoginReq.class));
         ResponseEntity<IMHttpResponse> res7 = UserAgent.sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user01_newPwd, LoginReq.class));
         ResponseEntity<IMHttpResponse> res8 = UserAgent.sendRequest(testRestTemplate, port, getHeaderForAccessToken(res7), BeanUtil.copyProperties(user01, QuerySelfReq.class));
-        UserAgent.forceDeleteUser(testRestTemplate, port, user01_newPwd);
+        UserAgent.forceDeleteUser(testRestTemplate, port, user01_newPwd, getHeaderForAccessToken(res7));
 
         assertTrue(res3.getStatusCode() == HttpStatus.UNAUTHORIZED);
         assertTrue(res4.getBody().getCode() == 0);

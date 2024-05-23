@@ -17,6 +17,11 @@ public class LoginReq extends BaseRequest {
     @ApiModelProperty(value = "账号")
     private String account;
 
+    @Size(max = 128, message = "客户端ID长度不能大于128字符")
+    @NotEmpty(message = "客户端ID不可为空")
+    @ApiModelProperty(value = "客户端ID")
+    private String clientId;
+
     @NotEmpty(message = "密码不可为空")
     @ApiModelProperty(value = "密码")
     private String password;

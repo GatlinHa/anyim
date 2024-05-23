@@ -6,7 +6,6 @@ import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.user.client.UserAgent;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.dto.vo.UserVO;
-import com.hibob.anyim.user.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,18 +32,19 @@ public class ModifySelfTest {
     @LocalServerPort
     private int port;
 
-    private static User user01;
-    private static User user01_new;
+    private static UserAgent user01;
+    private static UserAgent user01_new;
 
     @BeforeClass
     public static void beforeClass() {
         log.info("===>正在执行Test，beforeClass");
-        user01 = new User();
+        user01 = new UserAgent();
         user01.setAccount("account_test01");
         user01.setNickName("nick_name_test01");
         user01.setPassword("password_test01");
+        user01.setClientId("client_id_test01");
 
-        user01_new = BeanUtil.copyProperties(user01, User.class);
+        user01_new = BeanUtil.copyProperties(user01, UserAgent.class);
         user01_new.setNickName("nick_name_test01_new");
         user01_new.setHeadImage("head_image_test01_new");
         user01_new.setHeadImageThumb("head_image_thumb_test01_new");
@@ -71,7 +71,7 @@ public class ModifySelfTest {
         ResponseEntity<IMHttpResponse> res4 = UserAgent.sendRequest(testRestTemplate, port, getHeaderForAccessToken(res2), BeanUtil.copyProperties(user01_new, ModifySelfReq.class));
         // 查询self
         ResponseEntity<IMHttpResponse> res5 = UserAgent.sendRequest(testRestTemplate, port, getHeaderForAccessToken(res2), BeanUtil.copyProperties(user01, QuerySelfReq.class));
-        UserAgent.forceDeleteUser(testRestTemplate, port, user01);
+        UserAgent.forceDeleteUser(testRestTemplate, port, user01, getHeaderForAccessToken(res2));
 
         assertTrue(JSON.parseObject(JSON.toJSONString(res3.getBody().getData()), UserVO.class).getNickName().equals(user01.getNickName()));
         assertTrue(JSON.parseObject(JSON.toJSONString(res5.getBody().getData()), UserVO.class).getNickName().equals(user01_new.getNickName()));
