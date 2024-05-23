@@ -85,6 +85,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         String account = session.getAccount();
         String uniqueId = session.getUniqueId();
         this.remove(Wrappers.<User>lambdaQuery().eq(User::getAccount, account));
+        deleteClient(account);
 
         String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         redisTemplate.delete(key);
@@ -321,6 +322,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         updateWrapper.set(Client::getLastLoginTime, new Date(System.currentTimeMillis()));
         updateWrapper.eq(Client::getUniqueId, uniqueId);
         return clientMapper.update(updateWrapper);
+    }
+
+    private int deleteClient(String account) {
+        LambdaUpdateWrapper<Client> deleteWrapper = Wrappers.lambdaUpdate();
+        deleteWrapper.eq(Client::getAccount, account);
+        return clientMapper.delete(deleteWrapper);
     }
     
 }

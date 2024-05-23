@@ -6,7 +6,6 @@ import com.hibob.anyim.netty.protobuf.Msg;
 import com.hibob.anyim.netty.protobuf.MsgType;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.websocketx.*;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
