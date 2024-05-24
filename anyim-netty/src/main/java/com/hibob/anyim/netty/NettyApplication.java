@@ -11,7 +11,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @Slf4j
 @EnableDiscoveryClient
-@SpringBootApplication//(exclude = {SecurityAutoConfiguration.class}) // 禁用secrity，不需要Security的登录，会自己实现，而且不禁用swagger打开要密码
+@SpringBootApplication
 public class NettyApplication implements CommandLineRunner {
 
     @Autowired
@@ -19,7 +19,6 @@ public class NettyApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
         SpringApplication.run(NettyApplication.class, args);
-
     }
 
     @Override
@@ -27,7 +26,10 @@ public class NettyApplication implements CommandLineRunner {
         //启动netty
         log.info("启动netty服务===================================");
         // TODO 获取Nacos中注册的实例id
-        nettyServer.start();
+        // 放在线程中启动，不阻塞主线程
+        new Thread(() -> {
+            nettyServer.start();
+        }).start();
     }
 }
 

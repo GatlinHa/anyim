@@ -34,24 +34,48 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
         if (!validateMagic(ctx, msg, routeKey)) return;
 
         MsgType msgType = msg.getHeader().getMsgType();
+        Header header;
+        Msg msgOut;
         log.info("message type is: {}", msgType);
         switch (msgType) {
             case HELLO:
                 redisTemplate.opsForValue().set(routeKey, "instanceid-xx", Duration.ofSeconds(Const.CHANNEL_EXPIRE)); //TODO "instanceid-xx"
                 getLocalRoute().put(routeKey, ctx.channel());
-                log.info("save route success. token is {}", uniqueId);
+                header = Header.newBuilder()
+                        .setMagic(Const.MAGIC)
+                        .setVersion(0)
+                        .setMsgType(MsgType.HELLO)
+                        .build();
+                msgOut = Msg.newBuilder().setHeader(header).build();
+                ctx.writeAndFlush(msgOut);
                 break;
             case HEART_BEAT:
-                Header header = Header.newBuilder()
+                header = Header.newBuilder()
                         .setMagic(Const.MAGIC)
                         .setVersion(0)
                         .setMsgType(MsgType.HEART_BEAT)
                         .build();
-                Msg msgOut = Msg.newBuilder().setHeader(header).build();
+                msgOut = Msg.newBuilder().setHeader(header).build();
                 ctx.writeAndFlush(msgOut);
                 break;
             case CHAT:
                 // TODO
+                header = Header.newBuilder()
+                        .setMagic(Const.MAGIC)
+                        .setVersion(0)
+                        .setMsgType(MsgType.CHAT)
+                        .setIsExtension(false)
+                        .build();
+                ChatBody body = ChatBody.newBuilder()
+                        .setFromId("1")
+                        .setFromDev("1")
+                        .setToId("2")
+                        .setToDev("2")
+                        .setSeq(1)
+                        .setContent("test")
+                        .build();
+                msgOut = Msg.newBuilder().setHeader(header).setChatBody(body).build();
+                ctx.writeAndFlush(msgOut);
                 break;
             case GROUP_CHAT:
                 // TODO
@@ -59,24 +83,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
             default:
                 break;
         }
-        Header header = Header.newBuilder()
-                .setMagic(Const.MAGIC)
-                .setVersion(0)
-                .setMsgType(MsgType.CHAT)
-                .setIsExtension(false)
-                .build();
-        ChatBody body = ChatBody.newBuilder()
-                .setFromId("1")
-                .setFromDev("1")
-                .setToId("2")
-                .setToDev("2")
-                .setSeq(1)
-                .setContent("receive msg type is: " + msg.getHeader().getMsgType() + ", content is: " + msg.getChatBody().getContent())
-                .build();
 
-        Msg msgOut = Msg.newBuilder().setHeader(header).setChatBody(body).build();
-        log.info("MsgServerHandler send a response msg is: {}", msgOut);
-        ctx.writeAndFlush(msgOut);
     }
 
 

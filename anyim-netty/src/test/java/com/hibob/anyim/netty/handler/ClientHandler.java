@@ -1,4 +1,4 @@
-package com.hibob.anyim.netty.client.handler;
+package com.hibob.anyim.netty.handler;
 
 import com.hibob.anyim.netty.constants.Const;
 import com.hibob.anyim.netty.protobuf.Header;
@@ -6,14 +6,19 @@ import com.hibob.anyim.netty.protobuf.Msg;
 import com.hibob.anyim.netty.protobuf.MsgType;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.websocketx.*;
+import io.netty.util.AttributeKey;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Data
 public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
-        log.info("WebSocketClientHandler receive a Msg: {}", msg);
+        log.info("ClientHandler receive a Msg: {}", msg);
+        ctx.channel().attr(AttributeKey.valueOf("msg")).set(msg);
+        ctx.channel().close();
     }
 
     @Override
@@ -41,6 +46,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.info("WebSocketClientHandler exceptionCaught {}", cause.toString());
+        log.info("ClientHandler exceptionCaught {}", cause.toString());
     }
 }

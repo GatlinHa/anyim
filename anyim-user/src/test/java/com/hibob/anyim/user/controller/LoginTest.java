@@ -62,12 +62,12 @@ public class LoginTest {
         ResponseEntity<IMHttpResponse> res3 = UserAgent.sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user01_errorPwd, LoginReq.class));
         ResponseEntity<IMHttpResponse> res4 = UserAgent.sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user01, LoginReq.class));
         ResponseEntity<IMHttpResponse> res5 = UserAgent.sendRequest(testRestTemplate, port, BeanUtil.copyProperties(user01, LoginReq.class));
-        UserAgent.forceDeleteUser(testRestTemplate, port, user01, getHeaderForAccessToken(res4));
+        UserAgent.forceDeleteUser(testRestTemplate, port, user01, getHeaderForAccessToken(res5));
 
         assertTrue(res1.getStatusCode() == HttpStatus.UNAUTHORIZED);
         assertTrue(res3.getStatusCode() == HttpStatus.UNAUTHORIZED);
         assertTrue(res4.getBody().getCode() == 0);
-        assertTrue(res5.getStatusCode() == HttpStatus.FORBIDDEN);
+        assertTrue(res4.getBody().getCode() == 0);
     }
 
 }

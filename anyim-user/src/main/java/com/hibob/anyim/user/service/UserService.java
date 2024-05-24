@@ -79,7 +79,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success();
     }
 
-    public ResponseEntity<IMHttpResponse> deregister(String accessToken, DeregisterReq dto) {
+    public ResponseEntity<IMHttpResponse> deregister(DeregisterReq dto) {
         log.info("LoginService--deregister");
         UserSession session = UserSession.getSession();
         String account = session.getAccount();
@@ -98,13 +98,14 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         String account = dto.getAccount();
         String uniqueId = CommonUtil.conUniqueId(account, dto.getClientId());
         String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
-        if (redisTemplate.hasKey(key)) {
-            log.info("Repeated login");
-            return ResultUtil.error(
-                    HttpStatus.FORBIDDEN,
-                    ServiceErrorCode.ERROR_MULTI_LOGIN.code(),
-                    ServiceErrorCode.ERROR_MULTI_LOGIN.desc());
-        }
+        //支持REST接口重复登录，所以这段代码不启用
+//        if (redisTemplate.hasKey(key)) {
+//            log.info("Repeated login");
+//            return ResultUtil.error(
+//                    HttpStatus.FORBIDDEN,
+//                    ServiceErrorCode.ERROR_MULTI_LOGIN.code(),
+//                    ServiceErrorCode.ERROR_MULTI_LOGIN.desc());
+//        }
 
         User user = getOneByAccount(account);
         if (user == null) {

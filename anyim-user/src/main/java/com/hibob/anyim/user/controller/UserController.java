@@ -43,7 +43,7 @@ public class UserController {
     @ApiOperation(value = "用户注销", notes = "用户注销")
     @PostMapping("/deregister")
     public ResponseEntity<IMHttpResponse> deregister(@RequestHeader("accessToken") String accessToken, @Valid @RequestBody DeregisterReq dto) {
-        return userService.deregister(accessToken, dto);
+        return userService.deregister(dto);
     }
 
     @ApiOperation(value = "用户登录", notes = "用户登录")

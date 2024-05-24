@@ -1,7 +1,7 @@
 package com.hibob.anyim.netty.client;
 
-import com.hibob.anyim.netty.client.handler.ClientHandler;
-import com.hibob.anyim.netty.constants.Const;
+import com.alibaba.fastjson.JSONObject;
+import com.hibob.anyim.netty.handler.ClientHandler;
 import com.hibob.anyim.netty.protobuf.*;
 import com.hibob.anyim.netty.server.handler.ByteBufToWebSocketFrame;
 import com.hibob.anyim.netty.server.handler.WebSocketToByteBufEncoder;
@@ -20,24 +20,57 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Scanner;
+
+import static org.junit.Assert.assertTrue;
 
 @Slf4j
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class NettyClient {
-    private static final String path = "/ws";
 
-    public static void main(String[] args) throws URISyntaxException {
+    private String token ="";
+
+    private final UserClient userClient = new UserClient(
+            "netty_test_account_01",
+            "netty_test_clientId_01",
+            "netty_test_headImage_01",
+            "netty_test_inviteCode_01",
+            "netty_test_nickName_01",
+            "123456",
+            "netty_test_phoneNum_01"
+    );
+
+    @Before
+    public void prepareUser() throws URISyntaxException {
+        userClient.register();
+        JSONObject loginRet = userClient.login();
+        token = (String) ((JSONObject)loginRet.get("data")).get("accessToken");
+    }
+
+    private void clearUser() throws URISyntaxException {
+        userClient.deregister(token);
+    }
+
+    @Test
+    public void Test01() throws URISyntaxException {
+        Boolean ret1 = false;
         NioEventLoopGroup group = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
         URI uri = new URI("ws://localhost:8100/ws");
         DefaultHttpHeaders headers = new DefaultHttpHeaders();
-        headers.add(HttpHeaderNames.AUTHORIZATION, "123");
-        headers.add("account", "account_001");
-        headers.add("clientId", "client_001");
+        headers.add(HttpHeaderNames.AUTHORIZATION, token);
+        headers.add("account", userClient.getAccount());
+        headers.add("clientId", userClient.getClientId());
         try {
             bootstrap
                     .group(group)
@@ -54,7 +87,7 @@ public class NettyClient {
                             pipeline.addLast(new WebSocketServerCompressionHandler()); // WebSocket数据压缩
                             pipeline.addLast(new WebSocketClientProtocolHandler(
                                     WebSocketClientHandshakerFactory.newHandshaker(
-                                            uri, // TODO ?accessToken=123
+                                            uri,
                                             WebSocketVersion.V13,
                                             (String)null,
                                             false,
@@ -69,67 +102,17 @@ public class NettyClient {
                         }
                     });
             ChannelFuture channelFuture = bootstrap.connect(uri.getHost(), uri.getPort()).sync();
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (true) {
-                        try {
-                            Header header = Header.newBuilder()
-                                    .setMagic(Const.MAGIC)
-                                    .setVersion(0)
-                                    .setMsgType(MsgType.HEART_BEAT)
-                                    .build();
-                            Msg msgOut = Msg.newBuilder().setHeader(header).build();
-                            channelFuture.channel().writeAndFlush(msgOut);
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-            }).start();
-
-            Scanner scanner = new Scanner(System.in);
-            while (true) {
-                String line = scanner.nextLine();
-                if ("exit".equals(line)) {
-                    break;
-                }
-                Header header = Header.newBuilder()
-                        .setMagic(Const.MAGIC)
-                        .setVersion(0)
-                        .setMsgType(MsgType.CHAT)
-                        .setIsExtension(false)
-                        .build();
-                ChatBody body = ChatBody.newBuilder()
-                        .setFromId("1")
-                        .setFromDev("1")
-                        .setToId("2")
-                        .setToDev("2")
-                        .setSeq(1)
-                        .setContent(line)
-                        .build();
-                Msg msg = Msg.newBuilder().setHeader(header).setChatBody(body).build();
-                channelFuture.channel().writeAndFlush(msg).addListener((ChannelFutureListener) future -> {
-                            if (future.isSuccess()) {
-                                log.info("send success");
-                            }
-                            else {
-                                log.error("send failed, future.cause(): {}", future.cause());
-                            }
-                });
-            }
             channelFuture.channel().closeFuture().sync();
-
+            Msg msg = (Msg) channelFuture.channel().attr(AttributeKey.valueOf("msg")).get();
+            ret1 = msg.getHeader().getMsgType() == MsgType.HELLO;
         }
         catch (Exception e) {
             log.error(e.getMessage());
-            e.printStackTrace();
         }
         finally {
-            group.shutdownGracefully();
+            clearUser();
+            assertTrue(ret1);
         }
+
     }
 }
