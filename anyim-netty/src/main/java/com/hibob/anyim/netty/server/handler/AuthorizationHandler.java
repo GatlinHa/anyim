@@ -55,7 +55,7 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
         }
 
         log.info("Authorization validate success");
-        ctx.channel().attr(AttributeKey.valueOf(Const.AUTHORIZATION_KEY)).set(token);
+        ctx.channel().attr(AttributeKey.valueOf(Const.KEY_UNIQUE_ID)).set(uniqueId);
         ctx.fireChannelRead(msg);
     }
 

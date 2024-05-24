@@ -45,7 +45,7 @@ public class WebSocketServer implements NettyServer {
     @Value("${websocket.log-level}")
     private String logLevel;
 
-    private static Map<String, Channel> localRoute = new ConcurrentHashMap<>();
+    private static Map<String, Channel> localRoute = new ConcurrentHashMap<>(); // TODO 要考虑channel的老化，用map可能不太合适
 
     private volatile boolean ready = false;
     private EventLoopGroup bossGroup;

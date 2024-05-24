@@ -99,7 +99,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         String uniqueId = CommonUtil.conUniqueId(account, dto.getClientId());
         String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         if (redisTemplate.hasKey(key)) {
-            log.info("multi login");
+            log.info("Repeated login");
             return ResultUtil.error(
                     HttpStatus.FORBIDDEN,
                     ServiceErrorCode.ERROR_MULTI_LOGIN.code(),

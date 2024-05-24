@@ -29,9 +29,8 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
     protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
         log.info("MsgServerHandler receive a Msg {}", msg);
         readIdleTime = 0;
-
-        String token = (String) ctx.channel().attr(AttributeKey.valueOf(Const.AUTHORIZATION_KEY)).get();
-        String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + token;
+        String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.KEY_UNIQUE_ID)).get();
+        String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
         if (!validateMagic(ctx, msg, routeKey)) return;
 
         MsgType msgType = msg.getHeader().getMsgType();
@@ -40,7 +39,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
             case HELLO:
                 redisTemplate.opsForValue().set(routeKey, "instanceid-xx", Duration.ofSeconds(Const.CHANNEL_EXPIRE)); //TODO "instanceid-xx"
                 getLocalRoute().put(routeKey, ctx.channel());
-                log.info("save route success. token is {}", token);
+                log.info("save route success. token is {}", uniqueId);
                 break;
             case HEART_BEAT:
                 Header header = Header.newBuilder()
@@ -60,7 +59,6 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
             default:
                 break;
         }
-
         Header header = Header.newBuilder()
                 .setMagic(Const.MAGIC)
                 .setVersion(0)
@@ -81,32 +79,6 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
         ctx.writeAndFlush(msgOut);
     }
 
-    private boolean validateMagic(ChannelHandlerContext ctx, Msg msg, String routeKey) {
-        int magic = msg.getHeader().getMagic();
-        if (magic != Const.MAGIC) {
-            // 非法消息，直接关闭连接
-            log.info("error magic.");
-            Header header = Header.newBuilder()
-                    .setMagic(Const.MAGIC)
-                    .setVersion(0)
-                    .setMsgType(MsgType.CLOSE_BY_ERROR_MAGIC)
-                    .setIsExtension(false)
-                    .build();
-            Msg msgOut = Msg.newBuilder().setHeader(header).build();
-            ctx.writeAndFlush(msgOut);
-            ctx.close().addListener(future -> {
-                if (future.isSuccess()) {
-                    redisTemplate.delete(routeKey);
-                    getLocalRoute().remove(routeKey);
-                    log.info("close channel success.");
-                } else {
-                    log.info("close channel failed. cause is {}", future.cause());
-                }
-            });
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -139,6 +111,34 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
                 }
             });
         }
+    }
+
+
+    private boolean validateMagic(ChannelHandlerContext ctx, Msg msg, String routeKey) {
+        int magic = msg.getHeader().getMagic();
+        if (magic != Const.MAGIC) {
+            // 非法消息，直接关闭连接
+            log.info("error magic.");
+            Header header = Header.newBuilder()
+                    .setMagic(Const.MAGIC)
+                    .setVersion(0)
+                    .setMsgType(MsgType.CLOSE_BY_ERROR_MAGIC)
+                    .setIsExtension(false)
+                    .build();
+            Msg msgOut = Msg.newBuilder().setHeader(header).build();
+            ctx.writeAndFlush(msgOut);
+            ctx.close().addListener(future -> {
+                if (future.isSuccess()) {
+                    redisTemplate.delete(routeKey);
+                    getLocalRoute().remove(routeKey);
+                    log.info("close channel success.");
+                } else {
+                    log.info("close channel failed. cause is {}", future.cause());
+                }
+            });
+            return false;
+        }
+        return true;
     }
 
 }
