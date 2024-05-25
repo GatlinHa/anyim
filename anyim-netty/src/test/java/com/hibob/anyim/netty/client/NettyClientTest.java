@@ -33,10 +33,13 @@ import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertTrue;
 
+/**
+ * 启动测试前要先启动User服务
+ */
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class NettyClient {
+public class NettyClientTest {
 
     private String token ="";
 

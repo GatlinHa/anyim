@@ -131,6 +131,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         session.setUniqueId(uniqueId);
         session.setNickName(user.getNickName());
         String strJson = JSON.toJSONString(session);
+        //TODO 为了对请求签名，这里还要发放一个userSecret
         String accessToken = JwtUtil.sign(
                 user.getAccount(),
                 strJson,
@@ -147,7 +148,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         vo.setAccessTokenExpires(jwtProperties.getAccessTokenExpire());
         vo.setRefreshToken(refreshToken);
         vo.setRefreshTokenExpires(jwtProperties.getRefreshTokenExpire());
-
+        //TODO 为了对请求签名，redis中要保存accesstoken和userSecret，可使用json结构
         redisTemplate.opsForValue().set(key, accessToken, Duration.ofSeconds(jwtProperties.getAccessTokenExpire()));
 
         return ResultUtil.success(vo);

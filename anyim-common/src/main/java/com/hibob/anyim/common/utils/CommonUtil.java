@@ -10,4 +10,13 @@ public class CommonUtil {
         return account + "|" + clientId;
     }
 
+    /**
+     * 获取本机IP
+     */
+    public static String getLocalIp() {
+        // 如果是windwos系统
+
+        return "";
+    }
+
 }
