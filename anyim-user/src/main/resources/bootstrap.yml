@@ -1,6 +1,6 @@
 # bootstrap.yml用来在程序引导时执行，早于application.yml加载，nacos配置的加载应该放在这里，这样application.yml才能用到配置中心的配置
 server:
-  port: 8001
+  port: 8010
 
 spring:
   application:

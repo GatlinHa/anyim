@@ -1,5 +1,9 @@
 package com.hibob.anyim.common.utils;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
+
 public class CommonUtil {
 
     private CommonUtil() {
@@ -11,10 +15,30 @@ public class CommonUtil {
     }
 
     /**
-     * 获取本机IP
+     * 获取本机局域网IP
      */
     public static String getLocalIp() {
-        // 如果是windwos系统
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                // 排除回环接口和虚拟接口
+                if (iface.isLoopback() || iface.isVirtual() || !iface.isUp()) {
+                    continue;
+                }
+
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress address = addresses.nextElement();
+                    // 检查是否是 IPv4 地址
+                    if (address.getAddress().length == 4) {
+                        return address.getHostAddress();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return "";
     }

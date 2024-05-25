@@ -1,8 +1,11 @@
 package com.hibob.anyim.netty.server.handler;
 
 import com.hibob.anyim.common.constants.RedisKey;
+import com.hibob.anyim.common.utils.CommonUtil;
+import com.hibob.anyim.netty.config.YamlConfig;
 import com.hibob.anyim.netty.constants.Const;
 import com.hibob.anyim.netty.protobuf.*;
+import com.hibob.anyim.netty.utils.SpringContextUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -39,7 +42,9 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
         log.info("message type is: {}", msgType);
         switch (msgType) {
             case HELLO:
-                redisTemplate.opsForValue().set(routeKey, "instanceid-xx", Duration.ofSeconds(Const.CHANNEL_EXPIRE)); //TODO "instanceid-xx"
+                YamlConfig yamlConfig = SpringContextUtil.getBean(YamlConfig.class);
+                String instance = CommonUtil.getLocalIp() + ":" + yamlConfig.getPort();
+                redisTemplate.opsForValue().set(routeKey, instance, Duration.ofSeconds(Const.CHANNEL_EXPIRE));
                 getLocalRoute().put(routeKey, ctx.channel());
                 header = Header.newBuilder()
                         .setMagic(Const.MAGIC)

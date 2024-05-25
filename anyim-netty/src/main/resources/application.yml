@@ -17,3 +17,4 @@ websocket:
   port: 8100
   path: /ws
   log-level: DEBUG  # LoggingHandler的日志级别
+  topic-distribute: ${websocket.topic-distribute}

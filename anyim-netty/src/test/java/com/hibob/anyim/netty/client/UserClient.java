@@ -45,7 +45,7 @@ public class UserClient {
     }
 
     public JSONObject register() throws URISyntaxException {
-        String url = "http://localhost:8001/user/register";
+        String url = "http://localhost:8010/user/register";
         HttpHeaders headers = new HttpHeaders();
         Map<String, String> map = new HashMap<>();
         map.put("account", account);
@@ -64,7 +64,7 @@ public class UserClient {
     }
 
     public JSONObject login() throws URISyntaxException {
-        String url = "http://localhost:8001/user/login";
+        String url = "http://localhost:8010/user/login";
         HttpHeaders headers = new HttpHeaders();
         Map<String, String> map = new HashMap<>();
         map.put("account", account);
@@ -80,7 +80,7 @@ public class UserClient {
     }
 
     public JSONObject validateAccount() throws URISyntaxException {
-        String url = "http://localhost:8001/user/validateAccount";
+        String url = "http://localhost:8010/user/validateAccount";
         HttpHeaders headers = new HttpHeaders();
         Map<String, String> map = new HashMap<>();
         map.put("account", account);
@@ -94,7 +94,7 @@ public class UserClient {
     }
 
     public JSONObject logout(String accessToken) {
-        String url = "http://localhost:8001/user/logout";
+        String url = "http://localhost:8010/user/logout";
         HttpHeaders headers = new HttpHeaders();
         headers.add("accessToken", accessToken);
         Map<String, String> map = new HashMap<>();
@@ -109,7 +109,7 @@ public class UserClient {
     }
 
     public JSONObject deregister(String accessToken) throws URISyntaxException {
-        String url = "http://localhost:8001/user/deregister";
+        String url = "http://localhost:8010/user/deregister";
         HttpHeaders headers = new HttpHeaders();
         headers.add("accessToken", accessToken);
         Map<String, String> map = new HashMap<>();
