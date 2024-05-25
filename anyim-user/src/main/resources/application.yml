@@ -2,7 +2,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/anyim?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    url: ${spring.datasource.url}
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
 
@@ -12,13 +12,12 @@ spring:
       matching-strategy: ant_path_matcher
 
   redis:
-    host: 127.0.0.1
-    port: 6379
-    password:
+    host: ${spring.redis.host}
+    port: ${spring.redis.port}
+    password: ${spring.redis.password}
     pool:
       max-active: 100
-      # 连接池最大阻塞等待时间（使用负值表示没有限制）
-      max-wait: -1
+      max-wait: -1 # 连接池最大阻塞等待时间（使用负值表示没有限制）
       max-idle: 8
       min-idle: 0
     timeout: 1200
@@ -31,7 +30,7 @@ mybatis-plus:
 jwt:
   accessToken:
     expire: 1800 #半个小时
-    secret: HZHDhdfjdfj
+    secret: ${jwt.accessToken.secret}
   refreshToken:
     expire: 3600 #1小时
-    secret: GHBsfh2sags
+    secret: ${jwt.refreshToken.secret}
