@@ -38,7 +38,7 @@ import static org.junit.Assert.assertTrue;
  */
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class NettyClientTest {
 
     private String token ="";

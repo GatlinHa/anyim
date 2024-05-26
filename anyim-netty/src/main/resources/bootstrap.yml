@@ -18,3 +18,5 @@ spring:
       discovery:
         server-addr: localhost:8848
         namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147
+        heart-beat-interval: 2
+        heart-beat-timeout: 5

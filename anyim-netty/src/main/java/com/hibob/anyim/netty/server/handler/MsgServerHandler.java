@@ -1,8 +1,9 @@
 package com.hibob.anyim.netty.server.handler;
 
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.CommonUtil;
-import com.hibob.anyim.netty.config.YamlConfig;
+import com.hibob.anyim.netty.config.NacosConfig;
 import com.hibob.anyim.netty.constants.Const;
 import com.hibob.anyim.netty.protobuf.*;
 import com.hibob.anyim.netty.utils.SpringContextUtil;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
+import java.util.List;
 
 import static com.hibob.anyim.netty.server.ws.WebSocketServer.getLocalRoute;
 
@@ -40,10 +42,10 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
         Header header;
         Msg msgOut;
         log.info("message type is: {}", msgType);
+        NacosConfig nacosConfig = SpringContextUtil.getBean(NacosConfig.class);
         switch (msgType) {
             case HELLO:
-                YamlConfig yamlConfig = SpringContextUtil.getBean(YamlConfig.class);
-                String instance = CommonUtil.getLocalIp() + ":" + yamlConfig.getPort();
+                String instance = CommonUtil.getLocalIp() + ":" + nacosConfig.getPort();
                 redisTemplate.opsForValue().set(routeKey, instance, Duration.ofSeconds(Const.CHANNEL_EXPIRE));
                 getLocalRoute().put(routeKey, ctx.channel());
                 header = Header.newBuilder()
@@ -64,7 +66,8 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
                 ctx.writeAndFlush(msgOut);
                 break;
             case CHAT:
-                // TODO
+                // TODO 这里要校验接收端的netty实例在注册中心是否是有效的
+//                nacosConfig.isValidInstance(instance);
                 header = Header.newBuilder()
                         .setMagic(Const.MAGIC)
                         .setVersion(0)
