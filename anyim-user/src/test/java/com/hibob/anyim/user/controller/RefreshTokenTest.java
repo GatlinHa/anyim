@@ -70,7 +70,7 @@ public class RefreshTokenTest {
         // 用新token查询
         ResponseEntity<IMHttpResponse> res6 = UserAgent.sendRequest(testRestTemplate, port, getHeaderForAccessToken(res4), BeanUtil.copyProperties(user01, QuerySelfReq.class));
         // 再次刷新token
-        ResponseEntity<IMHttpResponse> res7 = UserAgent.sendRequest(testRestTemplate, port, getHeaderForRefreshToken(res4), BeanUtil.copyProperties(user01, RefreshTokenReq.class));
+        ResponseEntity<IMHttpResponse> res7 = UserAgent.sendRequest(testRestTemplate, port, getHeaderForRefreshToken(res2), BeanUtil.copyProperties(user01, RefreshTokenReq.class));
         // 用新新token查询
         ResponseEntity<IMHttpResponse> res8 = UserAgent.sendRequest(testRestTemplate, port, getHeaderForAccessToken(res7), BeanUtil.copyProperties(user01, QuerySelfReq.class));
         // forceDeleteUser

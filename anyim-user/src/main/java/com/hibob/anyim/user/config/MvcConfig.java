@@ -28,7 +28,6 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/error",
                         "/user/login",
                         "/user/register",
-                        "/user/refreshToken",
                         "/user/validateAccount",
                         "/swagger-resources/**",
                         "/webjars/**",

@@ -27,9 +27,14 @@ public class RedisKey {
     public static final String USER_DEREGISTER = USER_PREFIX + "deregister:";
 
     /**
-     * 存储正在使用的用户的token
+     * 存储正在使用的用户的accessToken
      */
-    public static final String USER_ACTIVE_TOKEN = USER_PREFIX + "activeToken:";
+    public static final String USER_ACTIVE_TOKEN = USER_PREFIX + "activeAccessToken:";
+
+    /**
+     * 存储正在使用的用户的refreshToken
+     */
+    public static final String USER_ACTIVE_TOKEN_REFRESH = USER_PREFIX + "activeRefreshToken:";
 
     /**
      * Netty在活全局路由表的Key

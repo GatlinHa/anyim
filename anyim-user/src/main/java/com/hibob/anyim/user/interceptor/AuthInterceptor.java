@@ -32,18 +32,17 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-        //从 http 请求头中取出 token
-        String token = request.getHeader("accessToken");
-        // 校验token非空
-        // TODO token失败都应该返回鉴权失败的status
+
+        boolean isRefreshToken = request.getRequestURI().equals("/user/refreshToken");
+        String token = isRefreshToken ? request.getHeader("refreshToken") : request.getHeader("accessToken");
         if (!StringUtils.hasLength(token)) {
             log.error("未登陆，url:{}", request.getRequestURI());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
 
-        //验证 token
-        if (!JwtUtil.checkSign(token, jwtProperties.getAccessTokenSecret())) {
+        String secret = isRefreshToken ? jwtProperties.getRefreshTokenSecret() : jwtProperties.getAccessTokenSecret();
+        if (!JwtUtil.checkSign(token, secret)) {
             log.error("token已失效，url:{}", request.getRequestURI());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
@@ -52,7 +51,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         String info = JwtUtil.getInfo(token);
         UserSession userSession = JSON.parseObject(info, UserSession.class);
         String uniqueId = userSession.getUniqueId();
-        String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
+        String key = isRefreshToken ? RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId : RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         if (!redisTemplate.hasKey(key) || !redisTemplate.opsForValue().get(key).equals(token)) {
             log.error("token已删除，url:{}", request.getRequestURI());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
