@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.util.Map;
 
+/**
+ * XSS攻击防护拦截器
+ */
 @Slf4j
 @Component
 public class XssInterceptor implements HandlerInterceptor {

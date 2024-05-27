@@ -57,7 +57,7 @@ public class NettyClientTest {
     public void prepareUser() throws URISyntaxException {
         userClient.register();
         JSONObject loginRet = userClient.login();
-        token = (String) ((JSONObject)loginRet.get("data")).get("accessToken");
+        token = loginRet.getJSONObject("data").getJSONObject("accessToken").getString("token");
     }
 
     private void clearUser() throws URISyntaxException {

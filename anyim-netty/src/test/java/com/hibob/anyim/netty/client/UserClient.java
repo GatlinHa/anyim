@@ -28,21 +28,7 @@ public class UserClient {
     private String password;
     private String phoneNum;
 
-
     private final RestTemplate restTemplate = new RestTemplate();
-
-    public static void main(String[] args) throws URISyntaxException {
-        UserClient userClient = new UserClient(
-                "netty_test_account_01",
-                "netty_test_clientId_01",
-                "netty_test_headImage_01",
-                "netty_test_inviteCode_01",
-                "netty_test_nickName_01",
-                "123456",
-                "netty_test_phoneNum_01"
-        );
-        userClient.register();
-    }
 
     public JSONObject register() throws URISyntaxException {
         String url = "http://localhost:8010/user/register";

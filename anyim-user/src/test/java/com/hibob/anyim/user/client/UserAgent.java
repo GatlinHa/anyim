@@ -1,10 +1,10 @@
 package com.hibob.anyim.user.client;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.user.dto.request.*;
-import com.hibob.anyim.user.dto.vo.TokensVO;
 import com.hibob.anyim.user.entity.User;
 import com.hibob.anyim.user.enums.ServiceErrorCode;
 import lombok.Data;
@@ -63,15 +63,17 @@ public class UserAgent extends User{
 
     public static HttpHeaders getHeaderForAccessToken(ResponseEntity<IMHttpResponse> res) {
         HttpHeaders headers = new HttpHeaders();
-        TokensVO token = JSON.parseObject(JSON.toJSONString(res.getBody().getData()), TokensVO.class);
-        headers.add("accessToken", token.getAccessToken());
+        JSONObject data = JSON.parseObject(JSON.toJSONString(res.getBody().getData()));
+        String token = data.getJSONObject("accessToken").getString("token");
+        headers.add("accessToken", token);
         return headers;
     }
 
     public static HttpHeaders getHeaderForRefreshToken(ResponseEntity<IMHttpResponse> res) {
         HttpHeaders headers = new HttpHeaders();
-        TokensVO token = JSON.parseObject(JSON.toJSONString(res.getBody().getData()), TokensVO.class);
-        headers.add("refreshToken", token.getRefreshToken());
+        JSONObject data = JSON.parseObject(JSON.toJSONString(res.getBody().getData()));
+        String token = data.getJSONObject("refreshToken").getString("token");
+        headers.add("refreshToken", token);
         return headers;
     }
 

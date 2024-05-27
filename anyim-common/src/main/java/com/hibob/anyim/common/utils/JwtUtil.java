@@ -6,6 +6,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
@@ -93,4 +97,23 @@ public final class JwtUtil {
             return false;
         }
     }
+
+    /**
+     * 生成请求签名的key
+     * @return 请求签名的key
+     */
+    public static String generateSecretKey() {
+        String SecretStr = null;
+        try {
+            // 使用HMAC-SHA256算法生成一个SecretKey
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
+            SecretKey secretKey = keyGenerator.generateKey();
+            // 将SecretKey转换为Base64字符串
+            SecretStr = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return SecretStr;
+    }
+
 }

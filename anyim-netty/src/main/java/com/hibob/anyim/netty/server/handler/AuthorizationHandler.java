@@ -1,5 +1,7 @@
 package com.hibob.anyim.netty.server.handler;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.netty.constants.Const;
@@ -33,8 +35,9 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
         String uri = msg.uri();
         String token = msg.headers().get(HttpHeaderNames.AUTHORIZATION);
         String uniqueId = CommonUtil.conUniqueId(msg.headers().get("account"), msg.headers().get("clientId"));
-        String tokenKey = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
-        String cacheToken = (String) redisTemplate.opsForValue().get(tokenKey);
+        String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
+        String value = (String) redisTemplate.opsForValue().get(key);
+        String cacheToken = JSON.parseObject(value).getString("token");
         if (!StringUtils.hasLength(uri)
                 || !StringUtils.hasLength(token)
                 || !StringUtils.hasLength(uniqueId)

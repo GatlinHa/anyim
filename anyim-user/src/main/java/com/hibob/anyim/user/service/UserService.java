@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -130,7 +131,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         session.setUniqueId(uniqueId);
         session.setNickName(user.getNickName());
         String strJson = JSON.toJSONString(session);
-        //TODO 为了对请求签名，这里还要发放一个userSecret
         String accessToken = JwtUtil.sign(
                 user.getAccount(),
                 strJson,
@@ -142,22 +142,28 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 jwtProperties.getRefreshTokenExpire(),
                 jwtProperties.getRefreshTokenSecret());
 
-        TokensVO vo = new TokensVO();
-        vo.setAccessToken(accessToken);
-        vo.setAccessTokenExpires(jwtProperties.getAccessTokenExpire());
-        vo.setRefreshToken(refreshToken);
-        vo.setRefreshTokenExpires(jwtProperties.getRefreshTokenExpire());
-        //TODO 为了对请求签名，redis中要保存accesstoken和userSecret，可使用json结构
+        TokensVO accessTokenVO = new TokensVO();
+        TokensVO refreshTokenVO = new TokensVO();
+        accessTokenVO.setToken(accessToken);
+        accessTokenVO.setSecret(JwtUtil.generateSecretKey());
+        accessTokenVO.setExpire(jwtProperties.getAccessTokenExpire());
+        refreshTokenVO.setToken(refreshToken);
+        refreshTokenVO.setSecret(JwtUtil.generateSecretKey());
+        refreshTokenVO.setExpire(jwtProperties.getRefreshTokenExpire());
+
         redisTemplate.opsForValue().set(
                 RedisKey.USER_ACTIVE_TOKEN + uniqueId,
-                accessToken,
+                JSON.toJSONString(accessTokenVO),
                 Duration.ofSeconds(jwtProperties.getAccessTokenExpire()));
         redisTemplate.opsForValue().set(
                 RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId,
-                refreshToken,
+                JSON.toJSONString(refreshTokenVO),
                 Duration.ofSeconds(jwtProperties.getRefreshTokenExpire()));
 
-        return ResultUtil.success(vo);
+        HashMap<String, TokensVO> map = new HashMap<>();
+        map.put("accessToken", accessTokenVO);
+        map.put("refreshToken", refreshTokenVO);
+        return ResultUtil.success(map);
     }
 
     public ResponseEntity<IMHttpResponse> logout(LogoutReq dto) {
@@ -203,15 +209,18 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 jwtProperties.getAccessTokenSecret());
 
         TokensVO vo = new TokensVO();
-        vo.setAccessToken(accessToken);
-        vo.setAccessTokenExpires(jwtProperties.getAccessTokenExpire());
+        vo.setToken(accessToken);
+        vo.setSecret(JwtUtil.generateSecretKey());
+        vo.setExpire(jwtProperties.getAccessTokenExpire());
 
         UserSession userSession = JSON.parseObject(info, UserSession.class);
         String uniqueId = userSession.getUniqueId();
         String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
-        redisTemplate.opsForValue().set(key, accessToken, Duration.ofSeconds(jwtProperties.getAccessTokenExpire()));
+        redisTemplate.opsForValue().set(key, JSON.toJSONString(vo), Duration.ofSeconds(jwtProperties.getAccessTokenExpire()));
 
-        return ResultUtil.success(vo);
+        HashMap<String, TokensVO> map = new HashMap<>();
+        map.put("accessToken", vo);
+        return ResultUtil.success(map);
     }
 
     public ResponseEntity<IMHttpResponse> querySelf(QuerySelfReq dto) {
