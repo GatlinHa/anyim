@@ -1,9 +1,12 @@
 package com.hibob.anyim.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
+@Slf4j
 public class CommonUtil {
 
     private CommonUtil() {
@@ -37,10 +40,10 @@ public class CommonUtil {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("getLocalIp exception, exception is {}", e.getMessage());
         }
 
-        return "";
+        return null;
     }
 
 }

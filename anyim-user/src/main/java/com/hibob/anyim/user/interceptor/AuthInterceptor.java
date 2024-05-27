@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.JwtUtil;
 import com.hibob.anyim.user.config.JwtProperties;
-import com.hibob.anyim.user.dto.vo.TokensVO;
+import com.hibob.anyim.user.constants.Const;
 import com.hibob.anyim.user.session.UserSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +18,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * 认证拦截器：1.认证签名，2.认证token
@@ -38,25 +40,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         boolean isRefreshToken = request.getRequestURI().equals("/user/refreshToken");
-
-        if (!AuthToken(request, response, isRefreshToken)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean AuthSign(HttpServletRequest request, HttpServletResponse response, boolean isRefreshToken) {
-        String traceId = request.getHeader("traceId");
-        String timestamp = request.getHeader("timestamp");
-        String sign = request.getHeader("sign");
-        String token = isRefreshToken ? request.getHeader("refreshToken") : request.getHeader("accessToken");
-
-
-        return false;
-    }
-
-    private boolean AuthToken(HttpServletRequest request, HttpServletResponse response, boolean isRefreshToken) {
         String token = isRefreshToken ? request.getHeader("refreshToken") : request.getHeader("accessToken");
         if (!StringUtils.hasLength(token)) {
             log.error("未登陆，url:{}", request.getRequestURI());
@@ -64,8 +47,8 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        String secret = isRefreshToken ? jwtProperties.getRefreshTokenSecret() : jwtProperties.getAccessTokenSecret();
-        if (!JwtUtil.checkSign(token, secret)) {
+        String tokenSecret = isRefreshToken ? jwtProperties.getRefreshTokenSecret() : jwtProperties.getAccessTokenSecret();
+        if (!JwtUtil.checkToken(token, tokenSecret)) {
             log.error("token已失效，url:{}", request.getRequestURI());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
@@ -81,9 +64,48 @@ public class AuthInterceptor implements HandlerInterceptor {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
+        String singSecret = (String) value.get("secret");
+        if (!AuthSign(request, response, uniqueId, singSecret)) {
+            return false;
+        }
 
         // 存放session
         request.setAttribute("session", userSession);
         return true;
     }
+
+    private boolean AuthSign(HttpServletRequest request, HttpServletResponse response, String uniqueId, String key) {
+        String traceId = request.getHeader("traceId");
+        String timestamp = request.getHeader("timestamp");
+        String sign = request.getHeader("sign");
+        if (!StringUtils.hasLength(traceId) || !StringUtils.hasLength(timestamp) || !StringUtils.hasLength(sign)) {
+            log.error("请求头信息不全，url:{}", request.getRequestURI());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return false;
+        }
+
+        if (Instant.now().getEpochSecond() - Long.parseLong(timestamp) > Const.REQUEST_SIGN_EXPIRE) {
+            log.error("timestamp超过有效期，url:{}", request.getRequestURI());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return false;
+        }
+
+        String redisKey = RedisKey.USER_REQ_RECORD + uniqueId + "|" + traceId;
+        if (redisTemplate.hasKey(redisKey)) {
+            log.error("重复的请求，url:{}", request.getRequestURI());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return false;
+        }
+
+        String generatedSign = JwtUtil.generateSign(key, traceId + timestamp);
+        if (!sign.equals(generatedSign)) {
+            log.error("校验sign不匹配，url:{}", request.getRequestURI());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return false;
+        }
+
+        redisTemplate.opsForValue().set(redisKey, "", Duration.ofSeconds(Const.REQUEST_SIGN_EXPIRE));
+        return true;
+    }
+
 }

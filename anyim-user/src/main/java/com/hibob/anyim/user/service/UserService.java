@@ -23,7 +23,6 @@ import com.hibob.anyim.user.session.UserSession;
 import com.hibob.anyim.user.config.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -131,12 +130,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         session.setUniqueId(uniqueId);
         session.setNickName(user.getNickName());
         String strJson = JSON.toJSONString(session);
-        String accessToken = JwtUtil.sign(
+        String accessToken = JwtUtil.generateToken(
                 user.getAccount(),
                 strJson,
                 jwtProperties.getAccessTokenExpire(),
                 jwtProperties.getAccessTokenSecret());
-        String refreshToken = JwtUtil.sign(
+        String refreshToken = JwtUtil.generateToken(
                 user.getAccount(),
                 strJson,
                 jwtProperties.getRefreshTokenExpire(),
@@ -202,7 +201,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("LoginService--refreshToken");
         String account = JwtUtil.getAccount(refreshToken);
         String info = JwtUtil.getInfo(refreshToken);
-        String accessToken = JwtUtil.sign(
+        String accessToken = JwtUtil.generateToken(
                 account,
                 info,
                 jwtProperties.getAccessTokenExpire(),

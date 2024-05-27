@@ -37,6 +37,11 @@ public class RedisKey {
     public static final String USER_ACTIVE_TOKEN_REFRESH = USER_PREFIX + "activeRefreshToken:";
 
     /**
+     * 请求记录，后面接用户token+traceId
+     */
+    public static final String USER_REQ_RECORD = USER_PREFIX + "reqRecord:";
+
+    /**
      * Netty在活全局路由表的Key
      */
     public static final String NETTY_GLOBAL_ROUTE = NETTY_PREFIX + "route:";

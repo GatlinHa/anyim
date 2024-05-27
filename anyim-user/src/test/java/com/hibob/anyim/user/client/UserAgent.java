@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.common.utils.BeanUtil;
+import com.hibob.anyim.common.utils.JwtUtil;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.entity.User;
 import com.hibob.anyim.user.enums.ServiceErrorCode;
@@ -15,8 +16,10 @@ import org.springframework.http.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Data
@@ -65,6 +68,13 @@ public class UserAgent extends User{
         HttpHeaders headers = new HttpHeaders();
         JSONObject data = JSON.parseObject(JSON.toJSONString(res.getBody().getData()));
         String token = data.getJSONObject("accessToken").getString("token");
+        String secret = data.getJSONObject("accessToken").getString("secret");
+        String traceId = UUID.randomUUID().toString();
+        long timeStamp = Instant.now().getEpochSecond();
+        String sign = JwtUtil.generateSign(secret, traceId + timeStamp);
+        headers.add("traceId", traceId);
+        headers.add("timeStamp", String.valueOf(timeStamp));
+        headers.add("sign", sign);
         headers.add("accessToken", token);
         return headers;
     }
@@ -73,6 +83,13 @@ public class UserAgent extends User{
         HttpHeaders headers = new HttpHeaders();
         JSONObject data = JSON.parseObject(JSON.toJSONString(res.getBody().getData()));
         String token = data.getJSONObject("refreshToken").getString("token");
+        String secret = data.getJSONObject("refreshToken").getString("secret");
+        String traceId = UUID.randomUUID().toString();
+        long timeStamp = Instant.now().getEpochSecond();
+        String sign = JwtUtil.generateSign(secret, traceId + timeStamp);
+        headers.add("traceId", traceId);
+        headers.add("timeStamp", String.valueOf(timeStamp));
+        headers.add("sign", sign);
         headers.add("refreshToken", token);
         return headers;
     }
