@@ -21,7 +21,6 @@ import java.util.UUID;
 public final class JwtUtil {
 
     private final static String CLAIM_NAME = "info";
-    private final static String SPILT = ">>";
 
     private JwtUtil() {
     }
@@ -37,7 +36,6 @@ public final class JwtUtil {
      */
     public static String generateToken(String account, String info, long expireIn, String secret) {
         try {
-            account = account + SPILT + UUID.randomUUID();
             Date date = new Date(System.currentTimeMillis() + expireIn * 1000);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String ret = JWT.create()
@@ -65,8 +63,8 @@ public final class JwtUtil {
      */
     public static String getAccount(String token) {
         try {
-            String s = JWT.decode(token).getAudience().get(0);
-            return s.split(SPILT)[0];
+            String s = JWT.decode(token).getAudience().toString(); //返回格式为[xxx]
+            return s.substring(1, s.length() - 1);
         } catch (JWTDecodeException e) {
             log.error("getAccount exception, exception is {}", e.getMessage());
             return null;

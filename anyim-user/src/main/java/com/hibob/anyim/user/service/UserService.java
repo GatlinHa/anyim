@@ -83,7 +83,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("LoginService--deregister");
         UserSession session = UserSession.getSession();
         String account = session.getAccount();
-        String uniqueId = session.getUniqueId();
+        String clientId = session.getClientId();
+        String uniqueId = CommonUtil.conUniqueId(account, clientId);
         this.remove(Wrappers.<User>lambdaQuery().eq(User::getAccount, account));
         deleteClient(account);
 
@@ -96,7 +97,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     public ResponseEntity<IMHttpResponse> login(LoginReq dto) {
         log.info("LoginService--login");
         String account = dto.getAccount();
-        String uniqueId = CommonUtil.conUniqueId(account, dto.getClientId());
+        String clientId = dto.getClientId();
+        String uniqueId = CommonUtil.conUniqueId(account, clientId);
         //支持REST接口重复登录，所以这段代码不启用
 //        if (redisTemplate.hasKey(key)) {
 //            log.info("Repeated login");
@@ -125,19 +127,14 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             updateClient(uniqueId);
         }
 
-        UserSession session = new UserSession();
-        session.setAccount(user.getAccount());
-        session.setUniqueId(uniqueId);
-        session.setNickName(user.getNickName());
-        String strJson = JSON.toJSONString(session);
         String accessToken = JwtUtil.generateToken(
                 user.getAccount(),
-                strJson,
+                clientId,
                 jwtProperties.getAccessTokenExpire(),
                 jwtProperties.getAccessTokenSecret());
         String refreshToken = JwtUtil.generateToken(
                 user.getAccount(),
-                strJson,
+                clientId,
                 jwtProperties.getRefreshTokenExpire(),
                 jwtProperties.getRefreshTokenSecret());
 
@@ -168,7 +165,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     public ResponseEntity<IMHttpResponse> logout(LogoutReq dto) {
         log.info("LoginService--logout");
         UserSession session = UserSession.getSession();
-        String uniqueId = session.getUniqueId();
+        String uniqueId = CommonUtil.conUniqueId(session.getAccount(), session.getClientId());
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN + uniqueId);
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId);
 
@@ -179,7 +176,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("LoginService--modifyPwd");
         UserSession session = UserSession.getSession();
         String account = session.getAccount();
-        String uniqueId = session.getUniqueId();
+        String clientId = session.getClientId();
+        String uniqueId = CommonUtil.conUniqueId(account, clientId);
         User user = getOneByAccount(account);
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
             log.info("password error");
@@ -200,10 +198,10 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     public ResponseEntity<IMHttpResponse> refreshToken(String refreshToken, RefreshTokenReq dto) {
         log.info("LoginService--refreshToken");
         String account = JwtUtil.getAccount(refreshToken);
-        String info = JwtUtil.getInfo(refreshToken);
+        String client = JwtUtil.getInfo(refreshToken);
         String accessToken = JwtUtil.generateToken(
                 account,
-                info,
+                client,
                 jwtProperties.getAccessTokenExpire(),
                 jwtProperties.getAccessTokenSecret());
 
@@ -212,8 +210,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         vo.setSecret(JwtUtil.generateSecretKey());
         vo.setExpire(jwtProperties.getAccessTokenExpire());
 
-        UserSession userSession = JSON.parseObject(info, UserSession.class);
-        String uniqueId = userSession.getUniqueId();
+        String uniqueId = CommonUtil.conUniqueId(account, client);
         String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         redisTemplate.opsForValue().set(key, JSON.toJSONString(vo), Duration.ofSeconds(jwtProperties.getAccessTokenExpire()));
 

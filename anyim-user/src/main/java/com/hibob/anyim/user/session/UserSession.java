@@ -18,12 +18,12 @@ public class UserSession {
     /*
     * 客户端ID
      */
-    private String uniqueId;
+    private String clientId;
 
-    /**
-     * 用户名称
-     */
-    private String nickName;
+//    /**
+//     * 用户名称
+//     */
+//    private String nickName;
 
     public static UserSession getSession() {
         // 从上下文中提取Request对象
