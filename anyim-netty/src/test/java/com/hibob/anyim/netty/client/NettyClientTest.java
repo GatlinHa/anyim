@@ -42,6 +42,7 @@ import static org.junit.Assert.assertTrue;
 public class NettyClientTest {
 
     private String token ="";
+    private String signKey = "";
 
     private final UserClient userClient = new UserClient(
             "netty_test_account_01",
@@ -58,10 +59,11 @@ public class NettyClientTest {
         userClient.register();
         JSONObject loginRet = userClient.login();
         token = loginRet.getJSONObject("data").getJSONObject("accessToken").getString("token");
+        signKey = loginRet.getJSONObject("data").getJSONObject("accessToken").getString("secret");
     }
 
     private void clearUser() throws URISyntaxException {
-        userClient.deregister(token);
+        userClient.deregister(token, signKey);
     }
 
     @Test

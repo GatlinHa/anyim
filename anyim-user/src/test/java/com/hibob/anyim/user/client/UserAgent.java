@@ -70,10 +70,10 @@ public class UserAgent extends User{
         String token = data.getJSONObject("accessToken").getString("token");
         String secret = data.getJSONObject("accessToken").getString("secret");
         String traceId = UUID.randomUUID().toString();
-        long timeStamp = Instant.now().getEpochSecond();
-        String sign = JwtUtil.generateSign(secret, traceId + timeStamp);
+        long timestamp = Instant.now().getEpochSecond();
+        String sign = JwtUtil.generateSign(secret, traceId + timestamp);
         headers.add("traceId", traceId);
-        headers.add("timeStamp", String.valueOf(timeStamp));
+        headers.add("timestamp", String.valueOf(timestamp));
         headers.add("sign", sign);
         headers.add("accessToken", token);
         return headers;
@@ -85,10 +85,10 @@ public class UserAgent extends User{
         String token = data.getJSONObject("refreshToken").getString("token");
         String secret = data.getJSONObject("refreshToken").getString("secret");
         String traceId = UUID.randomUUID().toString();
-        long timeStamp = Instant.now().getEpochSecond();
-        String sign = JwtUtil.generateSign(secret, traceId + timeStamp);
+        long timestamp = Instant.now().getEpochSecond();
+        String sign = JwtUtil.generateSign(secret, traceId + timestamp);
         headers.add("traceId", traceId);
-        headers.add("timeStamp", String.valueOf(timeStamp));
+        headers.add("timestamp", String.valueOf(timestamp));
         headers.add("sign", sign);
         headers.add("refreshToken", token);
         return headers;

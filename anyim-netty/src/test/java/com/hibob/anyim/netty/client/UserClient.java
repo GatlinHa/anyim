@@ -1,6 +1,7 @@
 package com.hibob.anyim.netty.client;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hibob.anyim.common.utils.JwtUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +13,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Data
 @Slf4j
@@ -79,12 +82,17 @@ public class UserClient {
         return JSONObject.parseObject(response.getBody());
     }
 
-    public JSONObject logout(String accessToken) {
+    public JSONObject logout(String accessToken, String signKey) {
         String url = "http://localhost:8010/user/logout";
         HttpHeaders headers = new HttpHeaders();
+        String traceId = UUID.randomUUID().toString();
+        String timestamp = String.valueOf(Instant.now().getEpochSecond());
+        String sign = JwtUtil.generateSign(signKey, traceId + timestamp);
+        headers.add("traceId", traceId);
+        headers.add("timestamp", timestamp);
+        headers.add("sign", sign);
         headers.add("accessToken", accessToken);
         Map<String, String> map = new HashMap<>();
-        map.put("account", account);
         HttpEntity<Map<String, String>> request = new HttpEntity<>(map, headers);
         ResponseEntity<String> response = restTemplate.exchange(
                 url,
@@ -94,9 +102,15 @@ public class UserClient {
         return JSONObject.parseObject(response.getBody());
     }
 
-    public JSONObject deregister(String accessToken) throws URISyntaxException {
+    public JSONObject deregister(String accessToken, String signKey) throws URISyntaxException {
         String url = "http://localhost:8010/user/deregister";
         HttpHeaders headers = new HttpHeaders();
+        String traceId = UUID.randomUUID().toString();
+        String timestamp = String.valueOf(Instant.now().getEpochSecond());
+        String sign = JwtUtil.generateSign(signKey, traceId + timestamp);
+        headers.add("traceId", traceId);
+        headers.add("timestamp", timestamp);
+        headers.add("sign", sign);
         headers.add("accessToken", accessToken);
         Map<String, String> map = new HashMap<>();
         HttpEntity<Map<String, String>> request = new HttpEntity<>(map, headers);
@@ -107,7 +121,5 @@ public class UserClient {
                 String.class);
         return JSONObject.parseObject(response.getBody());
     }
-
-
 
 }
