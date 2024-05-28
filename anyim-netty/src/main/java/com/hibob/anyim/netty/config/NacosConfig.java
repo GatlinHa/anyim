@@ -9,6 +9,7 @@ import com.hibob.anyim.common.utils.CommonUtil;
 import lombok.Data;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
@@ -39,17 +40,20 @@ public class NacosConfig implements InitializingBean {
         this.nacosServiceManager = nacosServiceManager;
     }
 
+    public String getInstance() {
+        return CommonUtil.getLocalIp() + ":" + port;
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
         JSONObject jsonObject = JSONObject.parseObject(topicDistribute);
-        String instance = CommonUtil.getLocalIp() + ":" + port;
-        String topic = jsonObject.getString(instance);
+        String topic = jsonObject.getJSONObject(getInstance()).getString("topic");
         System.setProperty("websocket.consumer.topic", topic);
     }
 
     public String getToTopic(String instance) {
         JSONObject jsonObject = JSONObject.parseObject(topicDistribute);
-        return jsonObject.getString(instance);
+        return jsonObject.getJSONObject(instance).getString("topic");
     }
 
     public List<Instance> getNettyInstances() throws NacosException {

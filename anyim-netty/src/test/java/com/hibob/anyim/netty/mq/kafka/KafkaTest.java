@@ -1,5 +1,6 @@
 package com.hibob.anyim.netty.mq.kafka;
 
+import com.hibob.anyim.netty.config.NacosConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,12 +22,17 @@ public class KafkaTest {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
+    @Autowired
+    private NacosConfig nacosConfig;
+
     @Test
     public void test_01() throws InterruptedException {
         int count = 100;
         while (count > 0) {
             log.info("send message to kafka, count is {}", count);
-            kafkaTemplate.send("topic-netty-1", "hello, kafka");
+            String instance = nacosConfig.getInstance();
+            String topic = nacosConfig.getToTopic(instance);
+            kafkaTemplate.send(topic, instance, "hello, kafka");
             TimeUnit.SECONDS.sleep(1);
             count--;
         }

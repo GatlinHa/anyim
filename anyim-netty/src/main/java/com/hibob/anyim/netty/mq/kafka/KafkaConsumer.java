@@ -11,7 +11,7 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = "${websocket.consumer.topic}")
     public void onMessage(ConsumerRecord<String, String> record) {
-        log.info("kafka receive message: {}", record.value());
+        log.info("kafka receive message, the partition is: {}, the key is: {}, the message is: {}", record.partition(), record.key(), record.value());
     }
 
 }

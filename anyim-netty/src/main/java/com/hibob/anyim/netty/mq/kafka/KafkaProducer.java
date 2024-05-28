@@ -17,12 +17,9 @@ public class KafkaProducer {
     private NacosConfig nacosConfig;
 
     public void sendMessage(String instance, String message) {
-
         String toTopic = nacosConfig.getToTopic(instance);
+        kafkaTemplate.send(toTopic, nacosConfig.getInstance(), message);
         log.info("send message to kafka, topic is {}, message is {}", toTopic, message);
-        // 设置分区key
-
-        kafkaTemplate.send(toTopic, message);
     }
 
 }
