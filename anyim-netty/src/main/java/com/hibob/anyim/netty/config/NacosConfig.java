@@ -5,15 +5,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.hibob.anyim.common.utils.CommonUtil;
 import lombok.Data;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-@Component
+@Configuration
 @Data
-public class NacosConfig {
+public class NacosConfig implements InitializingBean {
 
     private final NacosServiceManager nacosServiceManager;
 
@@ -37,8 +39,17 @@ public class NacosConfig {
         this.nacosServiceManager = nacosServiceManager;
     }
 
-    public JSONObject getTopicDistribute() {
-        return JSONObject.parseObject(topicDistribute);
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        JSONObject jsonObject = JSONObject.parseObject(topicDistribute);
+        String instance = CommonUtil.getLocalIp() + ":" + port;
+        String topic = jsonObject.getString(instance);
+        System.setProperty("websocket.consumer.topic", topic);
+    }
+
+    public String getToTopic(String instance) {
+        JSONObject jsonObject = JSONObject.parseObject(topicDistribute);
+        return jsonObject.getString(instance);
     }
 
     public List<Instance> getNettyInstances() throws NacosException {

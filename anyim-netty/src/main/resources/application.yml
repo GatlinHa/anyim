@@ -11,6 +11,52 @@ spring:
       max-idle: 8
       min-idle: 0
     timeout: 1200
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      # producer需要server接收到数据之后发出的确认接收的信号
+      # acks=0：设置为0表示producer不需要等待任何确认收到的信息。副本将立即加到socket  buffer并认为已经发送。没有任何保障可以保证此种情况下server已经成功接收数据，同时重试配置不会发生作用（因为客户端不知道是否失败）回馈的offset会总是设置为-1；
+      # acks=1： 这意味着至少要等待leader已经成功将数据写入本地log，但是并没有等待所有follower是否成功写入。这种情况下，如果follower没有成功备份数据，而此时leader又挂掉，则消息会丢失。
+      # acks=all： 这意味着leader需要等待所有备份都成功写入日志，这种策略会保证只要有一个备份存活就不会丢失数据。这是最强的保证。
+      acks: 1
+      # 设置大于0的值将使客户端重新发送任何数据。
+      # 注意，这些重试与客户端接收到发送错误时的重试没有什么不同。允许重试将潜在的改变数据的顺序，如果这两个消息记录都是发送到同一个partition，则第一个消息失败第二个发送成功，则第二条消息会比第一条消息出现要早。
+      retries: 4
+      # producer将试图批处理消息记录，以减少请求次数，这项配置控制默认的批量处理消息字节数，默认值16384，单位bytes
+      batch-size: 16384
+      # producer可以用来缓存数据的内存大小。如果数据产生速度大于向broker发送的速度，producer会阻塞或者抛出异常， 默认值33554432，单位bytes
+      buffer-memory: 33554432
+      # key的序列化类
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # value的序列化类
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 生产者生成的所有数据的压缩类型，此配置接受标准压缩编解码器（'gzip'，'snappy'，'lz4'，'zstd'）
+      # 默认为none
+      compression-type: none
+    consumer:
+      group-id: default
+      enable-auto-commit: true # 如果为真，consumer所fetch的消息的offset将会自动的同步到zookeeper。
+      auto-commit-interval: 500 # 每次自动提交offset的时间间隔，当enable-auto-commit设置为true时生效，默认值为5000，单位ms
+      # kafka服务（实际是zookeeper）中没有初始化的offset时，如果offset是以下值的回应：
+      # earliest：自动复位offset为smallest的offset
+      # latest：自动复位offset为largest的offset
+      # anything  else：向consumer抛出异常
+      # none：如果整个消费者组中没有以往的offset，则抛出异常
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer # message的key的解码类
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer # message的value的解码类
+      max-poll-records: 500 # 单次消费获取数据的最大条数
+      # 每次fetch请求时，server应该返回的最小字节数。
+      # 如果没有足够的数据返回，请求会等待，直到足够的数据才会返回。默认值为1，单位bytes
+      fetch-min-size: 1
+      # 如果没有足够的数据能够满足fetch.min.bytes（fetch-min-size），
+      # 则此项配置是指在应答fetch请求之前，server会阻塞的最大时间，默认值为100，单位ms
+      fetch-max-wait: 100
+      # 如果设置为read_committed，则consumer会缓存消息，直到收到消息对应的事务控制消息。
+      # 若事务commit，则对外发布这些消息；若事务abort，则丢弃这些消息
+      # 默认值为read_uncommitted
+      isolation-level: read_uncommitted
+
 
 
 websocket:
