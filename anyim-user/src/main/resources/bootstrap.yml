@@ -18,3 +18,17 @@ spring:
       discovery:
         server-addr: localhost:8848
         namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147
+
+
+
+dubbo:
+  application:
+    name: anyim-user
+    qos-port: 18010 # TODO 本地测试时需要避开端口冲突
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://localhost:8848
+    parameters:
+      namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147

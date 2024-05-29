@@ -20,3 +20,15 @@ spring:
         namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147
         heart-beat-interval: 2
         heart-beat-timeout: 5
+
+dubbo:
+  application:
+    name: anyim-netty
+    qos-port: 18000 # TODO 本地测试时需要避开端口冲突
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://localhost:8848
+    parameters:
+      namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147

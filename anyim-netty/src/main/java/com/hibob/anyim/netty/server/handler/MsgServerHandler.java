@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
-import java.util.List;
+import java.util.Set;
 
 import static com.hibob.anyim.common.constants.Const.SPLIT_C;
 import static com.hibob.anyim.common.constants.Const.SPLIT_V;
@@ -185,6 +185,17 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
         redisTemplate.delete(routeKey);
         redisTemplate.opsForSet().remove(onlineKey, uniqueId);
         getLocalRoute().remove(routeKey);
+    }
+
+    private Set<Object> queryOnlineClient(String account) {
+        String onlineKey = RedisKey.NETTY_ONLINE_CLIENT + account;
+        Set<Object> members = redisTemplate.opsForSet().members(onlineKey);
+        if (members.size() == 0) {
+            // TODO 向USER发送一个RPC调用，从数据库查询在线的客户端
+
+        }
+
+        return members;
     }
 
 }

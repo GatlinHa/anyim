@@ -18,6 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netty-all.version>4.1.107.Final</netty-all.version>
         <protobuf-java.version>4.26.1</protobuf-java.version>
+        <org.apache.dubbo-version>3.0.9</org.apache.dubbo-version>
     </properties>
 
     <dependencies>
@@ -42,6 +43,17 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <!--这里对应的Springboot版本为2.7.6-->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>${org.apache.dubbo-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-client</artifactId>
         </dependency>
 
     </dependencies>
