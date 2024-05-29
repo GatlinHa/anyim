@@ -24,34 +24,19 @@ public interface MsgOrBuilder extends
   com.hibob.anyim.netty.protobuf.HeaderOrBuilder getHeaderOrBuilder();
 
   /**
-   * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
-   * @return Whether the chatBody field is set.
+   * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+   * @return Whether the body field is set.
    */
-  boolean hasChatBody();
+  boolean hasBody();
   /**
-   * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
-   * @return The chatBody.
+   * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
+   * @return The body.
    */
-  com.hibob.anyim.netty.protobuf.ChatBody getChatBody();
+  com.hibob.anyim.netty.protobuf.Body getBody();
   /**
-   * <code>.com.hibob.anyim.netty.protobuf.ChatBody chatBody = 2;</code>
+   * <code>.com.hibob.anyim.netty.protobuf.Body body = 2;</code>
    */
-  com.hibob.anyim.netty.protobuf.ChatBodyOrBuilder getChatBodyOrBuilder();
-
-  /**
-   * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
-   * @return Whether the groupChatBody field is set.
-   */
-  boolean hasGroupChatBody();
-  /**
-   * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
-   * @return The groupChatBody.
-   */
-  com.hibob.anyim.netty.protobuf.GroupChatBody getGroupChatBody();
-  /**
-   * <code>.com.hibob.anyim.netty.protobuf.GroupChatBody groupChatBody = 3;</code>
-   */
-  com.hibob.anyim.netty.protobuf.GroupChatBodyOrBuilder getGroupChatBodyOrBuilder();
+  com.hibob.anyim.netty.protobuf.BodyOrBuilder getBodyOrBuilder();
 
   /**
    * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
@@ -67,6 +52,4 @@ public interface MsgOrBuilder extends
    * <code>optional .com.hibob.anyim.netty.protobuf.Extension extension = 99;</code>
    */
   com.hibob.anyim.netty.protobuf.ExtensionOrBuilder getExtensionOrBuilder();
-
-  com.hibob.anyim.netty.protobuf.Msg.BodyCase getBodyCase();
 }

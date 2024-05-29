@@ -5,16 +5,12 @@
 package com.hibob.anyim.netty.protobuf;
 
 /**
- * <pre>
- * 当msgType为CHAT时
- * </pre>
- *
- * Protobuf type {@code com.hibob.anyim.netty.protobuf.ChatBody}
+ * Protobuf type {@code com.hibob.anyim.netty.protobuf.Body}
  */
-public final class ChatBody extends
+public final class Body extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:com.hibob.anyim.netty.protobuf.ChatBody)
-    ChatBodyOrBuilder {
+    // @@protoc_insertion_point(message_implements:com.hibob.anyim.netty.protobuf.Body)
+    BodyOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -23,33 +19,36 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 26,
       /* patch= */ 1,
       /* suffix= */ "",
-      ChatBody.class.getName());
+      Body.class.getName());
   }
-  // Use ChatBody.newBuilder() to construct.
-  private ChatBody(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use Body.newBuilder() to construct.
+  private Body(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private ChatBody() {
+  private Body() {
     fromId_ = "";
-    fromDev_ = "";
+    fromClient_ = "";
     toId_ = "";
-    toDev_ = "";
+    toClient_ = "";
+    groupId_ = "";
+    msgId_ = "";
     content_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return com.hibob.anyim.netty.protobuf.MsgOuterClass.internal_static_com_hibob_anyim_netty_protobuf_ChatBody_descriptor;
+    return com.hibob.anyim.netty.protobuf.MsgOuterClass.internal_static_com_hibob_anyim_netty_protobuf_Body_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return com.hibob.anyim.netty.protobuf.MsgOuterClass.internal_static_com_hibob_anyim_netty_protobuf_ChatBody_fieldAccessorTable
+    return com.hibob.anyim.netty.protobuf.MsgOuterClass.internal_static_com_hibob_anyim_netty_protobuf_Body_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            com.hibob.anyim.netty.protobuf.ChatBody.class, com.hibob.anyim.netty.protobuf.ChatBody.Builder.class);
+            com.hibob.anyim.netty.protobuf.Body.class, com.hibob.anyim.netty.protobuf.Body.Builder.class);
   }
 
+  private int bitField0_;
   public static final int FROMID_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private volatile java.lang.Object fromId_ = "";
@@ -89,39 +88,39 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int FROMDEV_FIELD_NUMBER = 2;
+  public static final int FROMCLIENT_FIELD_NUMBER = 2;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object fromDev_ = "";
+  private volatile java.lang.Object fromClient_ = "";
   /**
-   * <code>string fromDev = 2;</code>
-   * @return The fromDev.
+   * <code>string fromClient = 2;</code>
+   * @return The fromClient.
    */
   @java.lang.Override
-  public java.lang.String getFromDev() {
-    java.lang.Object ref = fromDev_;
+  public java.lang.String getFromClient() {
+    java.lang.Object ref = fromClient_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      fromDev_ = s;
+      fromClient_ = s;
       return s;
     }
   }
   /**
-   * <code>string fromDev = 2;</code>
-   * @return The bytes for fromDev.
+   * <code>string fromClient = 2;</code>
+   * @return The bytes for fromClient.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getFromDevBytes() {
-    java.lang.Object ref = fromDev_;
+      getFromClientBytes() {
+    java.lang.Object ref = fromClient_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      fromDev_ = b;
+      fromClient_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -132,7 +131,15 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object toId_ = "";
   /**
-   * <code>string toId = 3;</code>
+   * <code>optional string toId = 3;</code>
+   * @return Whether the toId field is set.
+   */
+  @java.lang.Override
+  public boolean hasToId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional string toId = 3;</code>
    * @return The toId.
    */
   @java.lang.Override
@@ -149,7 +156,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string toId = 3;</code>
+   * <code>optional string toId = 3;</code>
    * @return The bytes for toId.
    */
   @java.lang.Override
@@ -167,49 +174,143 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int TODEV_FIELD_NUMBER = 4;
+  public static final int TOCLIENT_FIELD_NUMBER = 4;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object toDev_ = "";
+  private volatile java.lang.Object toClient_ = "";
   /**
-   * <code>string toDev = 4;</code>
-   * @return The toDev.
+   * <code>optional string toClient = 4;</code>
+   * @return Whether the toClient field is set.
    */
   @java.lang.Override
-  public java.lang.String getToDev() {
-    java.lang.Object ref = toDev_;
+  public boolean hasToClient() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>optional string toClient = 4;</code>
+   * @return The toClient.
+   */
+  @java.lang.Override
+  public java.lang.String getToClient() {
+    java.lang.Object ref = toClient_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      toDev_ = s;
+      toClient_ = s;
       return s;
     }
   }
   /**
-   * <code>string toDev = 4;</code>
-   * @return The bytes for toDev.
+   * <code>optional string toClient = 4;</code>
+   * @return The bytes for toClient.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getToDevBytes() {
-    java.lang.Object ref = toDev_;
+      getToClientBytes() {
+    java.lang.Object ref = toClient_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      toDev_ = b;
+      toClient_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
   }
 
-  public static final int SEQ_FIELD_NUMBER = 5;
+  public static final int GROUPID_FIELD_NUMBER = 5;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object groupId_ = "";
+  /**
+   * <code>optional string groupId = 5;</code>
+   * @return Whether the groupId field is set.
+   */
+  @java.lang.Override
+  public boolean hasGroupId() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <code>optional string groupId = 5;</code>
+   * @return The groupId.
+   */
+  @java.lang.Override
+  public java.lang.String getGroupId() {
+    java.lang.Object ref = groupId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      groupId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>optional string groupId = 5;</code>
+   * @return The bytes for groupId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getGroupIdBytes() {
+    java.lang.Object ref = groupId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      groupId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int MSGID_FIELD_NUMBER = 6;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object msgId_ = "";
+  /**
+   * <code>string msgId = 6;</code>
+   * @return The msgId.
+   */
+  @java.lang.Override
+  public java.lang.String getMsgId() {
+    java.lang.Object ref = msgId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      msgId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string msgId = 6;</code>
+   * @return The bytes for msgId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getMsgIdBytes() {
+    java.lang.Object ref = msgId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      msgId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int SEQ_FIELD_NUMBER = 7;
   private int seq_ = 0;
   /**
-   * <code>int32 seq = 5;</code>
+   * <code>int32 seq = 7;</code>
    * @return The seq.
    */
   @java.lang.Override
@@ -217,11 +318,22 @@ private static final long serialVersionUID = 0L;
     return seq_;
   }
 
-  public static final int CONTENT_FIELD_NUMBER = 6;
+  public static final int ACK_FIELD_NUMBER = 8;
+  private int ack_ = 0;
+  /**
+   * <code>int32 ack = 8;</code>
+   * @return The ack.
+   */
+  @java.lang.Override
+  public int getAck() {
+    return ack_;
+  }
+
+  public static final int CONTENT_FIELD_NUMBER = 9;
   @SuppressWarnings("serial")
   private volatile java.lang.Object content_ = "";
   /**
-   * <code>string content = 6;</code>
+   * <code>string content = 9;</code>
    * @return The content.
    */
   @java.lang.Override
@@ -238,7 +350,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string content = 6;</code>
+   * <code>string content = 9;</code>
    * @return The bytes for content.
    */
   @java.lang.Override
@@ -273,20 +385,29 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromId_)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, fromId_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromDev_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 2, fromDev_);
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromClient_)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, fromClient_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(toId_)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 3, toId_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(toDev_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 4, toDev_);
+    if (((bitField0_ & 0x00000002) != 0)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, toClient_);
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 5, groupId_);
+    }
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(msgId_)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 6, msgId_);
     }
     if (seq_ != 0) {
-      output.writeInt32(5, seq_);
+      output.writeInt32(7, seq_);
+    }
+    if (ack_ != 0) {
+      output.writeInt32(8, ack_);
     }
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(content_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 6, content_);
+      com.google.protobuf.GeneratedMessage.writeString(output, 9, content_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -300,21 +421,31 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromId_)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, fromId_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromDev_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, fromDev_);
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromClient_)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, fromClient_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(toId_)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(3, toId_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(toDev_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, toDev_);
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, toClient_);
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(5, groupId_);
+    }
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(msgId_)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(6, msgId_);
     }
     if (seq_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(5, seq_);
+        .computeInt32Size(7, seq_);
+    }
+    if (ack_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(8, ack_);
     }
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(content_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(6, content_);
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(9, content_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -326,21 +457,36 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof com.hibob.anyim.netty.protobuf.ChatBody)) {
+    if (!(obj instanceof com.hibob.anyim.netty.protobuf.Body)) {
       return super.equals(obj);
     }
-    com.hibob.anyim.netty.protobuf.ChatBody other = (com.hibob.anyim.netty.protobuf.ChatBody) obj;
+    com.hibob.anyim.netty.protobuf.Body other = (com.hibob.anyim.netty.protobuf.Body) obj;
 
     if (!getFromId()
         .equals(other.getFromId())) return false;
-    if (!getFromDev()
-        .equals(other.getFromDev())) return false;
-    if (!getToId()
-        .equals(other.getToId())) return false;
-    if (!getToDev()
-        .equals(other.getToDev())) return false;
+    if (!getFromClient()
+        .equals(other.getFromClient())) return false;
+    if (hasToId() != other.hasToId()) return false;
+    if (hasToId()) {
+      if (!getToId()
+          .equals(other.getToId())) return false;
+    }
+    if (hasToClient() != other.hasToClient()) return false;
+    if (hasToClient()) {
+      if (!getToClient()
+          .equals(other.getToClient())) return false;
+    }
+    if (hasGroupId() != other.hasGroupId()) return false;
+    if (hasGroupId()) {
+      if (!getGroupId()
+          .equals(other.getGroupId())) return false;
+    }
+    if (!getMsgId()
+        .equals(other.getMsgId())) return false;
     if (getSeq()
         != other.getSeq()) return false;
+    if (getAck()
+        != other.getAck()) return false;
     if (!getContent()
         .equals(other.getContent())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -356,14 +502,26 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + FROMID_FIELD_NUMBER;
     hash = (53 * hash) + getFromId().hashCode();
-    hash = (37 * hash) + FROMDEV_FIELD_NUMBER;
-    hash = (53 * hash) + getFromDev().hashCode();
-    hash = (37 * hash) + TOID_FIELD_NUMBER;
-    hash = (53 * hash) + getToId().hashCode();
-    hash = (37 * hash) + TODEV_FIELD_NUMBER;
-    hash = (53 * hash) + getToDev().hashCode();
+    hash = (37 * hash) + FROMCLIENT_FIELD_NUMBER;
+    hash = (53 * hash) + getFromClient().hashCode();
+    if (hasToId()) {
+      hash = (37 * hash) + TOID_FIELD_NUMBER;
+      hash = (53 * hash) + getToId().hashCode();
+    }
+    if (hasToClient()) {
+      hash = (37 * hash) + TOCLIENT_FIELD_NUMBER;
+      hash = (53 * hash) + getToClient().hashCode();
+    }
+    if (hasGroupId()) {
+      hash = (37 * hash) + GROUPID_FIELD_NUMBER;
+      hash = (53 * hash) + getGroupId().hashCode();
+    }
+    hash = (37 * hash) + MSGID_FIELD_NUMBER;
+    hash = (53 * hash) + getMsgId().hashCode();
     hash = (37 * hash) + SEQ_FIELD_NUMBER;
     hash = (53 * hash) + getSeq();
+    hash = (37 * hash) + ACK_FIELD_NUMBER;
+    hash = (53 * hash) + getAck();
     hash = (37 * hash) + CONTENT_FIELD_NUMBER;
     hash = (53 * hash) + getContent().hashCode();
     hash = (29 * hash) + getUnknownFields().hashCode();
@@ -371,44 +529,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseFrom(
+  public static com.hibob.anyim.netty.protobuf.Body parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseFrom(
+  public static com.hibob.anyim.netty.protobuf.Body parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseFrom(
+  public static com.hibob.anyim.netty.protobuf.Body parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseFrom(
+  public static com.hibob.anyim.netty.protobuf.Body parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseFrom(byte[] data)
+  public static com.hibob.anyim.netty.protobuf.Body parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseFrom(
+  public static com.hibob.anyim.netty.protobuf.Body parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseFrom(java.io.InputStream input)
+  public static com.hibob.anyim.netty.protobuf.Body parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseFrom(
+  public static com.hibob.anyim.netty.protobuf.Body parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -416,26 +574,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseDelimitedFrom(java.io.InputStream input)
+  public static com.hibob.anyim.netty.protobuf.Body parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseDelimitedFrom(
+  public static com.hibob.anyim.netty.protobuf.Body parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseFrom(
+  public static com.hibob.anyim.netty.protobuf.Body parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static com.hibob.anyim.netty.protobuf.ChatBody parseFrom(
+  public static com.hibob.anyim.netty.protobuf.Body parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -448,7 +606,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(com.hibob.anyim.netty.protobuf.ChatBody prototype) {
+  public static Builder newBuilder(com.hibob.anyim.netty.protobuf.Body prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -464,30 +622,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * 当msgType为CHAT时
-   * </pre>
-   *
-   * Protobuf type {@code com.hibob.anyim.netty.protobuf.ChatBody}
+   * Protobuf type {@code com.hibob.anyim.netty.protobuf.Body}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:com.hibob.anyim.netty.protobuf.ChatBody)
-      com.hibob.anyim.netty.protobuf.ChatBodyOrBuilder {
+      // @@protoc_insertion_point(builder_implements:com.hibob.anyim.netty.protobuf.Body)
+      com.hibob.anyim.netty.protobuf.BodyOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.hibob.anyim.netty.protobuf.MsgOuterClass.internal_static_com_hibob_anyim_netty_protobuf_ChatBody_descriptor;
+      return com.hibob.anyim.netty.protobuf.MsgOuterClass.internal_static_com_hibob_anyim_netty_protobuf_Body_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.hibob.anyim.netty.protobuf.MsgOuterClass.internal_static_com_hibob_anyim_netty_protobuf_ChatBody_fieldAccessorTable
+      return com.hibob.anyim.netty.protobuf.MsgOuterClass.internal_static_com_hibob_anyim_netty_protobuf_Body_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.hibob.anyim.netty.protobuf.ChatBody.class, com.hibob.anyim.netty.protobuf.ChatBody.Builder.class);
+              com.hibob.anyim.netty.protobuf.Body.class, com.hibob.anyim.netty.protobuf.Body.Builder.class);
     }
 
-    // Construct using com.hibob.anyim.netty.protobuf.ChatBody.newBuilder()
+    // Construct using com.hibob.anyim.netty.protobuf.Body.newBuilder()
     private Builder() {
 
     }
@@ -502,10 +656,13 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       fromId_ = "";
-      fromDev_ = "";
+      fromClient_ = "";
       toId_ = "";
-      toDev_ = "";
+      toClient_ = "";
+      groupId_ = "";
+      msgId_ = "";
       seq_ = 0;
+      ack_ = 0;
       content_ = "";
       return this;
     }
@@ -513,17 +670,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return com.hibob.anyim.netty.protobuf.MsgOuterClass.internal_static_com_hibob_anyim_netty_protobuf_ChatBody_descriptor;
+      return com.hibob.anyim.netty.protobuf.MsgOuterClass.internal_static_com_hibob_anyim_netty_protobuf_Body_descriptor;
     }
 
     @java.lang.Override
-    public com.hibob.anyim.netty.protobuf.ChatBody getDefaultInstanceForType() {
-      return com.hibob.anyim.netty.protobuf.ChatBody.getDefaultInstance();
+    public com.hibob.anyim.netty.protobuf.Body getDefaultInstanceForType() {
+      return com.hibob.anyim.netty.protobuf.Body.getDefaultInstance();
     }
 
     @java.lang.Override
-    public com.hibob.anyim.netty.protobuf.ChatBody build() {
-      com.hibob.anyim.netty.protobuf.ChatBody result = buildPartial();
+    public com.hibob.anyim.netty.protobuf.Body build() {
+      com.hibob.anyim.netty.protobuf.Body result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -531,73 +688,100 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public com.hibob.anyim.netty.protobuf.ChatBody buildPartial() {
-      com.hibob.anyim.netty.protobuf.ChatBody result = new com.hibob.anyim.netty.protobuf.ChatBody(this);
+    public com.hibob.anyim.netty.protobuf.Body buildPartial() {
+      com.hibob.anyim.netty.protobuf.Body result = new com.hibob.anyim.netty.protobuf.Body(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(com.hibob.anyim.netty.protobuf.ChatBody result) {
+    private void buildPartial0(com.hibob.anyim.netty.protobuf.Body result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.fromId_ = fromId_;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.fromDev_ = fromDev_;
+        result.fromClient_ = fromClient_;
       }
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.toId_ = toId_;
+        to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.toDev_ = toDev_;
+        result.toClient_ = toClient_;
+        to_bitField0_ |= 0x00000002;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.seq_ = seq_;
+        result.groupId_ = groupId_;
+        to_bitField0_ |= 0x00000004;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.msgId_ = msgId_;
+      }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.seq_ = seq_;
+      }
+      if (((from_bitField0_ & 0x00000080) != 0)) {
+        result.ack_ = ack_;
+      }
+      if (((from_bitField0_ & 0x00000100) != 0)) {
         result.content_ = content_;
       }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof com.hibob.anyim.netty.protobuf.ChatBody) {
-        return mergeFrom((com.hibob.anyim.netty.protobuf.ChatBody)other);
+      if (other instanceof com.hibob.anyim.netty.protobuf.Body) {
+        return mergeFrom((com.hibob.anyim.netty.protobuf.Body)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(com.hibob.anyim.netty.protobuf.ChatBody other) {
-      if (other == com.hibob.anyim.netty.protobuf.ChatBody.getDefaultInstance()) return this;
+    public Builder mergeFrom(com.hibob.anyim.netty.protobuf.Body other) {
+      if (other == com.hibob.anyim.netty.protobuf.Body.getDefaultInstance()) return this;
       if (!other.getFromId().isEmpty()) {
         fromId_ = other.fromId_;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (!other.getFromDev().isEmpty()) {
-        fromDev_ = other.fromDev_;
+      if (!other.getFromClient().isEmpty()) {
+        fromClient_ = other.fromClient_;
         bitField0_ |= 0x00000002;
         onChanged();
       }
-      if (!other.getToId().isEmpty()) {
+      if (other.hasToId()) {
         toId_ = other.toId_;
         bitField0_ |= 0x00000004;
         onChanged();
       }
-      if (!other.getToDev().isEmpty()) {
-        toDev_ = other.toDev_;
+      if (other.hasToClient()) {
+        toClient_ = other.toClient_;
         bitField0_ |= 0x00000008;
+        onChanged();
+      }
+      if (other.hasGroupId()) {
+        groupId_ = other.groupId_;
+        bitField0_ |= 0x00000010;
+        onChanged();
+      }
+      if (!other.getMsgId().isEmpty()) {
+        msgId_ = other.msgId_;
+        bitField0_ |= 0x00000020;
         onChanged();
       }
       if (other.getSeq() != 0) {
         setSeq(other.getSeq());
       }
+      if (other.getAck() != 0) {
+        setAck(other.getAck());
+      }
       if (!other.getContent().isEmpty()) {
         content_ = other.content_;
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000100;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -632,7 +816,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              fromDev_ = input.readStringRequireUtf8();
+              fromClient_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000002;
               break;
             } // case 18
@@ -642,20 +826,35 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 26
             case 34: {
-              toDev_ = input.readStringRequireUtf8();
+              toClient_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000008;
               break;
             } // case 34
-            case 40: {
-              seq_ = input.readInt32();
+            case 42: {
+              groupId_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000010;
               break;
-            } // case 40
+            } // case 42
             case 50: {
-              content_ = input.readStringRequireUtf8();
+              msgId_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000020;
               break;
             } // case 50
+            case 56: {
+              seq_ = input.readInt32();
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 56
+            case 64: {
+              ack_ = input.readInt32();
+              bitField0_ |= 0x00000080;
+              break;
+            } // case 64
+            case 74: {
+              content_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000100;
+              break;
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -745,73 +944,73 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object fromDev_ = "";
+    private java.lang.Object fromClient_ = "";
     /**
-     * <code>string fromDev = 2;</code>
-     * @return The fromDev.
+     * <code>string fromClient = 2;</code>
+     * @return The fromClient.
      */
-    public java.lang.String getFromDev() {
-      java.lang.Object ref = fromDev_;
+    public java.lang.String getFromClient() {
+      java.lang.Object ref = fromClient_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        fromDev_ = s;
+        fromClient_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string fromDev = 2;</code>
-     * @return The bytes for fromDev.
+     * <code>string fromClient = 2;</code>
+     * @return The bytes for fromClient.
      */
     public com.google.protobuf.ByteString
-        getFromDevBytes() {
-      java.lang.Object ref = fromDev_;
+        getFromClientBytes() {
+      java.lang.Object ref = fromClient_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        fromDev_ = b;
+        fromClient_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string fromDev = 2;</code>
-     * @param value The fromDev to set.
+     * <code>string fromClient = 2;</code>
+     * @param value The fromClient to set.
      * @return This builder for chaining.
      */
-    public Builder setFromDev(
+    public Builder setFromClient(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      fromDev_ = value;
+      fromClient_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>string fromDev = 2;</code>
+     * <code>string fromClient = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearFromDev() {
-      fromDev_ = getDefaultInstance().getFromDev();
+    public Builder clearFromClient() {
+      fromClient_ = getDefaultInstance().getFromClient();
       bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
     /**
-     * <code>string fromDev = 2;</code>
-     * @param value The bytes for fromDev to set.
+     * <code>string fromClient = 2;</code>
+     * @param value The bytes for fromClient to set.
      * @return This builder for chaining.
      */
-    public Builder setFromDevBytes(
+    public Builder setFromClientBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      fromDev_ = value;
+      fromClient_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
@@ -819,7 +1018,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object toId_ = "";
     /**
-     * <code>string toId = 3;</code>
+     * <code>optional string toId = 3;</code>
+     * @return Whether the toId field is set.
+     */
+    public boolean hasToId() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional string toId = 3;</code>
      * @return The toId.
      */
     public java.lang.String getToId() {
@@ -835,7 +1041,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string toId = 3;</code>
+     * <code>optional string toId = 3;</code>
      * @return The bytes for toId.
      */
     public com.google.protobuf.ByteString
@@ -852,7 +1058,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string toId = 3;</code>
+     * <code>optional string toId = 3;</code>
      * @param value The toId to set.
      * @return This builder for chaining.
      */
@@ -865,7 +1071,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string toId = 3;</code>
+     * <code>optional string toId = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearToId() {
@@ -875,7 +1081,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string toId = 3;</code>
+     * <code>optional string toId = 3;</code>
      * @param value The bytes for toId to set.
      * @return This builder for chaining.
      */
@@ -889,81 +1095,239 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object toDev_ = "";
+    private java.lang.Object toClient_ = "";
     /**
-     * <code>string toDev = 4;</code>
-     * @return The toDev.
+     * <code>optional string toClient = 4;</code>
+     * @return Whether the toClient field is set.
      */
-    public java.lang.String getToDev() {
-      java.lang.Object ref = toDev_;
+    public boolean hasToClient() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional string toClient = 4;</code>
+     * @return The toClient.
+     */
+    public java.lang.String getToClient() {
+      java.lang.Object ref = toClient_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        toDev_ = s;
+        toClient_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string toDev = 4;</code>
-     * @return The bytes for toDev.
+     * <code>optional string toClient = 4;</code>
+     * @return The bytes for toClient.
      */
     public com.google.protobuf.ByteString
-        getToDevBytes() {
-      java.lang.Object ref = toDev_;
+        getToClientBytes() {
+      java.lang.Object ref = toClient_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        toDev_ = b;
+        toClient_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string toDev = 4;</code>
-     * @param value The toDev to set.
+     * <code>optional string toClient = 4;</code>
+     * @param value The toClient to set.
      * @return This builder for chaining.
      */
-    public Builder setToDev(
+    public Builder setToClient(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      toDev_ = value;
+      toClient_ = value;
       bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>string toDev = 4;</code>
+     * <code>optional string toClient = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearToDev() {
-      toDev_ = getDefaultInstance().getToDev();
+    public Builder clearToClient() {
+      toClient_ = getDefaultInstance().getToClient();
       bitField0_ = (bitField0_ & ~0x00000008);
       onChanged();
       return this;
     }
     /**
-     * <code>string toDev = 4;</code>
-     * @param value The bytes for toDev to set.
+     * <code>optional string toClient = 4;</code>
+     * @param value The bytes for toClient to set.
      * @return This builder for chaining.
      */
-    public Builder setToDevBytes(
+    public Builder setToClientBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      toDev_ = value;
+      toClient_ = value;
       bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object groupId_ = "";
+    /**
+     * <code>optional string groupId = 5;</code>
+     * @return Whether the groupId field is set.
+     */
+    public boolean hasGroupId() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional string groupId = 5;</code>
+     * @return The groupId.
+     */
+    public java.lang.String getGroupId() {
+      java.lang.Object ref = groupId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        groupId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>optional string groupId = 5;</code>
+     * @return The bytes for groupId.
+     */
+    public com.google.protobuf.ByteString
+        getGroupIdBytes() {
+      java.lang.Object ref = groupId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        groupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>optional string groupId = 5;</code>
+     * @param value The groupId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setGroupId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      groupId_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string groupId = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearGroupId() {
+      groupId_ = getDefaultInstance().getGroupId();
+      bitField0_ = (bitField0_ & ~0x00000010);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string groupId = 5;</code>
+     * @param value The bytes for groupId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setGroupIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      groupId_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object msgId_ = "";
+    /**
+     * <code>string msgId = 6;</code>
+     * @return The msgId.
+     */
+    public java.lang.String getMsgId() {
+      java.lang.Object ref = msgId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        msgId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string msgId = 6;</code>
+     * @return The bytes for msgId.
+     */
+    public com.google.protobuf.ByteString
+        getMsgIdBytes() {
+      java.lang.Object ref = msgId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        msgId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string msgId = 6;</code>
+     * @param value The msgId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMsgId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      msgId_ = value;
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string msgId = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMsgId() {
+      msgId_ = getDefaultInstance().getMsgId();
+      bitField0_ = (bitField0_ & ~0x00000020);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string msgId = 6;</code>
+     * @param value The bytes for msgId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMsgIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      msgId_ = value;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
 
     private int seq_ ;
     /**
-     * <code>int32 seq = 5;</code>
+     * <code>int32 seq = 7;</code>
      * @return The seq.
      */
     @java.lang.Override
@@ -971,31 +1335,63 @@ private static final long serialVersionUID = 0L;
       return seq_;
     }
     /**
-     * <code>int32 seq = 5;</code>
+     * <code>int32 seq = 7;</code>
      * @param value The seq to set.
      * @return This builder for chaining.
      */
     public Builder setSeq(int value) {
 
       seq_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 seq = 5;</code>
+     * <code>int32 seq = 7;</code>
      * @return This builder for chaining.
      */
     public Builder clearSeq() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000040);
       seq_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int ack_ ;
+    /**
+     * <code>int32 ack = 8;</code>
+     * @return The ack.
+     */
+    @java.lang.Override
+    public int getAck() {
+      return ack_;
+    }
+    /**
+     * <code>int32 ack = 8;</code>
+     * @param value The ack to set.
+     * @return This builder for chaining.
+     */
+    public Builder setAck(int value) {
+
+      ack_ = value;
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 ack = 8;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearAck() {
+      bitField0_ = (bitField0_ & ~0x00000080);
+      ack_ = 0;
       onChanged();
       return this;
     }
 
     private java.lang.Object content_ = "";
     /**
-     * <code>string content = 6;</code>
+     * <code>string content = 9;</code>
      * @return The content.
      */
     public java.lang.String getContent() {
@@ -1011,7 +1407,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string content = 6;</code>
+     * <code>string content = 9;</code>
      * @return The bytes for content.
      */
     public com.google.protobuf.ByteString
@@ -1028,7 +1424,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string content = 6;</code>
+     * <code>string content = 9;</code>
      * @param value The content to set.
      * @return This builder for chaining.
      */
@@ -1036,22 +1432,22 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       content_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000100;
       onChanged();
       return this;
     }
     /**
-     * <code>string content = 6;</code>
+     * <code>string content = 9;</code>
      * @return This builder for chaining.
      */
     public Builder clearContent() {
       content_ = getDefaultInstance().getContent();
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000100);
       onChanged();
       return this;
     }
     /**
-     * <code>string content = 6;</code>
+     * <code>string content = 9;</code>
      * @param value The bytes for content to set.
      * @return This builder for chaining.
      */
@@ -1060,28 +1456,28 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       content_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000100;
       onChanged();
       return this;
     }
 
-    // @@protoc_insertion_point(builder_scope:com.hibob.anyim.netty.protobuf.ChatBody)
+    // @@protoc_insertion_point(builder_scope:com.hibob.anyim.netty.protobuf.Body)
   }
 
-  // @@protoc_insertion_point(class_scope:com.hibob.anyim.netty.protobuf.ChatBody)
-  private static final com.hibob.anyim.netty.protobuf.ChatBody DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:com.hibob.anyim.netty.protobuf.Body)
+  private static final com.hibob.anyim.netty.protobuf.Body DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new com.hibob.anyim.netty.protobuf.ChatBody();
+    DEFAULT_INSTANCE = new com.hibob.anyim.netty.protobuf.Body();
   }
 
-  public static com.hibob.anyim.netty.protobuf.ChatBody getDefaultInstance() {
+  public static com.hibob.anyim.netty.protobuf.Body getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<ChatBody>
-      PARSER = new com.google.protobuf.AbstractParser<ChatBody>() {
+  private static final com.google.protobuf.Parser<Body>
+      PARSER = new com.google.protobuf.AbstractParser<Body>() {
     @java.lang.Override
-    public ChatBody parsePartialFrom(
+    public Body parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1100,17 +1496,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<ChatBody> parser() {
+  public static com.google.protobuf.Parser<Body> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<ChatBody> getParserForType() {
+  public com.google.protobuf.Parser<Body> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.hibob.anyim.netty.protobuf.ChatBody getDefaultInstanceForType() {
+  public com.hibob.anyim.netty.protobuf.Body getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

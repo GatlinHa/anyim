@@ -35,15 +35,10 @@ public final class MsgOuterClass {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_hibob_anyim_netty_protobuf_Header_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_hibob_anyim_netty_protobuf_ChatBody_descriptor;
+    internal_static_com_hibob_anyim_netty_protobuf_Body_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_com_hibob_anyim_netty_protobuf_ChatBody_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_hibob_anyim_netty_protobuf_GroupChatBody_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_com_hibob_anyim_netty_protobuf_GroupChatBody_fieldAccessorTable;
+      internal_static_com_hibob_anyim_netty_protobuf_Body_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_hibob_anyim_netty_protobuf_Extension_descriptor;
   static final 
@@ -64,30 +59,28 @@ public final class MsgOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n\tmsg.proto\022\036com.hibob.anyim.netty.proto" +
-      "buf\"\234\002\n\003Msg\0226\n\006header\030\001 \001(\0132&.com.hibob." +
-      "anyim.netty.protobuf.Header\022<\n\010chatBody\030" +
-      "\002 \001(\0132(.com.hibob.anyim.netty.protobuf.C" +
-      "hatBodyH\000\022F\n\rgroupChatBody\030\003 \001(\0132-.com.h" +
-      "ibob.anyim.netty.protobuf.GroupChatBodyH" +
-      "\000\022A\n\textension\030c \001(\0132).com.hibob.anyim.n" +
-      "etty.protobuf.ExtensionH\001\210\001\001B\006\n\004bodyB\014\n\n" +
-      "_extension\"w\n\006Header\022\r\n\005magic\030\001 \001(\005\022\017\n\007v" +
-      "ersion\030\002 \001(\005\0228\n\007msgType\030\003 \001(\0162\'.com.hibo" +
-      "b.anyim.netty.protobuf.MsgType\022\023\n\013isExte" +
-      "nsion\030\004 \001(\010\"f\n\010ChatBody\022\016\n\006fromId\030\001 \001(\t\022" +
-      "\017\n\007fromDev\030\002 \001(\t\022\014\n\004toId\030\003 \001(\t\022\r\n\005toDev\030" +
-      "\004 \001(\t\022\013\n\003seq\030\005 \001(\005\022\017\n\007content\030\006 \001(\t\"a\n\rG" +
-      "roupChatBody\022\016\n\006fromId\030\001 \001(\t\022\017\n\007fromDev\030" +
-      "\002 \001(\t\022\021\n\ttoGroupId\030\003 \001(\t\022\013\n\003seq\030\004 \001(\005\022\017\n" +
-      "\007content\030\005 \001(\t\"\223\001\n\tExtension\022Q\n\014extensio" +
-      "nMap\030\001 \003(\0132;.com.hibob.anyim.netty.proto" +
-      "buf.Extension.ExtensionMapEntry\0323\n\021Exten" +
-      "sionMapEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t" +
-      ":\0028\001*}\n\007MsgType\022\t\n\005HELLO\020\000\022\016\n\nHEART_BEAT" +
-      "\020\001\022\010\n\004CHAT\020\002\022\016\n\nGROUP_CHAT\020\003\022\026\n\022CLOSE_BY" +
-      "_READ_IDLE\020\n\022\030\n\024CLOSE_BY_ERROR_MAGIC\020\013\022\013" +
-      "\n\007DEFAULT\020cB\"\n\036com.hibob.anyim.netty.pro" +
-      "tobufP\001b\006proto3"
+      "buf\"\302\001\n\003Msg\0226\n\006header\030\001 \001(\0132&.com.hibob." +
+      "anyim.netty.protobuf.Header\0222\n\004body\030\002 \001(" +
+      "\0132$.com.hibob.anyim.netty.protobuf.Body\022" +
+      "A\n\textension\030c \001(\0132).com.hibob.anyim.net" +
+      "ty.protobuf.ExtensionH\000\210\001\001B\014\n\n_extension" +
+      "\"w\n\006Header\022\r\n\005magic\030\001 \001(\005\022\017\n\007version\030\002 \001" +
+      "(\005\0228\n\007msgType\030\003 \001(\0162\'.com.hibob.anyim.ne" +
+      "tty.protobuf.MsgType\022\023\n\013isExtension\030\004 \001(" +
+      "\010\"\306\001\n\004Body\022\016\n\006fromId\030\001 \001(\t\022\022\n\nfromClient" +
+      "\030\002 \001(\t\022\021\n\004toId\030\003 \001(\tH\000\210\001\001\022\025\n\010toClient\030\004 " +
+      "\001(\tH\001\210\001\001\022\024\n\007groupId\030\005 \001(\tH\002\210\001\001\022\r\n\005msgId\030" +
+      "\006 \001(\t\022\013\n\003seq\030\007 \001(\005\022\013\n\003ack\030\010 \001(\005\022\017\n\007conte" +
+      "nt\030\t \001(\tB\007\n\005_toIdB\013\n\t_toClientB\n\n\010_group" +
+      "Id\"\223\001\n\tExtension\022Q\n\014extensionMap\030\001 \003(\0132;" +
+      ".com.hibob.anyim.netty.protobuf.Extensio" +
+      "n.ExtensionMapEntry\0323\n\021ExtensionMapEntry" +
+      "\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001*}\n\007MsgT" +
+      "ype\022\t\n\005HELLO\020\000\022\016\n\nHEART_BEAT\020\001\022\010\n\004CHAT\020\002" +
+      "\022\016\n\nGROUP_CHAT\020\003\022\026\n\022CLOSE_BY_READ_IDLE\020\n" +
+      "\022\030\n\024CLOSE_BY_ERROR_MAGIC\020\013\022\013\n\007DEFAULT\020cB" +
+      "\"\n\036com.hibob.anyim.netty.protobufP\001b\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -98,27 +91,21 @@ public final class MsgOuterClass {
     internal_static_com_hibob_anyim_netty_protobuf_Msg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_hibob_anyim_netty_protobuf_Msg_descriptor,
-        new java.lang.String[] { "Header", "ChatBody", "GroupChatBody", "Extension", "Body", });
+        new java.lang.String[] { "Header", "Body", "Extension", });
     internal_static_com_hibob_anyim_netty_protobuf_Header_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_hibob_anyim_netty_protobuf_Header_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_hibob_anyim_netty_protobuf_Header_descriptor,
         new java.lang.String[] { "Magic", "Version", "MsgType", "IsExtension", });
-    internal_static_com_hibob_anyim_netty_protobuf_ChatBody_descriptor =
+    internal_static_com_hibob_anyim_netty_protobuf_Body_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_com_hibob_anyim_netty_protobuf_ChatBody_fieldAccessorTable = new
+    internal_static_com_hibob_anyim_netty_protobuf_Body_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_com_hibob_anyim_netty_protobuf_ChatBody_descriptor,
-        new java.lang.String[] { "FromId", "FromDev", "ToId", "ToDev", "Seq", "Content", });
-    internal_static_com_hibob_anyim_netty_protobuf_GroupChatBody_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_com_hibob_anyim_netty_protobuf_GroupChatBody_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_com_hibob_anyim_netty_protobuf_GroupChatBody_descriptor,
-        new java.lang.String[] { "FromId", "FromDev", "ToGroupId", "Seq", "Content", });
+        internal_static_com_hibob_anyim_netty_protobuf_Body_descriptor,
+        new java.lang.String[] { "FromId", "FromClient", "ToId", "ToClient", "GroupId", "MsgId", "Seq", "Ack", "Content", });
     internal_static_com_hibob_anyim_netty_protobuf_Extension_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_com_hibob_anyim_netty_protobuf_Extension_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_hibob_anyim_netty_protobuf_Extension_descriptor,

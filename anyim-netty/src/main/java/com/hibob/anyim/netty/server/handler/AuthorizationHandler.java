@@ -37,7 +37,7 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
         String uniqueId = CommonUtil.conUniqueId(msg.headers().get("account"), msg.headers().get("clientId"));
         String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         String value = (String) redisTemplate.opsForValue().get(key);
-        String cacheToken = JSON.parseObject(value).getString("token");
+        String cacheToken = StringUtils.hasLength(value) ? JSON.parseObject(value).getString("token") : "";
         if (!StringUtils.hasLength(uri)
                 || !StringUtils.hasLength(token)
                 || !StringUtils.hasLength(uniqueId)
@@ -50,7 +50,7 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
             ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
         }
 
-        String channelKey = RedisKey.NETTY_GLOBAL_ROUTE + token;
+        String channelKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
         // 登录过了就不要重复登录了，1800s登录一次
         if (redisTemplate.hasKey(channelKey)) {
             log.info("Repeated login");
