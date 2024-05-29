@@ -35,8 +35,8 @@ drop table `anyim_user_login`;
 CREATE TABLE `anyim_user_login`(
     `account` VARCHAR(255) NOT NULL COMMENT '账号',
     `unique_id` VARCHAR(255) NOT NULL COMMENT '客户端唯一ID，account+|+客户端生成的uuid',
-    `login_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '登录时间',
-    `refresh_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '刷新token时间',
-    `logout_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '登出时间',
+    `login_time` DATETIME DEFAULT NULL COMMENT '登录时间',
+    `refresh_time` DATETIME DEFAULT NULL COMMENT '刷新token时间',
+    `logout_time` DATETIME DEFAULT NULL COMMENT '登出时间',
     INDEX `idx_account`(account)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '登录记录表';
