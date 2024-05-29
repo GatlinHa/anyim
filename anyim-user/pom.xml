@@ -56,10 +56,6 @@
             <artifactId>dubbo</artifactId>
             <version>${org.apache.dubbo-version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-client</artifactId>
-        </dependency>
 
     </dependencies>
 
