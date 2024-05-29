@@ -51,6 +51,7 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
         }
 
         String channelKey = RedisKey.NETTY_GLOBAL_ROUTE + token;
+        // 登录过了就不要重复登录了，1800s登录一次
         if (redisTemplate.hasKey(channelKey)) {
             log.info("Repeated login");
             HttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, FORBIDDEN, ByteBufAllocator.DEFAULT.heapBuffer());

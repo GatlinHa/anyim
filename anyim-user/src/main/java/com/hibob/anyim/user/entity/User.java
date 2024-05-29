@@ -10,7 +10,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("anyim_user")
+@TableName("anyim_user_info")
 public class User extends Model<User> {
 
     private static final long serialVersionUID = 1L;

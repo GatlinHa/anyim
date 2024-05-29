@@ -6,6 +6,8 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
+import static com.hibob.anyim.common.constants.Const.SPLIT_V;
+
 @Slf4j
 public class CommonUtil {
 
@@ -14,7 +16,7 @@ public class CommonUtil {
     }
 
     public static String conUniqueId(String account, String clientId) {
-        return account + "|" + clientId;
+        return account + SPLIT_V + clientId;
     }
 
     /**

@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+import static com.hibob.anyim.common.constants.Const.SPLIT_C;
+
 @Configuration
 @Data
 public class NacosConfig implements InitializingBean {
@@ -41,7 +43,7 @@ public class NacosConfig implements InitializingBean {
     }
 
     public String getInstance() {
-        return CommonUtil.getLocalIp() + ":" + port;
+        return CommonUtil.getLocalIp() + SPLIT_C + port;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class NacosConfig implements InitializingBean {
     public boolean isValidInstance(String instance) throws NacosException {
         List<Instance> nettyInstances = getNettyInstances();
         for (Instance ins : nettyInstances) {
-            String s = ins.getIp() + ":" + ins.getPort();
+            String s = ins.getIp() + SPLIT_C + ins.getPort();
             if (s.equals(instance)) {
                 return true;
             }

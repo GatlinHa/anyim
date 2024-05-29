@@ -16,4 +16,15 @@ public class Const {
      */
     public static final int SERVICE_CODE_NETTY = 300;
 
+
+    /**
+     * 分隔符：竖线
+     */
+    public static final String SPLIT_V = "|";
+
+    /**
+     * 分隔符：冒号
+     */
+    public static final String SPLIT_C = ":";
+
 }

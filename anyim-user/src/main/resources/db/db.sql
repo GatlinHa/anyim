@@ -1,6 +1,6 @@
 use `anyim`;
-drop table `anyim_user`;
-CREATE TABLE `anyim_user`(
+drop table `anyim_user_info`;
+CREATE TABLE `anyim_user_info`(
     `id` BIGINT NOT NULL PRIMARY KEY  COMMENT 'id，雪花算法生成',
     `account` VARCHAR(255) NOT NULL COMMENT '账号，用户不指定就生成UUID',
     `nick_name` VARCHAR(255) NOT NULL COMMENT '用户昵称',
@@ -17,7 +17,8 @@ CREATE TABLE `anyim_user`(
     INDEX `idx_nick_name`(nick_name)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户信息表';
 
-CREATE TABLE `anyim_client`(
+drop table `anyim_user_client`;
+CREATE TABLE `anyim_user_client`(
     `unique_id` VARCHAR(255) NOT NULL COMMENT '客户端唯一ID，account+|+客户端生成的uuid',
     `account` VARCHAR(255) NOT NULL COMMENT '账号',
     `client_type` TINYINT(1) DEFAULT -1 COMMENT '客户端类型 0:android 1:ios 2:web -1:未知',
@@ -28,3 +29,14 @@ CREATE TABLE `anyim_client`(
     PRIMARY KEY(`unique_id`),
     INDEX `idx_account`(account)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '客户端表';
+
+-- TODO 需要做老化处理
+drop table `anyim_user_login`;
+CREATE TABLE `anyim_user_login`(
+    `account` VARCHAR(255) NOT NULL COMMENT '账号',
+    `unique_id` VARCHAR(255) NOT NULL COMMENT '客户端唯一ID，account+|+客户端生成的uuid',
+    `login_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '登录时间',
+    `refresh_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '刷新token时间',
+    `logout_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '登出时间',
+    INDEX `idx_account`(account)
+) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '登录记录表';

@@ -42,9 +42,13 @@ public class RedisKey {
     public static final String USER_REQ_RECORD = USER_PREFIX + "reqRecord:";
 
     /**
-     * Netty在活全局路由表的Key
+     * Netty在活全局路由表的Key，后面接uniqueId，value是netty的实例名
      */
     public static final String NETTY_GLOBAL_ROUTE = NETTY_PREFIX + "route:";
 
+    /**
+     * Netty在线客户端，后面接账号，value是uniqueId的集合
+     */
+    public static final String NETTY_ONLINE_CLIENT = NETTY_PREFIX + "online:";
 
 }

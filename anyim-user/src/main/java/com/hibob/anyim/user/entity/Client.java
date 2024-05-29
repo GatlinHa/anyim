@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.util.Date;
 
 @Data
-@TableName("anyim_client")
+@TableName("anyim_user_client")
 public class Client extends Model<Client> {
     private static final long serialVersionUID = 1L;
 

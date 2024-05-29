@@ -17,6 +17,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.time.Duration;
 import java.util.List;
 
+import static com.hibob.anyim.common.constants.Const.SPLIT_C;
+import static com.hibob.anyim.common.constants.Const.SPLIT_V;
 import static com.hibob.anyim.netty.server.ws.WebSocketServer.getLocalRoute;
 
 
@@ -34,20 +36,16 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
     protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
         log.info("MsgServerHandler receive a Msg {}", msg);
         readIdleTime = 0;
-        String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.KEY_UNIQUE_ID)).get();
-        String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
-        if (!validateMagic(ctx, msg, routeKey)) return;
+        if (!validateMagic(ctx, msg)) return;
 
         MsgType msgType = msg.getHeader().getMsgType();
         Header header;
         Msg msgOut;
         log.info("message type is: {}", msgType);
-        NacosConfig nacosConfig = SpringContextUtil.getBean(NacosConfig.class);
+
         switch (msgType) {
             case HELLO:
-                String instance = CommonUtil.getLocalIp() + ":" + nacosConfig.getPort();
-                redisTemplate.opsForValue().set(routeKey, instance, Duration.ofSeconds(Const.CHANNEL_EXPIRE));
-                getLocalRoute().put(routeKey, ctx.channel());
+                writeCache(ctx);
                 header = Header.newBuilder()
                         .setMagic(Const.MAGIC)
                         .setVersion(0)
@@ -91,9 +89,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
             default:
                 break;
         }
-
     }
-
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -119,8 +115,8 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
             ctx.writeAndFlush(msg);
             ctx.close().addListener(future -> {
                 if (future.isSuccess()) {
-                    log.info("close channel success.");
-                    // TODO 要删除路由表记录
+                    clearCache(ctx);
+                    log.info("close channel and clear cache success.");
                 } else {
                     log.info("close channel failed. cause is {}", future.cause());
                 }
@@ -128,8 +124,21 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
         }
     }
 
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        clearCache(ctx);
+        super.channelInactive(ctx);
+    }
 
-    private boolean validateMagic(ChannelHandlerContext ctx, Msg msg, String routeKey) {
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        log.error("MsgServerHandler catch a exception: ", cause.getMessage());
+        super.exceptionCaught(ctx, cause);
+    }
+
+    private boolean validateMagic(ChannelHandlerContext ctx, Msg msg) {
+        String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.KEY_UNIQUE_ID)).get();
+        String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
         int magic = msg.getHeader().getMagic();
         if (magic != Const.MAGIC) {
             // 非法消息，直接关闭连接
@@ -144,8 +153,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
             ctx.writeAndFlush(msgOut);
             ctx.close().addListener(future -> {
                 if (future.isSuccess()) {
-                    redisTemplate.delete(routeKey);
-                    getLocalRoute().remove(routeKey);
+                    clearCache(ctx);
                     log.info("close channel success.");
                 } else {
                     log.info("close channel failed. cause is {}", future.cause());
@@ -154,6 +162,29 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
             return false;
         }
         return true;
+    }
+
+    private void writeCache(ChannelHandlerContext ctx) {
+        NacosConfig nacosConfig = SpringContextUtil.getBean(NacosConfig.class);
+        String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.KEY_UNIQUE_ID)).get();
+        String account = uniqueId.split(SPLIT_V)[0];
+        String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
+        String onlineKey = RedisKey.NETTY_ONLINE_CLIENT + account;
+        String instance = CommonUtil.getLocalIp() + SPLIT_C + nacosConfig.getPort();
+        redisTemplate.opsForValue().set(routeKey, instance, Duration.ofSeconds(Const.CHANNEL_EXPIRE));
+        redisTemplate.opsForSet().add(onlineKey, uniqueId);
+        redisTemplate.expire(onlineKey, Duration.ofSeconds(Const.CACHE_ONLINE_EXPIRE));
+        getLocalRoute().put(routeKey, ctx.channel());
+    }
+
+    private void clearCache(ChannelHandlerContext ctx) {
+        String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.KEY_UNIQUE_ID)).get();
+        String account = uniqueId.split(SPLIT_V)[0];
+        String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
+        String onlineKey = RedisKey.NETTY_ONLINE_CLIENT + account;
+        redisTemplate.delete(routeKey);
+        redisTemplate.opsForSet().remove(onlineKey, uniqueId);
+        getLocalRoute().remove(routeKey);
     }
 
 }

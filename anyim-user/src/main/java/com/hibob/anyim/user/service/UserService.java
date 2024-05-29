@@ -15,9 +15,11 @@ import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.dto.vo.TokensVO;
 import com.hibob.anyim.user.dto.vo.UserVO;
 import com.hibob.anyim.user.entity.Client;
+import com.hibob.anyim.user.entity.Login;
 import com.hibob.anyim.user.entity.User;
 import com.hibob.anyim.user.enums.ServiceErrorCode;
 import com.hibob.anyim.user.mapper.ClientMapper;
+import com.hibob.anyim.user.mapper.LoginMapper;
 import com.hibob.anyim.user.mapper.UserMapper;
 import com.hibob.anyim.user.session.UserSession;
 import com.hibob.anyim.user.config.JwtProperties;
@@ -44,6 +46,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     private final JwtProperties jwtProperties;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ClientMapper clientMapper;
+    private final LoginMapper loginMapper;
 
     public ResponseEntity<IMHttpResponse> validateAccount(ValidateAccountReq dto) {
         log.info("LoginService--validateAccount");
@@ -87,6 +90,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         String uniqueId = CommonUtil.conUniqueId(account, clientId);
         this.remove(Wrappers.<User>lambdaQuery().eq(User::getAccount, account));
         deleteClient(account);
+        deleteLogin(account);
 
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN + uniqueId);
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId);
@@ -126,6 +130,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         else {
             updateClient(uniqueId);
         }
+        insertLogin(account, uniqueId);
 
         String accessToken = JwtUtil.generateToken(
                 user.getAccount(),
@@ -168,6 +173,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         String uniqueId = CommonUtil.conUniqueId(session.getAccount(), session.getClientId());
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN + uniqueId);
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId);
+        updateLogin(uniqueId, 0);
 
         return ResultUtil.success();
     }
@@ -213,6 +219,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         String uniqueId = CommonUtil.conUniqueId(account, client);
         String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         redisTemplate.opsForValue().set(key, JSON.toJSONString(vo), Duration.ofSeconds(jwtProperties.getAccessTokenExpire()));
+        updateLogin(uniqueId, 1);
 
         HashMap<String, TokensVO> map = new HashMap<>();
         map.put("accessToken", vo);
@@ -327,6 +334,35 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         LambdaUpdateWrapper<Client> deleteWrapper = Wrappers.lambdaUpdate();
         deleteWrapper.eq(Client::getAccount, account);
         return clientMapper.delete(deleteWrapper);
+    }
+
+    private int insertLogin(String account, String uniqueId) {
+        Login login = new Login();
+        login.setAccount(account);
+        login.setUniqueId(uniqueId);
+        login.setLoginTime(new Date(System.currentTimeMillis()));
+        return loginMapper.insert(login);
+    }
+
+    private int updateLogin(String uniqueId, int op) {
+        LambdaUpdateWrapper<Login> updateWrapper = Wrappers.lambdaUpdate();
+        if (op == 0) {
+            updateWrapper.set(Login::getLogoutTime, new Date(System.currentTimeMillis()));
+        }
+        else if (op == 1) {
+            updateWrapper.set(Login::getRefreshTime, new Date(System.currentTimeMillis()));
+        }
+        else {
+            return 0;
+        }
+        updateWrapper.eq(Login::getUniqueId, uniqueId);
+        return loginMapper.update(updateWrapper);
+    }
+
+    private int deleteLogin(String account) {
+        LambdaUpdateWrapper<Login> deleteWrapper = Wrappers.lambdaUpdate();
+        deleteWrapper.eq(Login::getAccount, account);
+        return loginMapper.delete(deleteWrapper);
     }
     
 }

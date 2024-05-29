@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.Instant;
 
+import static com.hibob.anyim.common.constants.Const.SPLIT_V;
+
 /**
  * 认证拦截器：1.认证签名，2.认证token
  */
@@ -94,7 +96,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        String redisKey = RedisKey.USER_REQ_RECORD + uniqueId + "|" + traceId;
+        String redisKey = RedisKey.USER_REQ_RECORD + uniqueId + SPLIT_V + traceId;
         if (redisTemplate.hasKey(redisKey)) {
             log.error("重复的请求，url:{}", request.getRequestURI());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
