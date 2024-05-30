@@ -1,5 +1,6 @@
 package com.hibob.anyim.netty.config;
 
+import com.hibob.anyim.netty.protobuf.Msg;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -23,15 +24,15 @@ public class KafkaConfig {
     private final KafkaProperties kafkaProperties;
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory,
-           ProducerListener<String, String> producerListener) {
-        KafkaTemplate<String, String> kafkaTemplate = new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, Msg> kafkaTemplate(ProducerFactory<String, Msg> producerFactory,
+                                                    ProducerListener<String, Msg> producerListener) {
+        KafkaTemplate<String, Msg> kafkaTemplate = new KafkaTemplate<>(producerFactory());
         kafkaTemplate.setProducerListener(producerListener);
         return kafkaTemplate;
     }
 
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
+    public ProducerFactory<String, Msg> producerFactory() {
         return new DefaultKafkaProducerFactory<>(kafkaProperties.buildProducerProperties());
     }
 
@@ -40,15 +41,15 @@ public class KafkaConfig {
      * @return
      */
     @Bean
-    public ProducerListener<String, String> producerListener() {
-        return new ProducerListener<String, String>() {
+    public ProducerListener<String, Msg> producerListener() {
+        return new ProducerListener<String, Msg>() {
             @Override
-            public void onSuccess(ProducerRecord<String, String> producerRecord, RecordMetadata recordMetadata) {
+            public void onSuccess(ProducerRecord<String, Msg> producerRecord, RecordMetadata recordMetadata) {
                 log.info("发送成功");
             }
 
             @Override
-            public void onError(ProducerRecord<String, String> producerRecord, RecordMetadata recordMetadata, Exception exception) {
+            public void onError(ProducerRecord<String, Msg> producerRecord, RecordMetadata recordMetadata, Exception exception) {
                 log.error("发送失败");
             }
         };

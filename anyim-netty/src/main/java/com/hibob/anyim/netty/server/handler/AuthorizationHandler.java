@@ -52,11 +52,12 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
 
         String channelKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
         // 登录过了就不要重复登录了，1800s登录一次
-        if (redisTemplate.hasKey(channelKey)) {
-            log.info("Repeated login");
-            HttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, FORBIDDEN, ByteBufAllocator.DEFAULT.heapBuffer());
-            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
-        }
+        //TODO 调试中，允许重复的登录
+//        if (redisTemplate.hasKey(channelKey)) {
+//            log.info("Repeated login");
+//            HttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, FORBIDDEN, ByteBufAllocator.DEFAULT.heapBuffer());
+//            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+//        }
 
         log.info("Authorization validate success");
         ctx.channel().attr(AttributeKey.valueOf(Const.KEY_UNIQUE_ID)).set(uniqueId);

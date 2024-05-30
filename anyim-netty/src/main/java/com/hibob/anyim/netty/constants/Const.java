@@ -10,7 +10,7 @@ public class Const {
 
     public static final String KEY_UNIQUE_ID = "uniqueId";
 
-    public static final int CHANNEL_EXPIRE = 60; // 默认1800 TODO 这里先写小方便测试
+    public static final int CHANNEL_EXPIRE = 1800;
     public static final int CACHE_ONLINE_EXPIRE = 3600;
 
 

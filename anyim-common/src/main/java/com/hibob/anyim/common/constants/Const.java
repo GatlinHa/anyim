@@ -18,9 +18,9 @@ public class Const {
 
 
     /**
-     * 分隔符：竖线
+     * 分隔符：@
      */
-    public static final String SPLIT_V = "|";
+    public static final String SPLIT_V = "@";
 
     /**
      * 分隔符：冒号

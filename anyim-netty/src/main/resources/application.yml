@@ -29,7 +29,7 @@ spring:
       # key的序列化类
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       # value的序列化类
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: com.hibob.anyim.netty.mq.kafka.SerializerMsg
       # 生产者生成的所有数据的压缩类型，此配置接受标准压缩编解码器（'gzip'，'snappy'，'lz4'，'zstd'）
       # 默认为none
       compression-type: none
@@ -44,7 +44,7 @@ spring:
       # none：如果整个消费者组中没有以往的offset，则抛出异常
       auto-offset-reset: latest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer # message的key的解码类
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer # message的value的解码类
+      value-deserializer: com.hibob.anyim.netty.mq.kafka.DeserializerMsg # message的value的解码类
       max-poll-records: 500 # 单次消费获取数据的最大条数
       # 每次fetch请求时，server应该返回的最小字节数。
       # 如果没有足够的数据返回，请求会等待，直到足够的数据才会返回。默认值为1，单位bytes

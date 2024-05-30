@@ -30,13 +30,14 @@ public class UserRpcServiceImpl implements UserRpcService {
         log.info("UserRpcServiceImpl::queryOnline start......");
         LambdaQueryWrapper<Login> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper
+                .select(Login::getUniqueId)
                 .eq(Login::getAccount, account)
                 .isNotNull(Login::getLoginTime)
                 .isNull(Login::getLogoutTime)
                 .and(wrapper -> wrapper.isNull(Login::getRefreshTime)
                                 .or()
-                                .lt(Login::getRefreshTime, LocalDateTime.now().minusSeconds(jwtProperties.getAccessTokenExpire())));
-
+                                .lt(Login::getRefreshTime, LocalDateTime.now().minusSeconds(jwtProperties.getAccessTokenExpire())))
+                .groupBy(Login::getUniqueId);
         List<String> list = new ArrayList<>();
         loginMapper.selectList(queryWrapper).forEach(x -> {
             list.add(x.getUniqueId());

@@ -15,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
-import java.util.UUID;
 
 @Slf4j
 public final class JwtUtil {

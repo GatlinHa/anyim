@@ -5,6 +5,7 @@ import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.netty.config.NacosConfig;
 import com.hibob.anyim.netty.constants.Const;
+import com.hibob.anyim.netty.mq.kafka.KafkaProducer;
 import com.hibob.anyim.netty.protobuf.*;
 import com.hibob.anyim.netty.rpc.RpcClient;
 import com.hibob.anyim.netty.utils.SpringContextUtil;
@@ -16,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Set;
 
 import static com.hibob.anyim.common.constants.Const.SPLIT_C;
@@ -36,7 +36,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
-        log.info("MsgServerHandler receive a Msg {}", msg);
+        log.info("MsgServerHandler receive a Msg\n{}", msg);
         readIdleTime = 0;
         if (!validateMagic(ctx, msg)) return;
 
@@ -67,57 +67,53 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
                 break;
             case CHAT:
                 String fromId = msg.getBody().getFromId();
-                String fromDev = msg.getBody().getFromClient();
-                String fromUniqueId = CommonUtil.conUniqueId(fromId, fromDev);
-                String fromRouteKey = RedisKey.NETTY_GLOBAL_ROUTE + fromUniqueId;
-                String toId = msg.getBody().getToId();
-                String toDev = msg.getBody().getToClient();
-                String toUniqueId = CommonUtil.conUniqueId(toId, toDev);
-                String toRouteKey = RedisKey.NETTY_GLOBAL_ROUTE + toUniqueId;
+                String fromClient = msg.getBody().getFromClient();
+                String toId = msg.getBody().getToId(); //端侧发过来的消息，也不知道要发给哪个client，所以没填toClient
 
-                msgOut = Msg.newBuilder(msg).build();
                 // 扩散给自己的其他客户端
-                Set<Object> fromOnline = queryOnlineClient(fromId);
-                fromOnline.remove(fromUniqueId); //移除自己
+                Set<Object> fromOnlineClients = queryOnlineClient(fromId);
+                fromOnlineClients.remove(CommonUtil.conUniqueId(fromId, fromClient)); //移除发消息这个client
                 NacosConfig nacosConfig = SpringContextUtil.getBean(NacosConfig.class);
-                for (Object uniqueId : fromOnline) {
-                    String client = ((String) uniqueId).split(SPLIT_V)[1];
-                    String selfRouteKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
-                    msgOut.getBody().toBuilder() //修改发给本账号其它client的toId和toDev
+                for (Object fromUniqueId : fromOnlineClients) {
+                    msgOut = Msg.newBuilder(msg).setBody(msg.getBody().toBuilder() //修改发给本账号其它client的toId和toClient
                             .setToId(fromId)
-                            .setToClient(client)
-                            .build();
-                    String instance = (String)redisTemplate.opsForValue().get(selfRouteKey);
+                            .setToClient(((String) fromUniqueId).split(SPLIT_V)[1])
+                            .build()).build();
+
+                    String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + fromUniqueId;
+                    String instance = (String)redisTemplate.opsForValue().get(routeKey);
+                    if (!nacosConfig.isValidInstance(instance)) continue; // 如果目标实例不在注册中心，则不发送
                     if (instance.equals(nacosConfig.getInstance())) { // 如果目标实例就是本机，则找到对应的channel
-                        getLocalRoute().get(selfRouteKey).writeAndFlush(msgOut);
+                        getLocalRoute().get(routeKey).writeAndFlush(msgOut);
                         continue;
                     }
-
-                    String topic = nacosConfig.getToTopic(instance);
-                    // TODO 发MQ消息出去
+                    KafkaProducer producer = SpringContextUtil.getBean(KafkaProducer.class);
+                    producer.sendMessage(instance, msgOut);
                 }
-                Set<Object> toOnline = queryOnlineClient(toId);
 
+                if (fromId.equals(toId)) { //自发自收，只同步（上面逻辑就是同步），不发送（不给toId发送）
+                    break;
+                }
 
+                // 扩散给接收端的客户端
+                Set<Object> toOnlineClients = queryOnlineClient(toId);
+                toOnlineClients.remove(CommonUtil.conUniqueId(fromId, fromClient));
+                for (Object toUniqueId : toOnlineClients) {
+                    msgOut = Msg.newBuilder(msg).setBody(msg.getBody().toBuilder()
+                            .setToId(toId)
+                            .setToClient(((String) toUniqueId).split(SPLIT_V)[1])
+                            .build()).build();
 
-                // TODO 这里要校验接收端的netty实例在注册中心是否是有效的
-//                nacosConfig.isValidInstance(instance);
-                headerOut = Header.newBuilder()
-                        .setMagic(Const.MAGIC)
-                        .setVersion(0)
-                        .setMsgType(MsgType.CHAT)
-                        .setIsExtension(false)
-                        .build();
-                Body body = Body.newBuilder()
-                        .setFromId("1")
-                        .setFromClient("1")
-                        .setToId("2")
-                        .setToClient("2")
-                        .setSeq(1)
-                        .setContent("test")
-                        .build();
-                msgOut = Msg.newBuilder().setHeader(headerOut).setBody(body).build();
-                ctx.writeAndFlush(msgOut);
+                    String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + toUniqueId;
+                    String instance = (String)redisTemplate.opsForValue().get(routeKey);
+                    if (!nacosConfig.isValidInstance(instance)) continue; // 如果目标实例不在注册中心，则不发送
+                    if (instance.equals(nacosConfig.getInstance())) { // 如果目标实例就是本机，则找到对应的channel
+                        getLocalRoute().get(routeKey).writeAndFlush(msgOut);
+                        continue;
+                    }
+                    KafkaProducer producer = SpringContextUtil.getBean(KafkaProducer.class);
+                    producer.sendMessage(instance, msgOut);
+                }
                 break;
             case GROUP_CHAT:
                 // TODO
@@ -129,34 +125,39 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        IdleStateEvent event = (IdleStateEvent) evt;
-        switch (event.state()) {
-            case READER_IDLE:
-                readIdleTime++;
-                log.info("readIdleTime is {}", readIdleTime);
-                break;
-            default:
-                break;
-        }
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent event = (IdleStateEvent) evt;
+            switch (event.state()) {
+                case READER_IDLE:
+                    readIdleTime++;
+                    log.info("readIdleTime is {}", readIdleTime);
+                    break;
+                default:
+                    break;
+            }
 
-        if (readIdleTime > 3) {
-            log.info("more than three time read idle event, will close channel.");
-            Header header = Header.newBuilder()
-                    .setMagic(Const.MAGIC)
-                    .setVersion(0)
-                    .setMsgType(MsgType.CLOSE_BY_READ_IDLE)
-                    .setIsExtension(false)
-                    .build();
-            Msg msg = Msg.newBuilder().setHeader(header).build();
-            ctx.writeAndFlush(msg);
-            ctx.close().addListener(future -> {
-                if (future.isSuccess()) {
-                    clearCache(ctx);
-                    log.info("close channel and clear cache success.");
-                } else {
-                    log.info("close channel failed. cause is {}", future.cause());
-                }
-            });
+            if (readIdleTime > 3) {
+                log.info("more than three time read idle event, will close channel.");
+                Header header = Header.newBuilder()
+                        .setMagic(Const.MAGIC)
+                        .setVersion(0)
+                        .setMsgType(MsgType.CLOSE_BY_READ_IDLE)
+                        .setIsExtension(false)
+                        .build();
+                Msg msg = Msg.newBuilder().setHeader(header).build();
+                ctx.writeAndFlush(msg);
+                ctx.close().addListener(future -> {
+                    if (future.isSuccess()) {
+                        clearCache(ctx);
+                        log.info("close channel and clear cache success.");
+                    } else {
+                        log.info("close channel failed. cause is {}", future.cause());
+                    }
+                });
+            }
+        }
+        else {
+            super.userEventTriggered(ctx, evt);
         }
     }
 
@@ -168,13 +169,11 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.error("MsgServerHandler catch a exception: ", cause.getMessage());
+        log.error("MsgServerHandler catch a exception: ", cause);
         super.exceptionCaught(ctx, cause);
     }
 
     private boolean validateMagic(ChannelHandlerContext ctx, Msg msg) {
-        String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.KEY_UNIQUE_ID)).get();
-        String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
         int magic = msg.getHeader().getMagic();
         if (magic != Const.MAGIC) {
             // 非法消息，直接关闭连接
@@ -229,12 +228,11 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
         if (members.size() == 0) {
             RpcClient rpc = SpringContextUtil.getBean(RpcClient.class);
             rpc.getUserRpcService().queryOnline(account).forEach(x -> {
+                redisTemplate.opsForSet().add(onlineKey, x);
                 members.add(x);
             });
-            redisTemplate.opsForSet().add(onlineKey, members);
             redisTemplate.expire(onlineKey, Duration.ofSeconds(Const.CACHE_ONLINE_EXPIRE));
         }
-
         return members;
     }
 
