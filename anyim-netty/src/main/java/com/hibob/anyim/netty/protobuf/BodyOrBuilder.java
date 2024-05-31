@@ -84,16 +84,10 @@ public interface BodyOrBuilder extends
       getGroupIdBytes();
 
   /**
-   * <code>string msgId = 6;</code>
+   * <code>int32 msgId = 6;</code>
    * @return The msgId.
    */
-  java.lang.String getMsgId();
-  /**
-   * <code>string msgId = 6;</code>
-   * @return The bytes for msgId.
-   */
-  com.google.protobuf.ByteString
-      getMsgIdBytes();
+  int getMsgId();
 
   /**
    * <code>int32 seq = 7;</code>

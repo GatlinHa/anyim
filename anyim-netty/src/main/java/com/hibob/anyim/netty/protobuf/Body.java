@@ -31,7 +31,6 @@ private static final long serialVersionUID = 0L;
     toId_ = "";
     toClient_ = "";
     groupId_ = "";
-    msgId_ = "";
     content_ = "";
   }
 
@@ -269,42 +268,14 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int MSGID_FIELD_NUMBER = 6;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object msgId_ = "";
+  private int msgId_ = 0;
   /**
-   * <code>string msgId = 6;</code>
+   * <code>int32 msgId = 6;</code>
    * @return The msgId.
    */
   @java.lang.Override
-  public java.lang.String getMsgId() {
-    java.lang.Object ref = msgId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      msgId_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string msgId = 6;</code>
-   * @return The bytes for msgId.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getMsgIdBytes() {
-    java.lang.Object ref = msgId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      msgId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public int getMsgId() {
+    return msgId_;
   }
 
   public static final int SEQ_FIELD_NUMBER = 7;
@@ -397,8 +368,8 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 5, groupId_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(msgId_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 6, msgId_);
+    if (msgId_ != 0) {
+      output.writeInt32(6, msgId_);
     }
     if (seq_ != 0) {
       output.writeInt32(7, seq_);
@@ -433,8 +404,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(5, groupId_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(msgId_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(6, msgId_);
+    if (msgId_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(6, msgId_);
     }
     if (seq_ != 0) {
       size += com.google.protobuf.CodedOutputStream
@@ -481,8 +453,8 @@ private static final long serialVersionUID = 0L;
       if (!getGroupId()
           .equals(other.getGroupId())) return false;
     }
-    if (!getMsgId()
-        .equals(other.getMsgId())) return false;
+    if (getMsgId()
+        != other.getMsgId()) return false;
     if (getSeq()
         != other.getSeq()) return false;
     if (getAck()
@@ -517,7 +489,7 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + getGroupId().hashCode();
     }
     hash = (37 * hash) + MSGID_FIELD_NUMBER;
-    hash = (53 * hash) + getMsgId().hashCode();
+    hash = (53 * hash) + getMsgId();
     hash = (37 * hash) + SEQ_FIELD_NUMBER;
     hash = (53 * hash) + getSeq();
     hash = (37 * hash) + ACK_FIELD_NUMBER;
@@ -660,7 +632,7 @@ private static final long serialVersionUID = 0L;
       toId_ = "";
       toClient_ = "";
       groupId_ = "";
-      msgId_ = "";
+      msgId_ = 0;
       seq_ = 0;
       ack_ = 0;
       content_ = "";
@@ -768,10 +740,8 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000010;
         onChanged();
       }
-      if (!other.getMsgId().isEmpty()) {
-        msgId_ = other.msgId_;
-        bitField0_ |= 0x00000020;
-        onChanged();
+      if (other.getMsgId() != 0) {
+        setMsgId(other.getMsgId());
       }
       if (other.getSeq() != 0) {
         setSeq(other.getSeq());
@@ -835,11 +805,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000010;
               break;
             } // case 42
-            case 50: {
-              msgId_ = input.readStringRequireUtf8();
+            case 48: {
+              msgId_ = input.readInt32();
               bitField0_ |= 0x00000020;
               break;
-            } // case 50
+            } // case 48
             case 56: {
               seq_ = input.readInt32();
               bitField0_ |= 0x00000040;
@@ -1253,74 +1223,34 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object msgId_ = "";
+    private int msgId_ ;
     /**
-     * <code>string msgId = 6;</code>
+     * <code>int32 msgId = 6;</code>
      * @return The msgId.
      */
-    public java.lang.String getMsgId() {
-      java.lang.Object ref = msgId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        msgId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    @java.lang.Override
+    public int getMsgId() {
+      return msgId_;
     }
     /**
-     * <code>string msgId = 6;</code>
-     * @return The bytes for msgId.
-     */
-    public com.google.protobuf.ByteString
-        getMsgIdBytes() {
-      java.lang.Object ref = msgId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        msgId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string msgId = 6;</code>
+     * <code>int32 msgId = 6;</code>
      * @param value The msgId to set.
      * @return This builder for chaining.
      */
-    public Builder setMsgId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+    public Builder setMsgId(int value) {
+
       msgId_ = value;
       bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
     /**
-     * <code>string msgId = 6;</code>
+     * <code>int32 msgId = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearMsgId() {
-      msgId_ = getDefaultInstance().getMsgId();
       bitField0_ = (bitField0_ & ~0x00000020);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string msgId = 6;</code>
-     * @param value The bytes for msgId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMsgIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      msgId_ = value;
-      bitField0_ |= 0x00000020;
+      msgId_ = 0;
       onChanged();
       return this;
     }
