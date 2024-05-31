@@ -1,7 +1,7 @@
 package com.hibob.anyim.netty.server.handler;
 
+import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
-import com.hibob.anyim.netty.constants.Const;
 import com.hibob.anyim.netty.protobuf.*;
 import com.hibob.anyim.netty.server.processor.MsgProcessor;
 import com.hibob.anyim.netty.server.processor.ProcessorFactory;
@@ -111,7 +111,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
     }
 
     private void clearCache(ChannelHandlerContext ctx) {
-        String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.KEY_UNIQUE_ID)).get();
+        String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.UNIQUE_ID)).get();
         String account = uniqueId.split(SPLIT_V)[0];
         String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
         String onlineKey = RedisKey.NETTY_ONLINE_CLIENT + account;

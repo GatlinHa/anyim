@@ -1,9 +1,9 @@
 package com.hibob.anyim.netty.server.processor;
 
+import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.netty.config.NacosConfig;
-import com.hibob.anyim.netty.constants.Const;
 import com.hibob.anyim.netty.mq.kafka.KafkaProducer;
 import com.hibob.anyim.netty.protobuf.Msg;
 import com.hibob.anyim.netty.rpc.RpcClient;

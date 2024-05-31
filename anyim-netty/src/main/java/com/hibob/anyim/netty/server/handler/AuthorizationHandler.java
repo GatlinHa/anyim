@@ -1,10 +1,9 @@
 package com.hibob.anyim.netty.server.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.CommonUtil;
-import com.hibob.anyim.netty.constants.Const;
 import com.hibob.anyim.netty.utils.SpringContextUtil;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelFutureListener;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
 
-import static io.netty.handler.codec.http.HttpResponseStatus.FORBIDDEN;
 import static io.netty.handler.codec.http.HttpResponseStatus.UNAUTHORIZED;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -51,7 +49,7 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
 //        }
 
         log.info("Authorization validate success");
-        ctx.channel().attr(AttributeKey.valueOf(Const.KEY_UNIQUE_ID)).set(uniqueId);
+        ctx.channel().attr(AttributeKey.valueOf(Const.UNIQUE_ID)).set(uniqueId);
         ctx.fireChannelRead(msg);
     }
 

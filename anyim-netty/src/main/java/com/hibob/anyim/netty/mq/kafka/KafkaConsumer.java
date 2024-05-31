@@ -1,8 +1,8 @@
 package com.hibob.anyim.netty.mq.kafka;
 
+import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.CommonUtil;
-import com.hibob.anyim.netty.constants.Const;
 import com.hibob.anyim.netty.protobuf.Msg;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

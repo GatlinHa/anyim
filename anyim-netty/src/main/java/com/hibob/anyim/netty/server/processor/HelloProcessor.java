@@ -1,9 +1,9 @@
 package com.hibob.anyim.netty.server.processor;
 
+import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.netty.config.NacosConfig;
-import com.hibob.anyim.netty.constants.Const;
 import com.hibob.anyim.netty.protobuf.Header;
 import com.hibob.anyim.netty.protobuf.Msg;
 import com.hibob.anyim.netty.protobuf.MsgType;
@@ -42,7 +42,7 @@ public class HelloProcessor implements MsgProcessor{
     }
 
     private void writeCache(ChannelHandlerContext ctx) {
-        String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.KEY_UNIQUE_ID)).get();
+        String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.UNIQUE_ID)).get();
         String account = uniqueId.split(SPLIT_V)[0];
         String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
         String onlineKey = RedisKey.NETTY_ONLINE_CLIENT + account;
