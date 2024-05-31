@@ -2,7 +2,6 @@ package com.hibob.anyim.netty.server.ws;
 
 import com.hibob.anyim.netty.protobuf.Msg;
 import com.hibob.anyim.netty.server.handler.*;
-import com.hibob.anyim.netty.server.NettyServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -21,7 +20,6 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -32,9 +30,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WebSocketServer implements NettyServer {
-
-    private final RedisTemplate<String, Object> redisTemplate;
+public class WebSocketServer {
 
     @Value("${websocket.port}")
     private int port;
@@ -52,21 +48,10 @@ public class WebSocketServer implements NettyServer {
     private EventLoopGroup workGroup;
 
 
-    @Override
-    public boolean isReady() {
-        return ready;
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
     public static Map<String, Channel> getLocalRoute() {
         return localRoute;
     }
 
-    @Override
     public void start() {
         ServerBootstrap bootstrap = new ServerBootstrap();
         bossGroup = new NioEventLoopGroup();
@@ -86,7 +71,7 @@ public class WebSocketServer implements NettyServer {
                             pipeline.addLast(new HttpServerCodec()); //HTTP协议编解码器，用于处理HTTP请求和响应的编码和解码。其主要作用是将HTTP请求和响应消息转换为Netty的ByteBuf对象，并将其传递到下一个处理器进行处理。
                             pipeline.addLast(new HttpObjectAggregator(65535)); //加了这行会导致postman出现1006错误 用于HTTP服务端，将来自客户端的HTTP请求和响应消息聚合成一个完整的消息，以便后续的处理。
                             pipeline.addLast(new ChunkedWriteHandler()); // 支持分块写入  在网络通信中，如果要传输的数据量较大，直接将数据一次性写入到网络缓冲区可能会导致内存占用过大或者网络拥塞等问题
-                            pipeline.addLast(new AuthorizationHandler(redisTemplate, path)); //处理登录
+                            pipeline.addLast(new AuthorizationHandler()); //处理登录
                             pipeline.addLast(new WebSocketServerCompressionHandler()); // WebSocket数据压缩
                             pipeline.addLast(new WebSocketServerProtocolHandler(path)); // WebSocket协议处理器
                             pipeline.addLast(new WebSocketToByteBufEncoder()); //解码：WebSocketFrame -> ByteBuf
@@ -95,7 +80,7 @@ public class WebSocketServer implements NettyServer {
                             pipeline.addLast(new ByteBufToWebSocketFrame()); //编码：ByteBuf -> WebSocketFrame(二进制)
                             pipeline.addLast(new ProtobufVarint32LengthFieldPrepender()); //编码：处理半包黏包，参数类型是ByteBuf
                             pipeline.addLast(new ProtobufEncoder()); //编码：Msg -> ByteBuf
-                            pipeline.addLast(new MsgServerHandler(redisTemplate)); // 业务处理理器，读写都是Msg
+                            pipeline.addLast(new MsgServerHandler()); // 业务处理理器，读写都是Msg
                         }
                     });
 

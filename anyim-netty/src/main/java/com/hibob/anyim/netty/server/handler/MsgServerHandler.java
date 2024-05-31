@@ -5,6 +5,7 @@ import com.hibob.anyim.netty.constants.Const;
 import com.hibob.anyim.netty.protobuf.*;
 import com.hibob.anyim.netty.server.processor.MsgProcessor;
 import com.hibob.anyim.netty.server.processor.ProcessorFactory;
+import com.hibob.anyim.netty.utils.SpringContextUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -19,12 +20,7 @@ import static com.hibob.anyim.netty.server.ws.WebSocketServer.getLocalRoute;
 @Slf4j
 public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
 
-    private final RedisTemplate<String, Object> redisTemplate;
     int readIdleTime = 0;
-
-    public MsgServerHandler(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
@@ -119,6 +115,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
         String account = uniqueId.split(SPLIT_V)[0];
         String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
         String onlineKey = RedisKey.NETTY_ONLINE_CLIENT + account;
+        RedisTemplate<String, Object> redisTemplate = SpringContextUtil.getBean("redisTemplate");
         redisTemplate.delete(routeKey);
         redisTemplate.opsForSet().remove(onlineKey, uniqueId);
         getLocalRoute().remove(routeKey);

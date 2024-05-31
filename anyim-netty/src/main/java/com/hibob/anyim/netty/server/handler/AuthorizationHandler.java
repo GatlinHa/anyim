@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.netty.constants.Const;
+import com.hibob.anyim.netty.utils.SpringContextUtil;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,30 +22,20 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 @Slf4j
 public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpRequest> {
-    private final RedisTemplate<String, Object> redisTemplate;
-    private String path;
 
-    public AuthorizationHandler(RedisTemplate<String, Object> redisTemplate, String path) {
-        super();
-        this.redisTemplate = redisTemplate;
-        this.path = path;
-    }
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, HttpRequest msg) throws Exception {
         log.info("do AuthorizationHandler ");
-        String uri = msg.uri();
+        RedisTemplate<String, Object> redisTemplate = SpringContextUtil.getBean("redisTemplate");
         String token = msg.headers().get(HttpHeaderNames.AUTHORIZATION);
         String uniqueId = CommonUtil.conUniqueId(msg.headers().get("account"), msg.headers().get("clientId"));
         String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         String value = (String) redisTemplate.opsForValue().get(key);
         String cacheToken = StringUtils.hasLength(value) ? JSON.parseObject(value).getString("token") : "";
-        if (!StringUtils.hasLength(uri)
-                || !StringUtils.hasLength(token)
+        if (!StringUtils.hasLength(token)
                 || !StringUtils.hasLength(uniqueId)
                 || !StringUtils.hasLength(cacheToken)
-                || !uri.equals(this.path)
-                || !token.equals(cacheToken)
-        ) {
+                || !token.equals(cacheToken)) {
             log.info("Authorization validate error");
             HttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, UNAUTHORIZED, ByteBufAllocator.DEFAULT.heapBuffer());
             ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
