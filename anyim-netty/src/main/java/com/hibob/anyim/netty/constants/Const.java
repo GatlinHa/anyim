@@ -4,7 +4,7 @@ public class Const {
     private Const() {
     }
 
-    public static final int MAGIC = 0x12345678; // TODO 先随便起个
+    public static final int MAGIC = 0x8E110B0B;
 
     public static final String KEY_AUTHORIZATION = "token";
 

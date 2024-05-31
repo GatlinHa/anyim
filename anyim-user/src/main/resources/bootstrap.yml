@@ -23,8 +23,7 @@ spring:
 
 dubbo:
   application:
-    name: anyim-user
-    qos-port: 18010 # TODO 本地测试时需要避开端口冲突
+    name: anyim-user-dubbo
   protocol:
     name: dubbo
     port: -1

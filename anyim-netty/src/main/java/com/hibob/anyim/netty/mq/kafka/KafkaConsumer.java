@@ -17,12 +17,9 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = "${websocket.consumer.topic}")
     public void onMessage(ConsumerRecord<String, Msg> record) {
-        //TODO 调试信息，后面删掉
-        log.info("kafka receive message, the partition is: {}, the key is: {}, the message is: \n{}", record.partition(), record.key(), record.value());
-
         Msg msg = record.value();
         if (msg.getHeader().getMagic() != Const.MAGIC) {
-//            log.error("magic is not correct, the message is: \n{}", msg); //TODO 与调试信息重复，后面放开
+            log.error("magic is not correct, the message is: \n{}", msg);
             return;
         }
 
