@@ -17,10 +17,16 @@ public class KafkaProducer {
     @Autowired
     private NacosConfig nacosConfig;
 
-    public void sendMessage(String instance, Msg message) {
+    public void sendChatMessage(String instance, Msg message) {
         String toTopic = nacosConfig.getToTopic(instance);
-        kafkaTemplate.send(toTopic, nacosConfig.getInstance(), message);
-        log.info("send message to kafka, topic is {}, message is {}", toTopic, message.toString());
+        kafkaTemplate.send(toTopic, message.getBody().getFromId(), message);
+        log.info("send message to kafka, topic is {}, message is {}", toTopic, message);
+    }
+
+    public void sendGroupChatMessage(String instance, Msg message) {
+        String toTopic = nacosConfig.getToTopic(instance);
+        kafkaTemplate.send(toTopic, message.getBody().getGroupId(), message);
+        log.info("send message to kafka, topic is {}, message is {}", toTopic, message);
     }
 
 }

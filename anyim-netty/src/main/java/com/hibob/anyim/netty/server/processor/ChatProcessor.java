@@ -51,7 +51,7 @@ public class ChatProcessor implements MsgProcessor{
                 continue;
             }
             KafkaProducer producer = SpringContextUtil.getBean(KafkaProducer.class);
-            producer.sendMessage(instance, msgOut);
+            producer.sendChatMessage(instance, msgOut);
         }
 
         if (fromId.equals(toId)) { //自发自收，只同步（上面逻辑就是同步），不发送（不给toId发送）
@@ -75,7 +75,7 @@ public class ChatProcessor implements MsgProcessor{
                 continue;
             }
             KafkaProducer producer = SpringContextUtil.getBean(KafkaProducer.class);
-            producer.sendMessage(instance, msgOut);
+            producer.sendChatMessage(instance, msgOut);
         }
     }
 
