@@ -57,8 +57,6 @@ spring:
       # 默认值为read_uncommitted
       isolation-level: read_uncommitted
 
-
-
 websocket:
   port: 8100
   path: /ws
