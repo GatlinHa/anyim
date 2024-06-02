@@ -19,7 +19,7 @@ CREATE TABLE `anyim_user_info`(
 
 drop table `anyim_user_client`;
 CREATE TABLE `anyim_user_client`(
-    `unique_id` VARCHAR(255) NOT NULL COMMENT '客户端唯一ID，account+|+客户端生成的uuid',
+    `unique_id` VARCHAR(255) NOT NULL COMMENT '客户端唯一ID，account+@+客户端生成的uuid',
     `account` VARCHAR(255) NOT NULL COMMENT '账号',
     `client_type` TINYINT(1) DEFAULT -1 COMMENT '客户端类型 0:android 1:ios 2:web -1:未知',
     `client_name` VARCHAR(255) DEFAULT '' COMMENT '客户端名称',
