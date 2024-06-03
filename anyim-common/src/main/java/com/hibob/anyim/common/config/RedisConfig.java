@@ -1,4 +1,4 @@
-package com.hibob.anyim.netty.config;
+package com.hibob.anyim.common.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
