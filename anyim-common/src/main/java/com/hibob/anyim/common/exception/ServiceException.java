@@ -1,6 +1,6 @@
-package com.hibob.anyim.user.exception;
+package com.hibob.anyim.common.exception;
 
-import com.hibob.anyim.user.enums.ServiceErrorCode;
+import com.hibob.anyim.common.enums.ServiceErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

@@ -1,20 +1,7 @@
-server:
-  port: 80
+
 
 spring:
-  application:
-    name: anyim-agw
-  profiles:
-    active: dev
-
   cloud:
-    nacos:
-      config:
-        server-addr: localhost:8848
-        import-check:
-          enabled: false
-      discovery:
-        server-addr: localhost:8848
     gateway:
       discovery:
         locator:
@@ -25,6 +12,7 @@ spring:
           uri: lb://anyim-user
           predicates:
             - Path=/user/**
+
   main:
 #    解决这个问题：Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway at this time
 #    这个错误信息是因为你的项目中同时存在Spring MVC和Spring Cloud Gateway，这两者是不兼容的。
@@ -32,3 +20,11 @@ spring:
 #    ①：如果不需要，从你的pom.xml中移除spring-boot-starter-web依赖。
 #    ②：如果你在同一个应用中需要Spring MVC和Spring Cloud Gateway，你可以在你的application.yml或application.properties文件中将web应用类型设置为REACTIVE。
     web-application-type: reactive # 它会导致@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})上面的exclude无效
+
+jwt:
+  accessToken:
+    expire: 1800 #半个小时
+    secret: ${jwt.accessToken.secret}
+  refreshToken:
+    expire: 3600 #1小时
+    secret: ${jwt.refreshToken.secret}

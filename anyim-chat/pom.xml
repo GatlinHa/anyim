@@ -17,6 +17,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.apache.dubbo-version>3.0.9</org.apache.dubbo-version>
+        <mybatis-plus-plus.version>3.5.6</mybatis-plus-plus.version>
     </properties>
 
     <dependencies>
@@ -46,6 +47,17 @@
             <version>${org.apache.dubbo-version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus-plus.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -63,7 +75,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.hibob.anyim.chat.UserApplication</mainClass>
+                    <mainClass>com.hibob.anyim.chat.ChatApplication</mainClass>
                 </configuration>
 <!--                <executions>-->
 <!--                    <execution>-->

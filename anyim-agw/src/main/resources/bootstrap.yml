@@ -1,10 +1,10 @@
 # bootstrap.yml用来在程序引导时执行，早于application.yml加载，nacos配置的加载应该放在这里，这样application.yml才能用到配置中心的配置
 server:
-  port: 8000
+  port: 80
 
 spring:
   application:
-    name: anyim-netty
+    name: anyim-agw
   profiles:
     active: dev # 环境标识
 
@@ -18,16 +18,3 @@ spring:
       discovery:
         server-addr: localhost:8848
         namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147
-        heart-beat-interval: 2
-        heart-beat-timeout: 5
-
-dubbo:
-  application:
-    name: anyim-netty-dubbo # TODO netty怎么指导要调用anyim-user-dubbo??
-  protocol:
-    name: dubbo
-    port: -1
-  registry:
-    address: nacos://localhost:8848
-    parameters:
-      namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147

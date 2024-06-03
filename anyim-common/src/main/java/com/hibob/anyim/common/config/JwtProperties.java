@@ -1,4 +1,4 @@
-package com.hibob.anyim.user.config;
+package com.hibob.anyim.common.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

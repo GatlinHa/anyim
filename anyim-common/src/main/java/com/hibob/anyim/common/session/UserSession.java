@@ -1,4 +1,4 @@
-package com.hibob.anyim.user.session;
+package com.hibob.anyim.common.session;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

@@ -7,7 +7,7 @@ import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.common.utils.JwtUtil;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.entity.User;
-import com.hibob.anyim.user.enums.ServiceErrorCode;
+import com.hibob.anyim.common.enums.ServiceErrorCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;

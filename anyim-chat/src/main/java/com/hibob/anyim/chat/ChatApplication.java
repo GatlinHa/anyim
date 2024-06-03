@@ -11,10 +11,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @EnableDubbo
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class}) // 禁用secrity，不需要Security的登录，会自己实现，而且不禁用swagger打开要密码
 @MapperScan("com.hibob.anyim.chat.mapper")
-public class UserApplication {
+public class ChatApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserApplication.class, args);
+        SpringApplication.run(ChatApplication.class, args);
 
     }
 }

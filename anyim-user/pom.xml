@@ -17,6 +17,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.apache.dubbo-version>3.0.9</org.apache.dubbo-version>
+        <mybatis-plus-plus.version>3.5.6</mybatis-plus-plus.version>
     </properties>
 
     <dependencies>
@@ -29,6 +30,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus-plus.version}</version>
         </dependency>
 
         <!--TODO org.apache.commons.compress.utils.IOUtils依赖包，后面引入minio后自带了这个包-->

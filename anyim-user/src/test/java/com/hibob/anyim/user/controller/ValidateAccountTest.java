@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URISyntaxException;
 
-import static com.hibob.anyim.user.enums.ServiceErrorCode.ERROR_ACCOUNT_EXIST;
+import static com.hibob.anyim.common.enums.ServiceErrorCode.ERROR_ACCOUNT_EXIST;
 import static org.junit.Assert.assertTrue;
 
 @Slf4j

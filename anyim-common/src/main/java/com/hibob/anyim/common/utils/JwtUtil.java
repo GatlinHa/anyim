@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Random;
 
 @Slf4j
 public final class JwtUtil {
@@ -141,7 +142,13 @@ public final class JwtUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(generateSign("ay2ASp0Ar6SXHKvfj6TZQQzfkpc+j6VqwzxrgjCBa74=", "1231716800305"));
+        int traceId = new Random().nextInt(10000);
+        long now = System.currentTimeMillis();
+        String content = String.valueOf(traceId) + String.valueOf(now/1000);
+        System.out.println("traceId is: " + traceId);
+        System.out.println("now is: " + now/1000);
+        System.out.println("content is: " + content);
+        System.out.println(generateSign("C1NB48ApeEKPQVdPwHYcO0MK+dLPKHnyfGQCpmJL51M=", content));
     }
 
 }

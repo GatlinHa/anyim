@@ -1,4 +1,4 @@
-package com.hibob.anyim.user.enums;
+package com.hibob.anyim.common.enums;
 
 import com.hibob.anyim.common.constants.Const;
 import lombok.AllArgsConstructor;

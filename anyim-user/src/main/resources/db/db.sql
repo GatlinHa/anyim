@@ -2,7 +2,7 @@ use `anyim`;
 drop table `anyim_user_info`;
 CREATE TABLE `anyim_user_info`(
     `id` BIGINT NOT NULL PRIMARY KEY  COMMENT 'id，雪花算法生成',
-    `account` VARCHAR(255) NOT NULL COMMENT '账号，用户不指定就生成UUID',
+    `account` VARCHAR(255) NOT NULL COMMENT '账号，用户不指定就生成UUID', -- TODO 考虑下用UUID还是雪花算法
     `nick_name` VARCHAR(255) NOT NULL COMMENT '用户昵称',
     `head_image` VARCHAR(255) DEFAULT '' COMMENT '用户头像',
     `head_image_thumb` VARCHAR(255) DEFAULT '' COMMENT '用户头像缩略图',
