@@ -31,3 +31,5 @@ mybatis-plus:
 custom:
   any-netty:
     ref-msgId-step: 10000
+  snow-flake:
+    worker-datacenter-config: ${worker-datacenter-config}
