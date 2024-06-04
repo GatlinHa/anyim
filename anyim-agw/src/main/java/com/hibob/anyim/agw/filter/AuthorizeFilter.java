@@ -43,6 +43,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        log.info("===>AuthorizeFilter start......path is {}", exchange.getRequest().getPath());
         if (ignoreAuthUrls.contains(exchange.getRequest().getURI().getPath())) {
             return chain.filter(exchange);
         }

@@ -6,22 +6,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Component
@@ -30,6 +23,7 @@ public class XssFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        log.info("===>XssFilter start......path is {}", exchange.getRequest().getPath());
         ServerHttpRequest request = exchange.getRequest();
 
         HttpHeaders headers = request.getHeaders();
@@ -54,43 +48,8 @@ public class XssFilter implements GlobalFilter, Ordered {
             }
         }
 
-        String bodyStr = getBody(request);
-        if (StringUtils.hasLength(bodyStr) && XssUtil.checkXss(bodyStr)) {
-            log.info("请求体xss校验不合法，校验对象是：{}", bodyStr);
-            exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
-            return exchange.getResponse().setComplete();
-        }
-
+        // 这里不对请求体校验，留给后端服务校验。Spring WebFlux当请求的Body被读取后，它就被消费了，不能再往后面传了。
         return chain.filter(exchange);
-    }
-
-    /**
-     * 从Flux<DataBuffer>中获取字符串的方法
-     * @return 请求体
-     */
-    private String getBody(ServerHttpRequest serverHttpRequest) {
-        //获取请求体
-        Flux<DataBuffer> body = serverHttpRequest.getBody();
-        AtomicReference<String> bodyRef = new AtomicReference<>();
-        body.subscribe(buffer -> {
-            CharBuffer charBuffer = StandardCharsets.UTF_8.decode(buffer.asByteBuffer());
-            DataBufferUtils.release(buffer);
-            bodyRef.set(charBuffer.toString());
-        });
-        //获取request body
-        return bodyRef.get();
-    }
-
-
-    private String decodeBody(List<DataBuffer> body) {
-        StringBuilder sb = new StringBuilder();
-        body.forEach(buffer -> {
-            byte[] bytes = new byte[buffer.readableByteCount()];
-            buffer.read(bytes);
-            DataBufferUtils.release(buffer);
-            sb.append(new String(bytes, StandardCharsets.UTF_8));
-        });
-        return sb.toString();
     }
 
     @Override
