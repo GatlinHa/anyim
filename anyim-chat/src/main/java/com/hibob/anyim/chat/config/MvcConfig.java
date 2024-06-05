@@ -1,4 +1,4 @@
-package com.hibob.anyim.user.config;
+package com.hibob.anyim.chat.config;
 
 import com.hibob.anyim.common.interceptor.PreHeaderInterceptor;
 import com.hibob.anyim.common.interceptor.XssInterceptor;
@@ -23,9 +23,6 @@ public class MvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/error",
-                        "/user/login",
-                        "/user/register",
-                        "/user/validateAccount",
                         "/swagger-resources/**",
                         "/webjars/**",
                         "/v2/**",

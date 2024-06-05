@@ -3,22 +3,36 @@ drop table anyim_chat_refmsgid;
 CREATE TABLE anyim_chat_refmsgid
 (
     `session_id` BIGINT NOT NULL PRIMARY KEY  COMMENT '会话id，雪花算法生成，不会重复',
-    `session_type` TINYINT(1) NOT NULL COMMENT '会话类型，0:单聊，1:群聊',
     `ref_msg_id` INT DEFAULT 10000 COMMENT 'msgId参考值，初始值10000',
     `update_time`  DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
     PRIMARY KEY(`session_id`)
-) ENGINE=INNODB CHARSET=utf8mb3 COMMENT 'msgId参考值表'; -- TODO 这张表在创建session时插入数据
+) ENGINE=INNODB CHARSET=utf8mb3 COMMENT 'msgId参考值表，用于redis缓存重置场景下当作生成msgid的参考'; -- TODO 这张表在创建session时插入数据
 
--- 创建一个新的单聊会话，就会插入2条记录；创建一个群组，根据初始成员数量插入对应的条数
-DROP TABLE `anyim_chat_sessions`;
-CREATE TABLE `anyim_chat_sessions`(
+
+-- 单聊：发第一条消息时，从redis取到的increment=0，因此要找chat要refmsgid，chat自己也查不到记录，就说明这个session是新的，需要先创建session相关的记录
+-- 群聊：创建群聊的时候需要先选人，当执行创建按钮后，要给后台发REST请求，让后台显示地创建group和session
+-- 创建一个新的单聊会话，就会插入2条记录；
+DROP TABLE `anyim_chat_session_chat`;
+CREATE TABLE `anyim_chat_session_chat`(
     `account` VARCHAR(255) NOT NULL COMMENT '账号',
-    `session_type` TINYINT(1) NOT NULL COMMENT '会话类型，0:单聊，1:群聊', -- TODO 应该是非必要信息，不参与业务逻辑
-    `session_id` BIGINT NOT NULL COMMENT 'session id，当为群聊时，就是group_id',
+    `session_id` BIGINT NOT NULL COMMENT 'session id，雪花算法生成',
     `new_msg_id` INT DEFAULT 0 COMMENT '最新的消息id，客户端以new_msg_id是否大于本地已读msg_id判断是否需要更新消息，消息入库时同步要写这个字段',
     `new_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '最新消息的时间',
-    INDEX `idx_account`(ACCOUNT)
-) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '账号下的会话列表';
+    INDEX `idx_account`(account),
+    INDEX `idx_new_msg_id`(new_msg_id)
+) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '单聊的会话列表';
+
+-- 这个表是以session为视角设计的，方便按照session角度设计和实现代码
+DROP TABLE `anyim_chat_session_groupchat`;
+CREATE TABLE `anyim_chat_session_groupchat`(
+    `group_id` BIGINT NOT NULL COMMENT '组ID',
+    `session_id` BIGINT NOT NULL COMMENT 'session id，等于group id',
+    `new_msg_id` INT DEFAULT 0 COMMENT '最新的消息id，客户端以new_msg_id是否大于本地已读msg_id判断是否需要更新消息，消息入库时同步要写这个字段',
+    `new_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '最新消息的时间',
+    PRIMARY KEY(`group_id`),
+    INDEX `idx_new_msg_id`(new_msg_id)
+) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '群聊的会话列表';
+
 
 drop table `anyim_chat_msg_chat`;
 CREATE TABLE `anyim_chat_msg_chat`(

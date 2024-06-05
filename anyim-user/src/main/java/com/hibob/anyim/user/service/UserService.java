@@ -21,7 +21,7 @@ import com.hibob.anyim.common.enums.ServiceErrorCode;
 import com.hibob.anyim.user.mapper.ClientMapper;
 import com.hibob.anyim.user.mapper.LoginMapper;
 import com.hibob.anyim.user.mapper.UserMapper;
-import com.hibob.anyim.common.session.UserSession;
+import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.config.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +84,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public ResponseEntity<IMHttpResponse> deregister(DeregisterReq dto) {
         log.info("LoginService--deregister");
-        UserSession session = UserSession.getSession();
+        ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
         String clientId = session.getClientId();
         String uniqueId = CommonUtil.conUniqueId(account, clientId);
@@ -169,7 +169,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public ResponseEntity<IMHttpResponse> logout(LogoutReq dto) {
         log.info("LoginService--logout");
-        UserSession session = UserSession.getSession();
+        ReqSession session = ReqSession.getSession();
         String uniqueId = CommonUtil.conUniqueId(session.getAccount(), session.getClientId());
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN + uniqueId);
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId);
@@ -180,7 +180,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public ResponseEntity<IMHttpResponse> modifyPwd(ModifyPwdReq dto) {
         log.info("LoginService--modifyPwd");
-        UserSession session = UserSession.getSession();
+        ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
         String clientId = session.getClientId();
         String uniqueId = CommonUtil.conUniqueId(account, clientId);
@@ -228,7 +228,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public ResponseEntity<IMHttpResponse> querySelf(QuerySelfReq dto) {
         log.info("UserService--querySelf");
-        UserSession session = UserSession.getSession();
+        ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
         User user = getOneByAccount(account);
         if (user == null) {
@@ -248,7 +248,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public ResponseEntity<IMHttpResponse> modifySelf(ModifySelfReq dto) {
         log.info("UserService--modifySelf");
-        UserSession session = UserSession.getSession();
+        ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
         User user = getOneByAccount(account);
         if (user == null) {

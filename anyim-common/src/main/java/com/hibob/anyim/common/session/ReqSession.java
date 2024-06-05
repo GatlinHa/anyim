@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Data
 @Slf4j
-public class UserSession {
+public class ReqSession {
     /**
      * 账号
      */
@@ -25,11 +25,11 @@ public class UserSession {
 //     */
 //    private String nickName;
 
-    public static UserSession getSession() {
+    public static ReqSession getSession() {
         // 从上下文中提取Request对象
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
-        UserSession session = (UserSession) request.getAttribute("session");
+        ReqSession session = (ReqSession) request.getAttribute("session");
         log.info("session: {}", session);
         return session;
     }

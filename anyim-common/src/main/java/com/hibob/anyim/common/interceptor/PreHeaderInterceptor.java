@@ -1,6 +1,6 @@
-package com.hibob.anyim.user.interceptor;
+package com.hibob.anyim.common.interceptor;
 
-import com.hibob.anyim.common.session.UserSession;
+import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.utils.JwtUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +23,10 @@ public class PreHeaderInterceptor implements HandlerInterceptor {
         String account = JwtUtil.getAccount(token);
         String clientId = JwtUtil.getInfo(token);
         // 存放session
-        UserSession userSession = new UserSession();
-        userSession.setAccount(account);
-        userSession.setClientId(clientId);
-        request.setAttribute("session", userSession);
+        ReqSession reqSession = new ReqSession();
+        reqSession.setAccount(account);
+        reqSession.setClientId(clientId);
+        request.setAttribute("session", reqSession);
         return true;
     }
 

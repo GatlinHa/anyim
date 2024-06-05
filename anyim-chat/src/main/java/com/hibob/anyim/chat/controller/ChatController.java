@@ -1,6 +1,6 @@
 package com.hibob.anyim.chat.controller;
 
-import com.hibob.anyim.chat.dto.request.NewChatReq;
+import com.hibob.anyim.chat.dto.request.UpdateReq;
 import com.hibob.anyim.chat.service.ChatService;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import io.swagger.annotations.Api;
@@ -25,16 +25,16 @@ public class ChatController {
     private final ChatService chatService;
 
 
-    @ApiOperation(value = "创建单聊", notes = "创建单聊")
+    @ApiOperation(value = "更新聊天信息", notes = "更新聊天信息")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
             @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
             @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
             @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
     })
-    @PostMapping("/newChat")
-    public ResponseEntity<IMHttpResponse> newChat(@Valid @RequestBody NewChatReq dto) {
-        return chatService.newChat(dto);
+    @PostMapping("/update")
+    public ResponseEntity<IMHttpResponse> update(@Valid @RequestBody UpdateReq dto) {
+        return chatService.update(dto);
     }
 
 
