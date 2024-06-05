@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum ServiceErrorCode {
-    ERROR_ACCOUNT_EXIST(Const.SERVICE_CODE_USER + 1, "账号已存在"),
+    ERROR_ACCOUNT_EXIST(Const.SERVICE_CODE_USER + 1, "账号已存在"), //TODO 这些都没有利用起来，后面整改下
 
     ERROR_XSS(Const.SERVICE_CODE_USER + 2, "输入内容含有非法字符"),
 
@@ -25,7 +25,9 @@ public enum ServiceErrorCode {
 
     ERROR_IS_DEREGISTER(Const.SERVICE_CODE_USER + 10, "账号已注销"),
 
-    ERROR_SERVICE_EXCEPTION(Const.SERVICE_CODE_USER + 500, "服务器内部异常");
+    ERROR_SERVICE_EXCEPTION(Const.SERVICE_CODE_USER + 500, "服务器内部异常"),
+
+    ERROR_CHAT_REFMSGID_EXCEPTION(Const.SERVICE_CODE_CHAT + 1, "ref msgId异常");
 
 
     private int code;

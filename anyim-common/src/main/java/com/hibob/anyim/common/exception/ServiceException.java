@@ -7,9 +7,12 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@AllArgsConstructor
 public class ServiceException extends RuntimeException implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private ServiceErrorCode serviceErrorCode;
+
+    public ServiceException(ServiceErrorCode serviceErrorCode) {
+        super(serviceErrorCode.desc());
+    }
 }

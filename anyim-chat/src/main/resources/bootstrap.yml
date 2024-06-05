@@ -23,7 +23,7 @@ spring:
 
 dubbo:
   application:
-    name: anyim-chat
+    name: anyim-chat-dubbo
   protocol:
     name: dubbo
     port: -1

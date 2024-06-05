@@ -12,11 +12,17 @@ import java.util.Date;
 public class SessionChat {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "account")
-    private String account;
-
-    @TableField(value = "session_id")
+    @TableId(value = "session_id")
     private long sessionId;
+
+    @TableField(value = "user_a")
+    private String userA;
+
+    @TableField(value = "user_b")
+    private String userB;
+
+    @TableField(value = "ref_msg_id")
+    private int refMsgId;
 
     @TableField(value = "new_msg_id")
     private int newMsgId;

@@ -23,7 +23,7 @@ spring:
 
 dubbo:
   application:
-    name: anyim-user-dubbo # 这里要区别于spring.application.name，否则agw会把请求转发到这里，因为轮询机制 TODO 对应的RPC调用方也要修改一下
+    name: anyim-user-dubbo # 这里要区别于spring.application.name，否则agw会把请求转发到这里，因为轮询机制
   protocol:
     name: dubbo
     port: -1

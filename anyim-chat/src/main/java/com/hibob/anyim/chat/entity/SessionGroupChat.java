@@ -12,11 +12,14 @@ import java.util.Date;
 public class SessionGroupChat {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "group_id")
+    @TableId(value = "session_id")
+    private long sessionId;
+
+    @TableField(value = "group_id")
     private long groupId;
 
-    @TableField(value = "session_id")
-    private long sessionId;
+    @TableField(value = "ref_msg_id")
+    private int refMsgId;
 
     @TableField(value = "new_msg_id")
     private int newMsgId;

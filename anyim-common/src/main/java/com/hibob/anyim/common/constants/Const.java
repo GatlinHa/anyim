@@ -19,6 +19,11 @@ public class Const {
      */
     public static final int SERVICE_CODE_NETTY = 300;
 
+    /**
+     * 服务编码：anyim-chat服务
+     */
+    public static final int SERVICE_CODE_CHAT = 400;
+
 
     /**
      * 分隔符：@

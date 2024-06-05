@@ -48,4 +48,18 @@ public class CommonUtil {
         return null;
     }
 
+    /**
+     *  fromId 和 toId 按照字典序排序，如果fromId小则返回true
+     * @param fromId
+     * @param toId
+     * @return
+     */
+    public static String[] sortId(String fromId, String toId) {
+        if (fromId.compareTo(toId) < 0) {
+            return new String[] {fromId, toId};
+        } else {
+            return new String[] {toId, fromId};
+        }
+    }
+
 }
