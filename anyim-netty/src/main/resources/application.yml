@@ -62,3 +62,9 @@ websocket:
   path: /ws
   log-level: DEBUG  # LoggingHandler的日志级别
   topic-distribute: ${websocket.topic-distribute}
+
+#自定义配置
+custom:
+  ref-msg-id:
+    default: 10000
+    step: 10000

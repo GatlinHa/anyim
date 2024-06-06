@@ -22,7 +22,7 @@ public class MsgGroupChat {
     private String fromClient;
 
     @TableField(value = "msg_id")
-    private int msgId;
+    private long msgId;
 
     @TableField(value = "content")
     private String content;

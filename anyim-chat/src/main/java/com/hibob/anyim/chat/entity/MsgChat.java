@@ -25,7 +25,7 @@ public class MsgChat {
     private String toId;
 
     @TableField(value = "msg_id")
-    private int msgId;
+    private long msgId;
 
     @TableField(value = "content")
     private String content;

@@ -6,28 +6,24 @@ CREATE TABLE `anyim_chat_session_chat`(
     `session_id` BIGINT NOT NULL COMMENT 'session id，雪花算法生成，主键',
     `user_a` VARCHAR(255) NOT NULL COMMENT '单聊用户a，ASCII排序较小者',
     `user_b` VARCHAR(255) NOT NULL COMMENT '单聊用户b，ASCII排序较大者',
-    `ref_msg_id` INT DEFAULT 10000 COMMENT 'msgId参考值，初始值10000',
-    `new_msg_id` INT DEFAULT 0 COMMENT '最新的消息id，客户端以new_msg_id是否大于本地已读msg_id判断是否需要更新消息，消息入库时同步要写这个字段',
+    `ref_msg_id` BIGINT DEFAULT 10000 COMMENT 'msgId参考值，初始值10000',
+    `new_msg_id` BIGINT DEFAULT 0 COMMENT '最新的消息id，客户端以new_msg_id是否大于本地已读msg_id判断是否需要更新消息，消息入库时同步要写这个字段',
     `new_time` DATETIME DEFAULT NULL COMMENT '最新消息的时间',
     PRIMARY KEY(`session_id`),
     INDEX `idx_user_a`(user_a),
-    INDEX `idx_user_b`(user_b),
-    INDEX `idx_new_msg_id`(new_msg_id)
+    INDEX `idx_user_b`(user_b)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '单聊的会话列表';
 
--- 这个表是以session为视角设计的，方便按照session角度设计和实现代码
 DROP TABLE `anyim_chat_session_groupchat`;
 CREATE TABLE `anyim_chat_session_groupchat`(
     `session_id` BIGINT NOT NULL COMMENT 'session id，当前实现等于group id，主键',
     `group_id` BIGINT NOT NULL COMMENT '组ID',
-    `ref_msg_id` INT DEFAULT 10000 COMMENT 'msgId参考值，初始值10000',
-    `new_msg_id` INT DEFAULT 0 COMMENT '最新的消息id，客户端以new_msg_id是否大于本地已读msg_id判断是否需要更新消息，消息入库时同步要写这个字段',
+    `ref_msg_id` BIGINT DEFAULT 10000 COMMENT 'msgId参考值，初始值10000',
+    `new_msg_id` BIGINT DEFAULT 0 COMMENT '最新的消息id，客户端以new_msg_id是否大于本地已读msg_id判断是否需要更新消息，消息入库时同步要写这个字段',
     `new_time` DATETIME DEFAULT NULL COMMENT '最新消息的时间',
     PRIMARY KEY(`session_id`),
-    INDEX `idx_group_id`(group_id),
-    INDEX `idx_new_msg_id`(new_msg_id)
+    INDEX `idx_group_id`(group_id)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '群聊的会话列表';
-
 
 drop table `anyim_chat_msg_chat`;
 CREATE TABLE `anyim_chat_msg_chat`(
@@ -35,7 +31,7 @@ CREATE TABLE `anyim_chat_msg_chat`(
     `from_id` VARCHAR(255) NOT NULL COMMENT '发送端账号',
     `from_client` VARCHAR(255) NOT NULL COMMENT '发送端客户端',
     `to_id` VARCHAR(255) NOT NULL COMMENT '接收端账号',
-    `msg_id` INT NOT NULL COMMENT '消息id',
+    `msg_id` BIGINT NOT NULL COMMENT '消息id',
     `content` TEXT NOT NULL COMMENT '消息内容',
     `send_time` DATETIME NOT NULL COMMENT '消息发送时间，取自netty接收到的时间',
     `creat_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '消息入库时间',
@@ -48,7 +44,7 @@ CREATE TABLE `anyim_chat_msg_groupchat`(
     `group_id` BIGINT NOT NULL COMMENT '组ID，雪花算法生成，等于session id',
     `from_id` VARCHAR(255) NOT NULL COMMENT '发送端账号',
     `from_client` VARCHAR(255) NOT NULL COMMENT '发送端客户端',
-    `msg_id` INT NOT NULL COMMENT '消息id',
+    `msg_id` BIGINT NOT NULL COMMENT '消息id',
     `content` TEXT NOT NULL COMMENT '消息内容',
     `send_time` DATETIME NOT NULL COMMENT '消息发送时间，取自netty接收到的时间',
     `creat_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '消息入库时间',

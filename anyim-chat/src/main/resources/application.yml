@@ -29,10 +29,5 @@ mybatis-plus:
 
 #自定义配置
 custom:
-  any-netty:
-    ref-msgId-step: 10000
   snow-flake:
     worker-datacenter-config: ${worker-datacenter-config}
-  ref-msg-id:
-    default: 10000
-    step: 10000

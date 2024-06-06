@@ -51,4 +51,9 @@ public class RedisKey {
      */
     public static final String NETTY_ONLINE_CLIENT = NETTY_PREFIX + "online:";
 
+    /**
+     * Netty在线客户端，后面接账号，value是uniqueId的集合
+     */
+    public static final String NETTY_REF_MSG_ID = NETTY_PREFIX + "refMsgId:";
+
 }

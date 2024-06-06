@@ -62,4 +62,18 @@ public class CommonUtil {
         }
     }
 
+    /**
+     *  fromId 和 toId 按照字典序排序，较小+较大
+     * @param fromId
+     * @param toId
+     * @return
+     */
+    public static String combineId(String fromId, String toId) {
+        if (fromId.compareTo(toId) < 0) {
+            return fromId + SPLIT_V + toId;
+        } else {
+            return toId + SPLIT_V + fromId;
+        }
+    }
+
 }

@@ -36,7 +36,7 @@ message Body {
   optional string toId = 3;
   optional string toClient = 4;
   optional string groupId = 5;
-  int32 msgId = 6;
+  optional int64 msgId = 6;
   int32 seq = 7;
   int32 ack = 8;
   string content = 9;

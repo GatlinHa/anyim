@@ -8,10 +8,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.ComponentScan;
 
 @Slf4j
 @EnableDiscoveryClient
 @EnableDubbo
+@ComponentScan(basePackages = {"com.hibob.anyim.netty", "com.hibob.anyim.common"})
 @SpringBootApplication
 public class NettyApplication implements CommandLineRunner {
 

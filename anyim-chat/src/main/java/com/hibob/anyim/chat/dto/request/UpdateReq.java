@@ -10,7 +10,7 @@ import lombok.Data;
 public class UpdateReq extends BaseRequest {
 
     @ApiModelProperty(value = "可选参数，上次更新msgId")
-    private int lastMsgId;
+    private long lastMsgId;
 
     @ApiModelProperty(value = "可选参数，上次更新的时间")
     private int lastUpdateTime;

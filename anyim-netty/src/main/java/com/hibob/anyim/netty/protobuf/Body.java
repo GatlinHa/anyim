@@ -268,13 +268,21 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int MSGID_FIELD_NUMBER = 6;
-  private int msgId_ = 0;
+  private long msgId_ = 0L;
   /**
-   * <code>int32 msgId = 6;</code>
+   * <code>optional int64 msgId = 6;</code>
+   * @return Whether the msgId field is set.
+   */
+  @java.lang.Override
+  public boolean hasMsgId() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <code>optional int64 msgId = 6;</code>
    * @return The msgId.
    */
   @java.lang.Override
-  public int getMsgId() {
+  public long getMsgId() {
     return msgId_;
   }
 
@@ -368,8 +376,8 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 5, groupId_);
     }
-    if (msgId_ != 0) {
-      output.writeInt32(6, msgId_);
+    if (((bitField0_ & 0x00000008) != 0)) {
+      output.writeInt64(6, msgId_);
     }
     if (seq_ != 0) {
       output.writeInt32(7, seq_);
@@ -404,9 +412,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(5, groupId_);
     }
-    if (msgId_ != 0) {
+    if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(6, msgId_);
+        .computeInt64Size(6, msgId_);
     }
     if (seq_ != 0) {
       size += com.google.protobuf.CodedOutputStream
@@ -453,8 +461,11 @@ private static final long serialVersionUID = 0L;
       if (!getGroupId()
           .equals(other.getGroupId())) return false;
     }
-    if (getMsgId()
-        != other.getMsgId()) return false;
+    if (hasMsgId() != other.hasMsgId()) return false;
+    if (hasMsgId()) {
+      if (getMsgId()
+          != other.getMsgId()) return false;
+    }
     if (getSeq()
         != other.getSeq()) return false;
     if (getAck()
@@ -488,8 +499,11 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + GROUPID_FIELD_NUMBER;
       hash = (53 * hash) + getGroupId().hashCode();
     }
-    hash = (37 * hash) + MSGID_FIELD_NUMBER;
-    hash = (53 * hash) + getMsgId();
+    if (hasMsgId()) {
+      hash = (37 * hash) + MSGID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMsgId());
+    }
     hash = (37 * hash) + SEQ_FIELD_NUMBER;
     hash = (53 * hash) + getSeq();
     hash = (37 * hash) + ACK_FIELD_NUMBER;
@@ -632,7 +646,7 @@ private static final long serialVersionUID = 0L;
       toId_ = "";
       toClient_ = "";
       groupId_ = "";
-      msgId_ = 0;
+      msgId_ = 0L;
       seq_ = 0;
       ack_ = 0;
       content_ = "";
@@ -690,6 +704,7 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
         result.msgId_ = msgId_;
+        to_bitField0_ |= 0x00000008;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
         result.seq_ = seq_;
@@ -740,7 +755,7 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000010;
         onChanged();
       }
-      if (other.getMsgId() != 0) {
+      if (other.hasMsgId()) {
         setMsgId(other.getMsgId());
       }
       if (other.getSeq() != 0) {
@@ -806,7 +821,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 42
             case 48: {
-              msgId_ = input.readInt32();
+              msgId_ = input.readInt64();
               bitField0_ |= 0x00000020;
               break;
             } // case 48
@@ -1223,21 +1238,29 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int msgId_ ;
+    private long msgId_ ;
     /**
-     * <code>int32 msgId = 6;</code>
+     * <code>optional int64 msgId = 6;</code>
+     * @return Whether the msgId field is set.
+     */
+    @java.lang.Override
+    public boolean hasMsgId() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional int64 msgId = 6;</code>
      * @return The msgId.
      */
     @java.lang.Override
-    public int getMsgId() {
+    public long getMsgId() {
       return msgId_;
     }
     /**
-     * <code>int32 msgId = 6;</code>
+     * <code>optional int64 msgId = 6;</code>
      * @param value The msgId to set.
      * @return This builder for chaining.
      */
-    public Builder setMsgId(int value) {
+    public Builder setMsgId(long value) {
 
       msgId_ = value;
       bitField0_ |= 0x00000020;
@@ -1245,12 +1268,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 msgId = 6;</code>
+     * <code>optional int64 msgId = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearMsgId() {
       bitField0_ = (bitField0_ & ~0x00000020);
-      msgId_ = 0;
+      msgId_ = 0L;
       onChanged();
       return this;
     }

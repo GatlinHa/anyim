@@ -1,5 +1,7 @@
 package com.hibob.anyim.common.rpc;
 
 public interface ChatRpcService {
-    int refMsgId(String fromId, String toId);
+    long refMsgId(String fromId, String toId, int refMsgIdDefault);
+
+    long updateAndGetRefMsgId(String fromId, String toId, int refMsgIdStep, long curRefMsgId);
 }

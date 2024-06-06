@@ -84,10 +84,15 @@ public interface BodyOrBuilder extends
       getGroupIdBytes();
 
   /**
-   * <code>int32 msgId = 6;</code>
+   * <code>optional int64 msgId = 6;</code>
+   * @return Whether the msgId field is set.
+   */
+  boolean hasMsgId();
+  /**
+   * <code>optional int64 msgId = 6;</code>
    * @return The msgId.
    */
-  int getMsgId();
+  long getMsgId();
 
   /**
    * <code>int32 seq = 7;</code>

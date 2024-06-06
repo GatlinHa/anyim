@@ -19,10 +19,10 @@ public class SessionGroupChat {
     private long groupId;
 
     @TableField(value = "ref_msg_id")
-    private int refMsgId;
+    private long refMsgId;
 
     @TableField(value = "new_msg_id")
-    private int newMsgId;
+    private long newMsgId;
 
     @TableField(value = "new_time")
     private Date newTime;

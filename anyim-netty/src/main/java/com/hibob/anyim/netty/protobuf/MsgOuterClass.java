@@ -67,20 +67,20 @@ public final class MsgOuterClass {
       "\"w\n\006Header\022\r\n\005magic\030\001 \001(\005\022\017\n\007version\030\002 \001" +
       "(\005\0228\n\007msgType\030\003 \001(\0162\'.com.hibob.anyim.ne" +
       "tty.protobuf.MsgType\022\023\n\013isExtension\030\004 \001(" +
-      "\010\"\306\001\n\004Body\022\016\n\006fromId\030\001 \001(\t\022\022\n\nfromClient" +
+      "\010\"\325\001\n\004Body\022\016\n\006fromId\030\001 \001(\t\022\022\n\nfromClient" +
       "\030\002 \001(\t\022\021\n\004toId\030\003 \001(\tH\000\210\001\001\022\025\n\010toClient\030\004 " +
-      "\001(\tH\001\210\001\001\022\024\n\007groupId\030\005 \001(\tH\002\210\001\001\022\r\n\005msgId\030" +
-      "\006 \001(\005\022\013\n\003seq\030\007 \001(\005\022\013\n\003ack\030\010 \001(\005\022\017\n\007conte" +
-      "nt\030\t \001(\tB\007\n\005_toIdB\013\n\t_toClientB\n\n\010_group" +
-      "Id\"\223\001\n\tExtension\022Q\n\014extensionMap\030\001 \003(\0132;" +
-      ".com.hibob.anyim.netty.protobuf.Extensio" +
-      "n.ExtensionMapEntry\0323\n\021ExtensionMapEntry" +
-      "\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001*}\n\007MsgT" +
-      "ype\022\t\n\005HELLO\020\000\022\016\n\nHEART_BEAT\020\001\022\010\n\004CHAT\020\002" +
-      "\022\016\n\nGROUP_CHAT\020\003\022\026\n\022CLOSE_BY_READ_IDLE\020\n" +
-      "\022\030\n\024CLOSE_BY_ERROR_MAGIC\020\013\022\013\n\007DEFAULT\020cB" +
-      "\"\n\036com.hibob.anyim.netty.protobufP\001b\006pro" +
-      "to3"
+      "\001(\tH\001\210\001\001\022\024\n\007groupId\030\005 \001(\tH\002\210\001\001\022\022\n\005msgId\030" +
+      "\006 \001(\003H\003\210\001\001\022\013\n\003seq\030\007 \001(\005\022\013\n\003ack\030\010 \001(\005\022\017\n\007" +
+      "content\030\t \001(\tB\007\n\005_toIdB\013\n\t_toClientB\n\n\010_" +
+      "groupIdB\010\n\006_msgId\"\223\001\n\tExtension\022Q\n\014exten" +
+      "sionMap\030\001 \003(\0132;.com.hibob.anyim.netty.pr" +
+      "otobuf.Extension.ExtensionMapEntry\0323\n\021Ex" +
+      "tensionMapEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 " +
+      "\001(\t:\0028\001*}\n\007MsgType\022\t\n\005HELLO\020\000\022\016\n\nHEART_B" +
+      "EAT\020\001\022\010\n\004CHAT\020\002\022\016\n\nGROUP_CHAT\020\003\022\026\n\022CLOSE" +
+      "_BY_READ_IDLE\020\n\022\030\n\024CLOSE_BY_ERROR_MAGIC\020" +
+      "\013\022\013\n\007DEFAULT\020cB\"\n\036com.hibob.anyim.netty." +
+      "protobufP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
