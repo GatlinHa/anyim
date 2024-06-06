@@ -16,6 +16,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static com.hibob.anyim.common.constants.Const.SPLIT_V;
@@ -66,6 +68,15 @@ public class ChatProcessor implements MsgProcessor{
             refMsgId = rpcClient.getChatRpcService().updateAndGetRefMsgId(fromId, toId, refMsgIdStep, refMsgId);
             ctx.channel().attr(AttributeKey.valueOf("refMsgId")).set(refMsgId);
         }
+
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("fromId", fromId);
+        msgMap.put("fromClient", fromClient);
+        msgMap.put("toId", toId);
+        msgMap.put("msgId", msgId);
+        msgMap.put("msgType", msg.getHeader().getMsgType().getNumber());
+        msgMap.put("content", msg.getBody().getContent());
+        rpcClient.getChatRpcService().chatSave(msgMap);
 
         // 扩散给自己的其他客户端
         Set<Object> fromOnlineClients = queryOnlineClient(fromId);

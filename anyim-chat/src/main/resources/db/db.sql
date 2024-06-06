@@ -27,16 +27,16 @@ CREATE TABLE `anyim_chat_session_groupchat`(
 
 drop table `anyim_chat_msg_chat`;
 CREATE TABLE `anyim_chat_msg_chat`(
-    `session_id` bigint NOT NULL COMMENT '会话ID，雪花算法生成',
+    `session_id` BIGINT NOT NULL COMMENT '会话ID，雪花算法生成',
     `from_id` VARCHAR(255) NOT NULL COMMENT '发送端账号',
     `from_client` VARCHAR(255) NOT NULL COMMENT '发送端客户端',
     `to_id` VARCHAR(255) NOT NULL COMMENT '接收端账号',
     `msg_id` BIGINT NOT NULL COMMENT '消息id',
+    `msg_type` INT NOT NULL COMMENT '消息类型',
     `content` TEXT NOT NULL COMMENT '消息内容',
-    `send_time` DATETIME NOT NULL COMMENT '消息发送时间，取自netty接收到的时间',
-    `creat_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '消息入库时间',
+    `msg_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '消息时间，取入库时间',
     INDEX `idx_session_id`(session_id),
-    INDEX `idx_msg_id`(msg_id) -- TODO 先不加send_time的索引
+    INDEX `idx_msg_id`(msg_id)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '单聊消息记录表';
 
 DROP TABLE `anyim_chat_msg_groupchat`;
@@ -45,11 +45,11 @@ CREATE TABLE `anyim_chat_msg_groupchat`(
     `from_id` VARCHAR(255) NOT NULL COMMENT '发送端账号',
     `from_client` VARCHAR(255) NOT NULL COMMENT '发送端客户端',
     `msg_id` BIGINT NOT NULL COMMENT '消息id',
+    `msg_type` INT NOT NULL COMMENT '消息类型',
     `content` TEXT NOT NULL COMMENT '消息内容',
-    `send_time` DATETIME NOT NULL COMMENT '消息发送时间，取自netty接收到的时间',
-    `creat_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '消息入库时间',
+    `msg_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '消息时间，取入库时间',
     INDEX `idx_group_id`(group_id),
-    INDEX `idx_msg_id`(msg_id) -- TODO 先不加send_time的索引
+    INDEX `idx_msg_id`(msg_id)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '群聊消息记录表';
 
 -- TODO 这两个是群组表 先暂时放到这里

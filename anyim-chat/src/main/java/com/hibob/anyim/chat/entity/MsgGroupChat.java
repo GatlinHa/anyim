@@ -13,7 +13,7 @@ public class MsgGroupChat {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "group_id")
-    private String groupId;
+    private long groupId;
 
     @TableField(value = "from_id")
     private String fromId;
@@ -24,12 +24,12 @@ public class MsgGroupChat {
     @TableField(value = "msg_id")
     private long msgId;
 
+    @TableField(value = "msg_type")
+    private int msgType;
+
     @TableField(value = "content")
     private String content;
 
-    @TableField(value = "send_time")
-    private Date sendTime;
-
-    @TableField(value = "creat_time")
-    private Date creatTime;
+    @TableField(value = "msg_time")
+    private Date msgTime;
 }

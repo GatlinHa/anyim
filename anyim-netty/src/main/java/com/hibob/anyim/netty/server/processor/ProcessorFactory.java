@@ -12,9 +12,8 @@ public class ProcessorFactory {
             case HEART_BEAT:
                 return SpringContextUtil.getBean(HeartBeatProcessor.class);
             case CHAT:
+            case READ: // 和ChatProcessor相同处理逻辑，目前来看是这样
                 return SpringContextUtil.getBean(ChatProcessor.class);
-            case READ:
-                return SpringContextUtil.getBean(ReadProcessor.class);
             case GROUP_CHAT:
                 return null; //TODO
             default:
