@@ -76,11 +76,12 @@ public final class MsgOuterClass {
       "sionMap\030\001 \003(\0132;.com.hibob.anyim.netty.pr" +
       "otobuf.Extension.ExtensionMapEntry\0323\n\021Ex" +
       "tensionMapEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 " +
-      "\001(\t:\0028\001*}\n\007MsgType\022\t\n\005HELLO\020\000\022\016\n\nHEART_B" +
-      "EAT\020\001\022\010\n\004CHAT\020\002\022\016\n\nGROUP_CHAT\020\003\022\026\n\022CLOSE" +
-      "_BY_READ_IDLE\020\n\022\030\n\024CLOSE_BY_ERROR_MAGIC\020" +
-      "\013\022\013\n\007DEFAULT\020cB\"\n\036com.hibob.anyim.netty." +
-      "protobufP\001b\006proto3"
+      "\001(\t:\0028\001*\226\001\n\007MsgType\022\t\n\005HELLO\020\000\022\016\n\nHEART_" +
+      "BEAT\020\001\022\010\n\004CHAT\020\002\022\016\n\nGROUP_CHAT\020\003\022\010\n\004READ" +
+      "\020\004\022\r\n\tDELIVERED\020\005\022\026\n\022CLOSE_BY_READ_IDLE\020" +
+      "\n\022\030\n\024CLOSE_BY_ERROR_MAGIC\020\013\022\013\n\007DEFAULT\020c" +
+      "B\"\n\036com.hibob.anyim.netty.protobufP\001b\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

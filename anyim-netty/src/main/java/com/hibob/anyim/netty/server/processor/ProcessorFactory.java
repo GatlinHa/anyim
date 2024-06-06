@@ -13,7 +13,10 @@ public class ProcessorFactory {
                 return SpringContextUtil.getBean(HeartBeatProcessor.class);
             case CHAT:
                 return SpringContextUtil.getBean(ChatProcessor.class);
+            case READ:
+                return SpringContextUtil.getBean(ReadProcessor.class);
             case GROUP_CHAT:
+                return null; //TODO
             default:
                 return null;
         }

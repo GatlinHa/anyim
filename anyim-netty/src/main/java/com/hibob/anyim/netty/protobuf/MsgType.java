@@ -10,26 +10,66 @@ package com.hibob.anyim.netty.protobuf;
 public enum MsgType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * 握手
+   * </pre>
+   *
    * <code>HELLO = 0;</code>
    */
   HELLO(0),
   /**
+   * <pre>
+   * 心跳
+   * </pre>
+   *
    * <code>HEART_BEAT = 1;</code>
    */
   HEART_BEAT(1),
   /**
+   * <pre>
+   * 单聊
+   * </pre>
+   *
    * <code>CHAT = 2;</code>
    */
   CHAT(2),
   /**
+   * <pre>
+   * 群聊
+   * </pre>
+   *
    * <code>GROUP_CHAT = 3;</code>
    */
   GROUP_CHAT(3),
   /**
+   * <pre>
+   * 已读
+   * </pre>
+   *
+   * <code>READ = 4;</code>
+   */
+  READ(4),
+  /**
+   * <pre>
+   * 已发送
+   * </pre>
+   *
+   * <code>DELIVERED = 5;</code>
+   */
+  DELIVERED(5),
+  /**
+   * <pre>
+   * 超时关闭
+   * </pre>
+   *
    * <code>CLOSE_BY_READ_IDLE = 10;</code>
    */
   CLOSE_BY_READ_IDLE(10),
   /**
+   * <pre>
+   * magic不对关闭
+   * </pre>
+   *
    * <code>CLOSE_BY_ERROR_MAGIC = 11;</code>
    */
   CLOSE_BY_ERROR_MAGIC(11),
@@ -50,26 +90,66 @@ public enum MsgType
       MsgType.class.getName());
   }
   /**
+   * <pre>
+   * 握手
+   * </pre>
+   *
    * <code>HELLO = 0;</code>
    */
   public static final int HELLO_VALUE = 0;
   /**
+   * <pre>
+   * 心跳
+   * </pre>
+   *
    * <code>HEART_BEAT = 1;</code>
    */
   public static final int HEART_BEAT_VALUE = 1;
   /**
+   * <pre>
+   * 单聊
+   * </pre>
+   *
    * <code>CHAT = 2;</code>
    */
   public static final int CHAT_VALUE = 2;
   /**
+   * <pre>
+   * 群聊
+   * </pre>
+   *
    * <code>GROUP_CHAT = 3;</code>
    */
   public static final int GROUP_CHAT_VALUE = 3;
   /**
+   * <pre>
+   * 已读
+   * </pre>
+   *
+   * <code>READ = 4;</code>
+   */
+  public static final int READ_VALUE = 4;
+  /**
+   * <pre>
+   * 已发送
+   * </pre>
+   *
+   * <code>DELIVERED = 5;</code>
+   */
+  public static final int DELIVERED_VALUE = 5;
+  /**
+   * <pre>
+   * 超时关闭
+   * </pre>
+   *
    * <code>CLOSE_BY_READ_IDLE = 10;</code>
    */
   public static final int CLOSE_BY_READ_IDLE_VALUE = 10;
   /**
+   * <pre>
+   * magic不对关闭
+   * </pre>
+   *
    * <code>CLOSE_BY_ERROR_MAGIC = 11;</code>
    */
   public static final int CLOSE_BY_ERROR_MAGIC_VALUE = 11;
@@ -107,6 +187,8 @@ public enum MsgType
       case 1: return HEART_BEAT;
       case 2: return CHAT;
       case 3: return GROUP_CHAT;
+      case 4: return READ;
+      case 5: return DELIVERED;
       case 10: return CLOSE_BY_READ_IDLE;
       case 11: return CLOSE_BY_ERROR_MAGIC;
       case 99: return DEFAULT;

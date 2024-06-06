@@ -12,13 +12,15 @@ message Msg {
 }
 
 enum MsgType {
-  HELLO = 0;
-  HEART_BEAT = 1;
-  CHAT = 2;
-  GROUP_CHAT = 3;
+  HELLO = 0; //握手
+  HEART_BEAT = 1; //心跳
+  CHAT = 2; //单聊
+  GROUP_CHAT = 3; //群聊
+  READ = 4; // 已读
+  DELIVERED = 5; //已发送 TODO 这个消息是服务器主动发给client的，看看怎么设计消息结构
 
-  CLOSE_BY_READ_IDLE = 10;
-  CLOSE_BY_ERROR_MAGIC = 11;
+  CLOSE_BY_READ_IDLE = 10; //超时关闭
+  CLOSE_BY_ERROR_MAGIC = 11; //magic不对关闭
 
   DEFAULT = 99;
 }
