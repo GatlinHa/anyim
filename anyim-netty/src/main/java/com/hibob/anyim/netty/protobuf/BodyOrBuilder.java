@@ -67,21 +67,15 @@ public interface BodyOrBuilder extends
       getToClientBytes();
 
   /**
-   * <code>optional string groupId = 5;</code>
+   * <code>optional int64 groupId = 5;</code>
    * @return Whether the groupId field is set.
    */
   boolean hasGroupId();
   /**
-   * <code>optional string groupId = 5;</code>
+   * <code>optional int64 groupId = 5;</code>
    * @return The groupId.
    */
-  java.lang.String getGroupId();
-  /**
-   * <code>optional string groupId = 5;</code>
-   * @return The bytes for groupId.
-   */
-  com.google.protobuf.ByteString
-      getGroupIdBytes();
+  long getGroupId();
 
   /**
    * <code>optional int64 msgId = 6;</code>
@@ -95,26 +89,70 @@ public interface BodyOrBuilder extends
   long getMsgId();
 
   /**
-   * <code>int32 seq = 7;</code>
+   * <code>optional int32 seq = 7;</code>
+   * @return Whether the seq field is set.
+   */
+  boolean hasSeq();
+  /**
+   * <code>optional int32 seq = 7;</code>
    * @return The seq.
    */
   int getSeq();
 
   /**
-   * <code>int32 ack = 8;</code>
+   * <code>optional int32 ack = 8;</code>
+   * @return Whether the ack field is set.
+   */
+  boolean hasAck();
+  /**
+   * <code>optional int32 ack = 8;</code>
    * @return The ack.
    */
   int getAck();
 
   /**
-   * <code>string content = 9;</code>
+   * <code>optional string content = 9;</code>
+   * @return Whether the content field is set.
+   */
+  boolean hasContent();
+  /**
+   * <code>optional string content = 9;</code>
    * @return The content.
    */
   java.lang.String getContent();
   /**
-   * <code>string content = 9;</code>
+   * <code>optional string content = 9;</code>
    * @return The bytes for content.
    */
   com.google.protobuf.ByteString
       getContentBytes();
+
+  /**
+   * <pre>
+   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * </pre>
+   *
+   * <code>optional string tempMsgId = 10;</code>
+   * @return Whether the tempMsgId field is set.
+   */
+  boolean hasTempMsgId();
+  /**
+   * <pre>
+   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * </pre>
+   *
+   * <code>optional string tempMsgId = 10;</code>
+   * @return The tempMsgId.
+   */
+  java.lang.String getTempMsgId();
+  /**
+   * <pre>
+   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * </pre>
+   *
+   * <code>optional string tempMsgId = 10;</code>
+   * @return The bytes for tempMsgId.
+   */
+  com.google.protobuf.ByteString
+      getTempMsgIdBytes();
 }

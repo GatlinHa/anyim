@@ -5,7 +5,10 @@ import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.netty.config.NacosConfig;
 import com.hibob.anyim.netty.mq.kafka.KafkaProducer;
+import com.hibob.anyim.netty.protobuf.Body;
+import com.hibob.anyim.netty.protobuf.Header;
 import com.hibob.anyim.netty.protobuf.Msg;
+import com.hibob.anyim.netty.protobuf.MsgType;
 import com.hibob.anyim.netty.rpc.RpcClient;
 import com.hibob.anyim.netty.utils.SpringContextUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,6 +19,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -50,10 +54,11 @@ public class ChatProcessor implements MsgProcessor{
         String msgIdKey = RedisKey.NETTY_REF_MSG_ID + combineId(fromId, toId);
         Long msgId = redisTemplate.opsForValue().increment(msgIdKey);
         long refMsgId;
-        Object object = ctx.channel().attr(AttributeKey.valueOf("refMsgId")).get();
+        AttributeKey<Object> attributeKey = AttributeKey.valueOf(msgIdKey);
+        Object object = ctx.channel().attr(attributeKey).get();
         if (object == null) { // 将refMsgId保存在channel中，不用每次都查数据库
             refMsgId = rpcClient.getChatRpcService().refMsgId(fromId, toId, refMsgIdDefault);
-            ctx.channel().attr(AttributeKey.valueOf("refMsgId")).set(refMsgId);
+            ctx.channel().attr(attributeKey).set(refMsgId);
         }
         else {
             refMsgId = (long) object;
@@ -62,21 +67,15 @@ public class ChatProcessor implements MsgProcessor{
         if (msgId < refMsgIdDefault) { //应对第一条消息，redis重启等场景
             msgId = redisTemplate.opsForValue().increment(msgIdKey, refMsgId);
             refMsgId = rpcClient.getChatRpcService().updateAndGetRefMsgId(fromId, toId, refMsgIdStep, refMsgId);
-            ctx.channel().attr(AttributeKey.valueOf("refMsgId")).set(refMsgId);
+            ctx.channel().attr(attributeKey).set(refMsgId);
         }
         else if (refMsgId - msgId < refMsgIdStep / 2) { //msgId自增到一定程度，refMsgId需要更新
             refMsgId = rpcClient.getChatRpcService().updateAndGetRefMsgId(fromId, toId, refMsgIdStep, refMsgId);
-            ctx.channel().attr(AttributeKey.valueOf("refMsgId")).set(refMsgId);
+            ctx.channel().attr(attributeKey).set(refMsgId);
         }
 
-        Map<String, Object> msgMap = new HashMap<>();
-        msgMap.put("fromId", fromId);
-        msgMap.put("fromClient", fromClient);
-        msgMap.put("toId", toId);
-        msgMap.put("msgId", msgId);
-        msgMap.put("msgType", msg.getHeader().getMsgType().getNumber());
-        msgMap.put("content", msg.getBody().getContent());
-        rpcClient.getChatRpcService().chatSave(msgMap);
+        saveChat(msg, msgId); //消息入库
+        sendDeliveredMsg(ctx, msg, msgId); //回复已送达 TODO 要考虑入库成功了再回复
 
         // 扩散给自己的其他客户端
         Set<Object> fromOnlineClients = queryOnlineClient(fromId);
@@ -123,6 +122,36 @@ public class ChatProcessor implements MsgProcessor{
             KafkaProducer producer = SpringContextUtil.getBean(KafkaProducer.class);
             producer.sendChatMessage(instance, msgOut);
         }
+    }
+
+    private void saveChat(Msg msg, long msgId) {
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("fromId", msg.getBody().getFromId());
+        msgMap.put("fromClient", msg.getBody().getFromClient());
+        msgMap.put("toId", msg.getBody().getToId());
+        msgMap.put("msgId", msgId);
+        msgMap.put("msgType", msg.getHeader().getMsgType().getNumber());
+        msgMap.put("content", msg.getBody().getContent());
+        msgMap.put("msgTime", new Date());
+        rpcClient.getChatRpcService().asyncSaveChat(msgMap);
+    }
+
+    private void sendDeliveredMsg(ChannelHandlerContext ctx, Msg msg, Long msgId) {
+        Header readMsgheader = Header.newBuilder()
+                .setMagic(Const.MAGIC)
+                .setVersion(0)
+                .setMsgType(MsgType.DELIVERED)
+                .setIsExtension(false)
+                .build();
+        Body readMsgBody = Body.newBuilder()
+                .setFromId(msg.getBody().getFromId())
+                .setFromClient(msg.getBody().getFromClient())
+                .setToId(msg.getBody().getToId())
+                .setTempMsgId(msg.getBody().getTempMsgId())
+                .setMsgId(msgId)
+                .build();
+        Msg readMsg = Msg.newBuilder().setHeader(readMsgheader).setBody(readMsgBody).build();
+        ctx.writeAndFlush(readMsg);
     }
 
     private Set<Object> queryOnlineClient(String account) {

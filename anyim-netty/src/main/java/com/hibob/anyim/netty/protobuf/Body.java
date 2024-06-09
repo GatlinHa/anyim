@@ -30,8 +30,8 @@ private static final long serialVersionUID = 0L;
     fromClient_ = "";
     toId_ = "";
     toClient_ = "";
-    groupId_ = "";
     content_ = "";
+    tempMsgId_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -221,10 +221,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int GROUPID_FIELD_NUMBER = 5;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object groupId_ = "";
+  private long groupId_ = 0L;
   /**
-   * <code>optional string groupId = 5;</code>
+   * <code>optional int64 groupId = 5;</code>
    * @return Whether the groupId field is set.
    */
   @java.lang.Override
@@ -232,39 +231,12 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>optional string groupId = 5;</code>
+   * <code>optional int64 groupId = 5;</code>
    * @return The groupId.
    */
   @java.lang.Override
-  public java.lang.String getGroupId() {
-    java.lang.Object ref = groupId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      groupId_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>optional string groupId = 5;</code>
-   * @return The bytes for groupId.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getGroupIdBytes() {
-    java.lang.Object ref = groupId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      groupId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public long getGroupId() {
+    return groupId_;
   }
 
   public static final int MSGID_FIELD_NUMBER = 6;
@@ -289,7 +261,15 @@ private static final long serialVersionUID = 0L;
   public static final int SEQ_FIELD_NUMBER = 7;
   private int seq_ = 0;
   /**
-   * <code>int32 seq = 7;</code>
+   * <code>optional int32 seq = 7;</code>
+   * @return Whether the seq field is set.
+   */
+  @java.lang.Override
+  public boolean hasSeq() {
+    return ((bitField0_ & 0x00000010) != 0);
+  }
+  /**
+   * <code>optional int32 seq = 7;</code>
    * @return The seq.
    */
   @java.lang.Override
@@ -300,7 +280,15 @@ private static final long serialVersionUID = 0L;
   public static final int ACK_FIELD_NUMBER = 8;
   private int ack_ = 0;
   /**
-   * <code>int32 ack = 8;</code>
+   * <code>optional int32 ack = 8;</code>
+   * @return Whether the ack field is set.
+   */
+  @java.lang.Override
+  public boolean hasAck() {
+    return ((bitField0_ & 0x00000020) != 0);
+  }
+  /**
+   * <code>optional int32 ack = 8;</code>
    * @return The ack.
    */
   @java.lang.Override
@@ -312,7 +300,15 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object content_ = "";
   /**
-   * <code>string content = 9;</code>
+   * <code>optional string content = 9;</code>
+   * @return Whether the content field is set.
+   */
+  @java.lang.Override
+  public boolean hasContent() {
+    return ((bitField0_ & 0x00000040) != 0);
+  }
+  /**
+   * <code>optional string content = 9;</code>
    * @return The content.
    */
   @java.lang.Override
@@ -329,7 +325,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string content = 9;</code>
+   * <code>optional string content = 9;</code>
    * @return The bytes for content.
    */
   @java.lang.Override
@@ -341,6 +337,65 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       content_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int TEMPMSGID_FIELD_NUMBER = 10;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object tempMsgId_ = "";
+  /**
+   * <pre>
+   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * </pre>
+   *
+   * <code>optional string tempMsgId = 10;</code>
+   * @return Whether the tempMsgId field is set.
+   */
+  @java.lang.Override
+  public boolean hasTempMsgId() {
+    return ((bitField0_ & 0x00000080) != 0);
+  }
+  /**
+   * <pre>
+   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * </pre>
+   *
+   * <code>optional string tempMsgId = 10;</code>
+   * @return The tempMsgId.
+   */
+  @java.lang.Override
+  public java.lang.String getTempMsgId() {
+    java.lang.Object ref = tempMsgId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      tempMsgId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * </pre>
+   *
+   * <code>optional string tempMsgId = 10;</code>
+   * @return The bytes for tempMsgId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getTempMsgIdBytes() {
+    java.lang.Object ref = tempMsgId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      tempMsgId_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -374,19 +429,22 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessage.writeString(output, 4, toClient_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 5, groupId_);
+      output.writeInt64(5, groupId_);
     }
     if (((bitField0_ & 0x00000008) != 0)) {
       output.writeInt64(6, msgId_);
     }
-    if (seq_ != 0) {
+    if (((bitField0_ & 0x00000010) != 0)) {
       output.writeInt32(7, seq_);
     }
-    if (ack_ != 0) {
+    if (((bitField0_ & 0x00000020) != 0)) {
       output.writeInt32(8, ack_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(content_)) {
+    if (((bitField0_ & 0x00000040) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 9, content_);
+    }
+    if (((bitField0_ & 0x00000080) != 0)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 10, tempMsgId_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -410,22 +468,26 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.GeneratedMessage.computeStringSize(4, toClient_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(5, groupId_);
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(5, groupId_);
     }
     if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(6, msgId_);
     }
-    if (seq_ != 0) {
+    if (((bitField0_ & 0x00000010) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(7, seq_);
     }
-    if (ack_ != 0) {
+    if (((bitField0_ & 0x00000020) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(8, ack_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(content_)) {
+    if (((bitField0_ & 0x00000040) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(9, content_);
+    }
+    if (((bitField0_ & 0x00000080) != 0)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(10, tempMsgId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -458,20 +520,34 @@ private static final long serialVersionUID = 0L;
     }
     if (hasGroupId() != other.hasGroupId()) return false;
     if (hasGroupId()) {
-      if (!getGroupId()
-          .equals(other.getGroupId())) return false;
+      if (getGroupId()
+          != other.getGroupId()) return false;
     }
     if (hasMsgId() != other.hasMsgId()) return false;
     if (hasMsgId()) {
       if (getMsgId()
           != other.getMsgId()) return false;
     }
-    if (getSeq()
-        != other.getSeq()) return false;
-    if (getAck()
-        != other.getAck()) return false;
-    if (!getContent()
-        .equals(other.getContent())) return false;
+    if (hasSeq() != other.hasSeq()) return false;
+    if (hasSeq()) {
+      if (getSeq()
+          != other.getSeq()) return false;
+    }
+    if (hasAck() != other.hasAck()) return false;
+    if (hasAck()) {
+      if (getAck()
+          != other.getAck()) return false;
+    }
+    if (hasContent() != other.hasContent()) return false;
+    if (hasContent()) {
+      if (!getContent()
+          .equals(other.getContent())) return false;
+    }
+    if (hasTempMsgId() != other.hasTempMsgId()) return false;
+    if (hasTempMsgId()) {
+      if (!getTempMsgId()
+          .equals(other.getTempMsgId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -497,19 +573,30 @@ private static final long serialVersionUID = 0L;
     }
     if (hasGroupId()) {
       hash = (37 * hash) + GROUPID_FIELD_NUMBER;
-      hash = (53 * hash) + getGroupId().hashCode();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getGroupId());
     }
     if (hasMsgId()) {
       hash = (37 * hash) + MSGID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getMsgId());
     }
-    hash = (37 * hash) + SEQ_FIELD_NUMBER;
-    hash = (53 * hash) + getSeq();
-    hash = (37 * hash) + ACK_FIELD_NUMBER;
-    hash = (53 * hash) + getAck();
-    hash = (37 * hash) + CONTENT_FIELD_NUMBER;
-    hash = (53 * hash) + getContent().hashCode();
+    if (hasSeq()) {
+      hash = (37 * hash) + SEQ_FIELD_NUMBER;
+      hash = (53 * hash) + getSeq();
+    }
+    if (hasAck()) {
+      hash = (37 * hash) + ACK_FIELD_NUMBER;
+      hash = (53 * hash) + getAck();
+    }
+    if (hasContent()) {
+      hash = (37 * hash) + CONTENT_FIELD_NUMBER;
+      hash = (53 * hash) + getContent().hashCode();
+    }
+    if (hasTempMsgId()) {
+      hash = (37 * hash) + TEMPMSGID_FIELD_NUMBER;
+      hash = (53 * hash) + getTempMsgId().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -645,11 +732,12 @@ private static final long serialVersionUID = 0L;
       fromClient_ = "";
       toId_ = "";
       toClient_ = "";
-      groupId_ = "";
+      groupId_ = 0L;
       msgId_ = 0L;
       seq_ = 0;
       ack_ = 0;
       content_ = "";
+      tempMsgId_ = "";
       return this;
     }
 
@@ -708,12 +796,19 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
         result.seq_ = seq_;
+        to_bitField0_ |= 0x00000010;
       }
       if (((from_bitField0_ & 0x00000080) != 0)) {
         result.ack_ = ack_;
+        to_bitField0_ |= 0x00000020;
       }
       if (((from_bitField0_ & 0x00000100) != 0)) {
         result.content_ = content_;
+        to_bitField0_ |= 0x00000040;
+      }
+      if (((from_bitField0_ & 0x00000200) != 0)) {
+        result.tempMsgId_ = tempMsgId_;
+        to_bitField0_ |= 0x00000080;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -751,22 +846,25 @@ private static final long serialVersionUID = 0L;
         onChanged();
       }
       if (other.hasGroupId()) {
-        groupId_ = other.groupId_;
-        bitField0_ |= 0x00000010;
-        onChanged();
+        setGroupId(other.getGroupId());
       }
       if (other.hasMsgId()) {
         setMsgId(other.getMsgId());
       }
-      if (other.getSeq() != 0) {
+      if (other.hasSeq()) {
         setSeq(other.getSeq());
       }
-      if (other.getAck() != 0) {
+      if (other.hasAck()) {
         setAck(other.getAck());
       }
-      if (!other.getContent().isEmpty()) {
+      if (other.hasContent()) {
         content_ = other.content_;
         bitField0_ |= 0x00000100;
+        onChanged();
+      }
+      if (other.hasTempMsgId()) {
+        tempMsgId_ = other.tempMsgId_;
+        bitField0_ |= 0x00000200;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -815,11 +913,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
-            case 42: {
-              groupId_ = input.readStringRequireUtf8();
+            case 40: {
+              groupId_ = input.readInt64();
               bitField0_ |= 0x00000010;
               break;
-            } // case 42
+            } // case 40
             case 48: {
               msgId_ = input.readInt64();
               bitField0_ |= 0x00000020;
@@ -840,6 +938,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000100;
               break;
             } // case 74
+            case 82: {
+              tempMsgId_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000200;
+              break;
+            } // case 82
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1159,81 +1262,42 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object groupId_ = "";
+    private long groupId_ ;
     /**
-     * <code>optional string groupId = 5;</code>
+     * <code>optional int64 groupId = 5;</code>
      * @return Whether the groupId field is set.
      */
+    @java.lang.Override
     public boolean hasGroupId() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>optional string groupId = 5;</code>
+     * <code>optional int64 groupId = 5;</code>
      * @return The groupId.
      */
-    public java.lang.String getGroupId() {
-      java.lang.Object ref = groupId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        groupId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    @java.lang.Override
+    public long getGroupId() {
+      return groupId_;
     }
     /**
-     * <code>optional string groupId = 5;</code>
-     * @return The bytes for groupId.
-     */
-    public com.google.protobuf.ByteString
-        getGroupIdBytes() {
-      java.lang.Object ref = groupId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        groupId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>optional string groupId = 5;</code>
+     * <code>optional int64 groupId = 5;</code>
      * @param value The groupId to set.
      * @return This builder for chaining.
      */
-    public Builder setGroupId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+    public Builder setGroupId(long value) {
+
       groupId_ = value;
       bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string groupId = 5;</code>
+     * <code>optional int64 groupId = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearGroupId() {
-      groupId_ = getDefaultInstance().getGroupId();
       bitField0_ = (bitField0_ & ~0x00000010);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional string groupId = 5;</code>
-     * @param value The bytes for groupId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setGroupIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      groupId_ = value;
-      bitField0_ |= 0x00000010;
+      groupId_ = 0L;
       onChanged();
       return this;
     }
@@ -1280,7 +1344,15 @@ private static final long serialVersionUID = 0L;
 
     private int seq_ ;
     /**
-     * <code>int32 seq = 7;</code>
+     * <code>optional int32 seq = 7;</code>
+     * @return Whether the seq field is set.
+     */
+    @java.lang.Override
+    public boolean hasSeq() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <code>optional int32 seq = 7;</code>
      * @return The seq.
      */
     @java.lang.Override
@@ -1288,7 +1360,7 @@ private static final long serialVersionUID = 0L;
       return seq_;
     }
     /**
-     * <code>int32 seq = 7;</code>
+     * <code>optional int32 seq = 7;</code>
      * @param value The seq to set.
      * @return This builder for chaining.
      */
@@ -1300,7 +1372,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 seq = 7;</code>
+     * <code>optional int32 seq = 7;</code>
      * @return This builder for chaining.
      */
     public Builder clearSeq() {
@@ -1312,7 +1384,15 @@ private static final long serialVersionUID = 0L;
 
     private int ack_ ;
     /**
-     * <code>int32 ack = 8;</code>
+     * <code>optional int32 ack = 8;</code>
+     * @return Whether the ack field is set.
+     */
+    @java.lang.Override
+    public boolean hasAck() {
+      return ((bitField0_ & 0x00000080) != 0);
+    }
+    /**
+     * <code>optional int32 ack = 8;</code>
      * @return The ack.
      */
     @java.lang.Override
@@ -1320,7 +1400,7 @@ private static final long serialVersionUID = 0L;
       return ack_;
     }
     /**
-     * <code>int32 ack = 8;</code>
+     * <code>optional int32 ack = 8;</code>
      * @param value The ack to set.
      * @return This builder for chaining.
      */
@@ -1332,7 +1412,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 ack = 8;</code>
+     * <code>optional int32 ack = 8;</code>
      * @return This builder for chaining.
      */
     public Builder clearAck() {
@@ -1344,7 +1424,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object content_ = "";
     /**
-     * <code>string content = 9;</code>
+     * <code>optional string content = 9;</code>
+     * @return Whether the content field is set.
+     */
+    public boolean hasContent() {
+      return ((bitField0_ & 0x00000100) != 0);
+    }
+    /**
+     * <code>optional string content = 9;</code>
      * @return The content.
      */
     public java.lang.String getContent() {
@@ -1360,7 +1447,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string content = 9;</code>
+     * <code>optional string content = 9;</code>
      * @return The bytes for content.
      */
     public com.google.protobuf.ByteString
@@ -1377,7 +1464,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string content = 9;</code>
+     * <code>optional string content = 9;</code>
      * @param value The content to set.
      * @return This builder for chaining.
      */
@@ -1390,7 +1477,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string content = 9;</code>
+     * <code>optional string content = 9;</code>
      * @return This builder for chaining.
      */
     public Builder clearContent() {
@@ -1400,7 +1487,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string content = 9;</code>
+     * <code>optional string content = 9;</code>
      * @param value The bytes for content to set.
      * @return This builder for chaining.
      */
@@ -1410,6 +1497,109 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       content_ = value;
       bitField0_ |= 0x00000100;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object tempMsgId_ = "";
+    /**
+     * <pre>
+     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * </pre>
+     *
+     * <code>optional string tempMsgId = 10;</code>
+     * @return Whether the tempMsgId field is set.
+     */
+    public boolean hasTempMsgId() {
+      return ((bitField0_ & 0x00000200) != 0);
+    }
+    /**
+     * <pre>
+     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * </pre>
+     *
+     * <code>optional string tempMsgId = 10;</code>
+     * @return The tempMsgId.
+     */
+    public java.lang.String getTempMsgId() {
+      java.lang.Object ref = tempMsgId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        tempMsgId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * </pre>
+     *
+     * <code>optional string tempMsgId = 10;</code>
+     * @return The bytes for tempMsgId.
+     */
+    public com.google.protobuf.ByteString
+        getTempMsgIdBytes() {
+      java.lang.Object ref = tempMsgId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        tempMsgId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * </pre>
+     *
+     * <code>optional string tempMsgId = 10;</code>
+     * @param value The tempMsgId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTempMsgId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      tempMsgId_ = value;
+      bitField0_ |= 0x00000200;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * </pre>
+     *
+     * <code>optional string tempMsgId = 10;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTempMsgId() {
+      tempMsgId_ = getDefaultInstance().getTempMsgId();
+      bitField0_ = (bitField0_ & ~0x00000200);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * </pre>
+     *
+     * <code>optional string tempMsgId = 10;</code>
+     * @param value The bytes for tempMsgId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTempMsgIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      tempMsgId_ = value;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }

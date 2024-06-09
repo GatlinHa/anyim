@@ -12,8 +12,8 @@ import java.util.Date;
 public class MsgChat {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "session_id")
-    private long sessionId;
+    @TableField(value = "session_id")
+    private String sessionId;
 
     @TableField(value = "from_id")
     private String fromId;
@@ -35,4 +35,7 @@ public class MsgChat {
 
     @TableField(value = "msg_time")
     private Date msgTime;
+
+    @TableField(value = "create_time")
+    private Date createTime;
 }

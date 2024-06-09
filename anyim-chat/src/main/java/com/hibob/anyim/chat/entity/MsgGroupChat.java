@@ -12,14 +12,17 @@ import java.util.Date;
 public class MsgGroupChat {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "group_id")
-    private long groupId;
+    @TableField(value = "session_id")
+    private String sessionId;
 
     @TableField(value = "from_id")
     private String fromId;
 
     @TableField(value = "from_client")
     private String fromClient;
+
+    @TableField(value = "to_group_id")
+    private long toGroupId;
 
     @TableField(value = "msg_id")
     private long msgId;
@@ -32,4 +35,7 @@ public class MsgGroupChat {
 
     @TableField(value = "msg_time")
     private Date msgTime;
+
+    @TableField(value = "create_time")
+    private Date createTime;
 }

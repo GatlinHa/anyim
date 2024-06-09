@@ -13,7 +13,7 @@ public class SessionChat {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "session_id")
-    private long sessionId;
+    private String sessionId;
 
     @TableField(value = "user_a")
     private String userA;

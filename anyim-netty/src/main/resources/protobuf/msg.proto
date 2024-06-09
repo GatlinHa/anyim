@@ -17,7 +17,7 @@ enum MsgType {
   CHAT = 2; //单聊
   GROUP_CHAT = 3; //群聊
   READ = 4; // 已读
-  DELIVERED = 5; //已发送 TODO 这个消息是服务器主动发给client的，看看怎么设计消息结构
+  DELIVERED = 5; //已发送
 
   CLOSE_BY_READ_IDLE = 10; //超时关闭
   CLOSE_BY_ERROR_MAGIC = 11; //magic不对关闭
@@ -39,9 +39,10 @@ message Body {
   optional string toClient = 4;
   optional int64 groupId = 5;
   optional int64 msgId = 6;
-  int32 seq = 7;
-  int32 ack = 8;
-  string content = 9;
+  optional int32 seq = 7;
+  optional int32 ack = 8;
+  optional string content = 9;
+  optional string tempMsgId = 10; //客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
 }
 
 message Extension {

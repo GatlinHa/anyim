@@ -22,6 +22,11 @@ public class RedisKey {
     public static final String NETTY_PREFIX = COMMON_PREFIX + "netty:";
 
     /**
+     * Netty服务的前缀
+     */
+    public static final String CHAT_PREFIX = COMMON_PREFIX + "chat:";
+
+    /**
      * 存储注销的用户的黑名单
      */
     public static final String USER_DEREGISTER = USER_PREFIX + "deregister:";
@@ -52,8 +57,15 @@ public class RedisKey {
     public static final String NETTY_ONLINE_CLIENT = NETTY_PREFIX + "online:";
 
     /**
-     * Netty在线客户端，后面接账号，value是uniqueId的集合
+     * Netty保存的参考MSG ID，后面接账号a@账号b
      */
     public static final String NETTY_REF_MSG_ID = NETTY_PREFIX + "refMsgId:";
+
+    /**
+     * 保存的SessionId下都有哪些MSG ID
+     */
+    public static final String CHAT_SESSION_MSG_ID = CHAT_PREFIX + "sessionId:";
+
+    public static final String CHAT_SESSION_MSG_ID_MSG = CHAT_PREFIX + "sessionId-MsgId:";
 
 }

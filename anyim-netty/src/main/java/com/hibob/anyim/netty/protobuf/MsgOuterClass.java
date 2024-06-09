@@ -67,21 +67,23 @@ public final class MsgOuterClass {
       "\"w\n\006Header\022\r\n\005magic\030\001 \001(\005\022\017\n\007version\030\002 \001" +
       "(\005\0228\n\007msgType\030\003 \001(\0162\'.com.hibob.anyim.ne" +
       "tty.protobuf.MsgType\022\023\n\013isExtension\030\004 \001(" +
-      "\010\"\325\001\n\004Body\022\016\n\006fromId\030\001 \001(\t\022\022\n\nfromClient" +
+      "\010\"\246\002\n\004Body\022\016\n\006fromId\030\001 \001(\t\022\022\n\nfromClient" +
       "\030\002 \001(\t\022\021\n\004toId\030\003 \001(\tH\000\210\001\001\022\025\n\010toClient\030\004 " +
-      "\001(\tH\001\210\001\001\022\024\n\007groupId\030\005 \001(\tH\002\210\001\001\022\022\n\005msgId\030" +
-      "\006 \001(\003H\003\210\001\001\022\013\n\003seq\030\007 \001(\005\022\013\n\003ack\030\010 \001(\005\022\017\n\007" +
-      "content\030\t \001(\tB\007\n\005_toIdB\013\n\t_toClientB\n\n\010_" +
-      "groupIdB\010\n\006_msgId\"\223\001\n\tExtension\022Q\n\014exten" +
-      "sionMap\030\001 \003(\0132;.com.hibob.anyim.netty.pr" +
-      "otobuf.Extension.ExtensionMapEntry\0323\n\021Ex" +
-      "tensionMapEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 " +
-      "\001(\t:\0028\001*\226\001\n\007MsgType\022\t\n\005HELLO\020\000\022\016\n\nHEART_" +
-      "BEAT\020\001\022\010\n\004CHAT\020\002\022\016\n\nGROUP_CHAT\020\003\022\010\n\004READ" +
-      "\020\004\022\r\n\tDELIVERED\020\005\022\026\n\022CLOSE_BY_READ_IDLE\020" +
-      "\n\022\030\n\024CLOSE_BY_ERROR_MAGIC\020\013\022\013\n\007DEFAULT\020c" +
-      "B\"\n\036com.hibob.anyim.netty.protobufP\001b\006pr" +
-      "oto3"
+      "\001(\tH\001\210\001\001\022\024\n\007groupId\030\005 \001(\003H\002\210\001\001\022\022\n\005msgId\030" +
+      "\006 \001(\003H\003\210\001\001\022\020\n\003seq\030\007 \001(\005H\004\210\001\001\022\020\n\003ack\030\010 \001(" +
+      "\005H\005\210\001\001\022\024\n\007content\030\t \001(\tH\006\210\001\001\022\026\n\ttempMsgI" +
+      "d\030\n \001(\tH\007\210\001\001B\007\n\005_toIdB\013\n\t_toClientB\n\n\010_g" +
+      "roupIdB\010\n\006_msgIdB\006\n\004_seqB\006\n\004_ackB\n\n\010_con" +
+      "tentB\014\n\n_tempMsgId\"\223\001\n\tExtension\022Q\n\014exte" +
+      "nsionMap\030\001 \003(\0132;.com.hibob.anyim.netty.p" +
+      "rotobuf.Extension.ExtensionMapEntry\0323\n\021E" +
+      "xtensionMapEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002" +
+      " \001(\t:\0028\001*\226\001\n\007MsgType\022\t\n\005HELLO\020\000\022\016\n\nHEART" +
+      "_BEAT\020\001\022\010\n\004CHAT\020\002\022\016\n\nGROUP_CHAT\020\003\022\010\n\004REA" +
+      "D\020\004\022\r\n\tDELIVERED\020\005\022\026\n\022CLOSE_BY_READ_IDLE" +
+      "\020\n\022\030\n\024CLOSE_BY_ERROR_MAGIC\020\013\022\013\n\007DEFAULT\020" +
+      "cB\"\n\036com.hibob.anyim.netty.protobufP\001b\006p" +
+      "roto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -104,7 +106,7 @@ public final class MsgOuterClass {
     internal_static_com_hibob_anyim_netty_protobuf_Body_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_hibob_anyim_netty_protobuf_Body_descriptor,
-        new java.lang.String[] { "FromId", "FromClient", "ToId", "ToClient", "GroupId", "MsgId", "Seq", "Ack", "Content", });
+        new java.lang.String[] { "FromId", "FromClient", "ToId", "ToClient", "GroupId", "MsgId", "Seq", "Ack", "Content", "TempMsgId", });
     internal_static_com_hibob_anyim_netty_protobuf_Extension_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_com_hibob_anyim_netty_protobuf_Extension_fieldAccessorTable = new

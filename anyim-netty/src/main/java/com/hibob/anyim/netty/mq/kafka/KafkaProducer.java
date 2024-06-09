@@ -25,7 +25,7 @@ public class KafkaProducer {
 
     public void sendGroupChatMessage(String instance, Msg message) {
         String toTopic = nacosConfig.getToTopic(instance);
-        kafkaTemplate.send(toTopic, message.getBody().getGroupId(), message);
+        kafkaTemplate.send(toTopic, String.valueOf(message.getBody().getGroupId()), message);
         log.info("send message to kafka, topic is {}, message is {}", toTopic, message);
     }
 
