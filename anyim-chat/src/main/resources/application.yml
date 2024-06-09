@@ -1,5 +1,10 @@
 
 spring:
+  data:
+    mongodb:
+      host: ${spring.data.mongodb.host}
+      port: ${spring.data.mongodb.port}
+      database: ${spring.data.mongodb.database}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${spring.datasource.url}

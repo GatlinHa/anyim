@@ -7,9 +7,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hibob.anyim.chat.entity.MsgChat;
 import com.hibob.anyim.chat.entity.MsgGroupChat;
 import com.hibob.anyim.chat.entity.SessionChat;
-import com.hibob.anyim.chat.mapper.MsgChatMapper;
-import com.hibob.anyim.chat.mapper.MsgGroupChatMapper;
+import com.hibob.anyim.chat.entity.SessionGroupChat;
 import com.hibob.anyim.chat.mapper.SessionChatMapper;
+import com.hibob.anyim.chat.mapper.SessionGroupChatMapper;
 import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.rpc.ChatRpcService;
@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
@@ -37,9 +38,9 @@ public class ChatRpcServiceImpl implements ChatRpcService {
 
     private final ThreadPoolExecutor threadPoolExecutor;
     private final SessionChatMapper sessionChatMapper;
-    private final MsgChatMapper msgChatMapper;
-    private final MsgGroupChatMapper msgGroupChatMapper;
+    private final SessionGroupChatMapper sessionGroupChatMapper;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final MongoTemplate mongoTemplate;
 
     @Value("${custom.msg-ttl-in-redis:604800}")
     private int msgTtlInRedis;
@@ -49,7 +50,6 @@ public class ChatRpcServiceImpl implements ChatRpcService {
 
     @Override
     public long refMsgId(String fromId, String toId, int refMsgIdDefault) {
-        // 通过fromId和toId查询sessionId
         SessionChat sessionChat = selectSessionChat(fromId, toId);
         if (sessionChat == null) {
             // 创建session;
@@ -58,6 +58,18 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         }
 
         return sessionChat.getRefMsgId();
+    }
+
+    @Override
+    public long refMsgId(String groupId, int refMsgIdDefault) {
+        SessionGroupChat sessionGroupChat = selectSessionGroupChat(groupId);
+        if (sessionGroupChat == null) {
+            // 创建session;
+            createSessionGroupChat(groupId, refMsgIdDefault);
+            return refMsgIdDefault;
+        }
+
+        return sessionGroupChat.getRefMsgId();
     }
 
     @Override
@@ -71,6 +83,17 @@ public class ChatRpcServiceImpl implements ChatRpcService {
                 .set(SessionChat::getRefMsgId, newRefMsgId);
         sessionChatMapper.update(updateWrapper);
         return selectSessionChat(fromId, toId).getRefMsgId();
+    }
+
+    @Override
+    public long updateAndGetRefMsgId(String groupId, int refMsgIdStep, long curRefMsgId) {
+        long newRefMsgId = curRefMsgId + refMsgIdStep;
+        LambdaUpdateWrapper<SessionGroupChat> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(SessionGroupChat::getGroupId, groupId)
+                .eq(SessionGroupChat::getRefMsgId, curRefMsgId) // 乐观锁
+                .set(SessionGroupChat::getRefMsgId, newRefMsgId);
+        sessionGroupChatMapper.update(updateWrapper);
+        return selectSessionGroupChat(groupId).getRefMsgId();
     }
 
     @Override
@@ -90,16 +113,17 @@ public class ChatRpcServiceImpl implements ChatRpcService {
             msgChat.setMsgType((int) msg.get("msgType"));
             msgChat.setContent((String) msg.get("content")); //TODO 内容要考虑加密
             msgChat.setMsgTime((Date) msg.get("msgTime"));
-            // TODO 这个是要入MongoDB的，不是MySQL，暂时用mysql代替
-            int insert = msgChatMapper.insert(msgChat);
-            if (insert > 0) {
+            msgChat.setCreateTime(new Date());
+            MsgChat insert = mongoTemplate.insert(msgChat);
+            if (insert.getId() != null) {
                 insertToRedis((long) msg.get("msgId"), sessionId, msgChat);
             }
             else {
                 log.error("asyncSaveChat insert failed, sessionId: {}, msgId: {}", sessionId, msg.get("msgId"));
+                return 0;
             }
 
-            return insert;
+            return 1;
         }, threadPoolExecutor);
 
         future.whenComplete((result, throwable) -> {
@@ -120,16 +144,16 @@ public class ChatRpcServiceImpl implements ChatRpcService {
             msgGroupChat.setMsgType((int) msg.get("msgType"));
             msgGroupChat.setContent((String) msg.get("content")); //TODO 内容要考虑加密
             msgGroupChat.setMsgTime((Date) msg.get("msgTime"));
-            // TODO 这个是要入MongoDB的，不是MySQL，暂时用mysql代替
-            int insert = msgGroupChatMapper.insert(msgGroupChat);
-            if (insert > 0) {
+            MsgGroupChat insert = mongoTemplate.insert(msgGroupChat);
+            if (insert.getId() != null) {
                 insertToRedis((long) msg.get("msgId"), (String)msg.get("group_id"), msgGroupChat);
             }
             else {
                 log.error("asyncSaveChat insert failed, groupId: {}, msgId: {}", msg.get("group_id"), msg.get("msgId"));
+                return 0;
             }
 
-            return insert;
+            return 1;
         }, threadPoolExecutor);
 
         future.whenComplete((result, throwable) -> {
@@ -160,6 +184,14 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         sessionChatMapper.insert(sessionChat);
     }
 
+    private void createSessionGroupChat(String groupId, int refMsgIdDefault) {
+        SessionGroupChat sessionGroupChat = new SessionGroupChat();
+        sessionGroupChat.setSessionId(groupId);
+        sessionGroupChat.setGroupId(Long.parseLong(groupId));
+        sessionGroupChat.setRefMsgId(refMsgIdDefault);
+        sessionGroupChatMapper.insert(sessionGroupChat);
+    }
+
     private SessionChat selectSessionChat(String fromId, String toId) {
         String[] sorted = sortId(fromId, toId);
         LambdaQueryWrapper<SessionChat> queryWrapper = Wrappers.lambdaQuery();
@@ -168,6 +200,18 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         List<SessionChat> sessionChat = sessionChatMapper.selectList(queryWrapper);
         if (sessionChat.size() > 0) {
             return sessionChat.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
+    private SessionGroupChat selectSessionGroupChat(String groupId) {
+        LambdaQueryWrapper<SessionGroupChat> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(SessionGroupChat::getSessionId, groupId);
+        List<SessionGroupChat> sessionGroupChat = sessionGroupChatMapper.selectList(queryWrapper);
+        if (sessionGroupChat.size() > 0) {
+            return sessionGroupChat.get(0);
         }
         else {
             return null;
