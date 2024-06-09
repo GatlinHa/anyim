@@ -5,6 +5,7 @@ spring:
       host: ${spring.data.mongodb.host}
       port: ${spring.data.mongodb.port}
       database: ${spring.data.mongodb.database}
+      auto-index-creation: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${spring.datasource.url}

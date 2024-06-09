@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.Date;
 
 @Data
-@Document("anyim_chat_msg_groupchat")
+@Document("anyim_chat_msg_groupchat") //项目启动后会自动创建这张表，以及索引（索引需要打开auto-index-creation开关）
 public class MsgGroupChat {
     private static final long serialVersionUID = 1L;
 
