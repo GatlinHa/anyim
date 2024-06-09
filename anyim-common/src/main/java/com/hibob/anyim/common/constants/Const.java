@@ -61,4 +61,6 @@ public class Const {
      */
     public static final int CACHE_ONLINE_EXPIRE = 3600;
 
+    public static final int MSG_TTL_IN_MONGODB = 365 * 24 * 60 * 60;
+
 }
