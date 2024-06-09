@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class RpcClient {
 
-    @DubboReference(timeout = 60000) // TODO 调试过程中，超时时间设置长一点
+    @DubboReference(check = false, timeout = 3000) //关闭启动检查，否则启动会依赖RPC服务端
     private UserRpcService userRpcService;
 
-    @DubboReference(timeout = 60000) // TODO 调试过程中，超时时间设置长一点
+    @DubboReference(check = false, timeout = 3000) //关闭启动检查，否则启动会依赖RPC服务端
     private ChatRpcService chatRpcService;
 
 }

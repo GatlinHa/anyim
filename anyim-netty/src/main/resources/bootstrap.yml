@@ -23,7 +23,7 @@ spring:
 
 dubbo:
   application:
-    name: anyim-netty-dubbo # TODO netty怎么指导要调用anyim-user-dubbo??
+    name: anyim-netty-dubbo
   protocol:
     name: dubbo
     port: -1
