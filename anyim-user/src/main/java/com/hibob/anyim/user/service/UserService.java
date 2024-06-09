@@ -49,10 +49,10 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     private final LoginMapper loginMapper;
 
     public ResponseEntity<IMHttpResponse> validateAccount(ValidateAccountReq dto) {
-        log.info("LoginService--validateAccount");
+        log.info("LoginService::validateAccount");
         User user = getOneByAccount(dto.getAccount());
         if (user != null) {
-            log.info("account exist");
+            log.error("account exist");
             return ResultUtil.error(HttpStatus.OK,
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.desc());
@@ -61,10 +61,10 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> register(RegisterReq dto) {
-        log.info("LoginService--register");
+        log.info("LoginService::register");
         User user = getOneByAccount(dto.getAccount());
         if (user != null) {
-            log.info("account exist");
+            log.error("account exist");
             return ResultUtil.error(HttpStatus.OK,
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.desc());
@@ -83,7 +83,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> deregister(DeregisterReq dto) {
-        log.info("LoginService--deregister");
+        log.info("LoginService::deregister");
         ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
         String clientId = session.getClientId();
@@ -99,13 +99,13 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> login(LoginReq dto) {
-        log.info("LoginService--login");
+        log.info("LoginService::login");
         String account = dto.getAccount();
         String clientId = dto.getClientId();
         String uniqueId = CommonUtil.conUniqueId(account, clientId);
         //支持REST接口重复登录，所以这段代码不启用
 //        if (redisTemplate.hasKey(key)) {
-//            log.info("Repeated login");
+//            log.error("Repeated login");
 //            return ResultUtil.error(
 //                    HttpStatus.FORBIDDEN,
 //                    ServiceErrorCode.ERROR_MULTI_LOGIN.code(),
@@ -114,17 +114,17 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
         User user = getOneByAccount(account);
         if (user == null) {
-            log.info("no register");
+            log.error("no register");
             return ResultUtil.error(HttpStatus.UNAUTHORIZED);
         }
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            log.info("password error");
+            log.error("password error");
             return ResultUtil.error(HttpStatus.UNAUTHORIZED);
         }
 
         Client client = getOneByUniqueId(uniqueId);
         if (client == null) {
-            log.info("client not found");
+            log.error("client not found");
             insertClient(dto, uniqueId);
         }
         else {
@@ -168,7 +168,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> logout(LogoutReq dto) {
-        log.info("LoginService--logout");
+        log.info("LoginService::logout");
         ReqSession session = ReqSession.getSession();
         String uniqueId = CommonUtil.conUniqueId(session.getAccount(), session.getClientId());
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN + uniqueId);
@@ -179,14 +179,14 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> modifyPwd(ModifyPwdReq dto) {
-        log.info("LoginService--modifyPwd");
+        log.info("LoginService::modifyPwd");
         ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
         String clientId = session.getClientId();
         String uniqueId = CommonUtil.conUniqueId(account, clientId);
         User user = getOneByAccount(account);
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
-            log.info("password error");
+            log.error("password error");
             return ResultUtil.error(HttpStatus.UNAUTHORIZED);
         }
         this.update(Wrappers.<User>lambdaUpdate()
@@ -202,7 +202,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> refreshToken(String refreshToken, RefreshTokenReq dto) {
-        log.info("LoginService--refreshToken");
+        log.info("LoginService::refreshToken");
         String account = JwtUtil.getAccount(refreshToken);
         String client = JwtUtil.getInfo(refreshToken);
         String accessToken = JwtUtil.generateToken(
@@ -227,7 +227,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> querySelf(QuerySelfReq dto) {
-        log.info("UserService--querySelf");
+        log.info("UserService::querySelf");
         ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
         User user = getOneByAccount(account);
@@ -247,7 +247,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> modifySelf(ModifySelfReq dto) {
-        log.info("UserService--modifySelf");
+        log.info("UserService::modifySelf");
         ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
         User user = getOneByAccount(account);
@@ -270,7 +270,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> query(QueryReq dto) {
-        log.info("UserService--query");
+        log.info("UserService::query");
         User user = getOneByAccount(dto.getAccount());
         if (user == null) {
             log.error("user not found");
@@ -289,7 +289,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public ResponseEntity<IMHttpResponse> findByNick(FindByNickReq dto) {
         // TODO 这里要分页查询
-        log.info("UserService--findByNick");
+        log.info("UserService::findByNick");
         String nickNameKeyWords = dto.getNickNameKeyWords();
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.like(User::getNickName, nickNameKeyWords);

@@ -23,14 +23,14 @@ public class XssFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        log.info("===>XssFilter start......path is {}", exchange.getRequest().getPath());
+        log.info("XssFilter start......path is {}", exchange.getRequest().getPath());
         ServerHttpRequest request = exchange.getRequest();
 
         HttpHeaders headers = request.getHeaders();
         for (List<String> values : headers.values()) {
             for (String value : values) {
                 if (XssUtil.checkXss(value)) {
-                    log.info("请求头xss校验不合法，校验对象是：{}", value);
+                    log.error("The xss verification of the request header is invalid, and the verification object is:{}", value);
                     exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
                     return exchange.getResponse().setComplete();
                 }
@@ -41,7 +41,7 @@ public class XssFilter implements GlobalFilter, Ordered {
         for (List<String> values : paramMap.values()) {
             for (String value : values) {
                 if (XssUtil.checkXss(value)) {
-                    log.info("请求参数xss校验不合法，校验对象是：{}", value);
+                    log.error("The request parameter xss is invalid, and the verification object is as follows:{}", value);
                     exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
                     return exchange.getResponse().setComplete();
                 }

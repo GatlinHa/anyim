@@ -20,17 +20,11 @@ public class ReqSession {
      */
     private String clientId;
 
-//    /**
-//     * 用户名称
-//     */
-//    private String nickName;
-
     public static ReqSession getSession() {
         // 从上下文中提取Request对象
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
         ReqSession session = (ReqSession) request.getAttribute("session");
-        log.info("session: {}", session);
         return session;
     }
 

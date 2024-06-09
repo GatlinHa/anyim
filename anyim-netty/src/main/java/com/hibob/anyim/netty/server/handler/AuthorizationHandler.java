@@ -34,7 +34,7 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
                 || !StringUtils.hasLength(uniqueId)
                 || !StringUtils.hasLength(cacheToken)
                 || !token.equals(cacheToken)) {
-            log.info("Authorization validate error");
+            log.error("Authorization validate error");
             HttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, UNAUTHORIZED, ByteBufAllocator.DEFAULT.heapBuffer());
             ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
         }
@@ -43,7 +43,7 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
         // 登录过了就不要重复登录了，1800s登录一次
         //TODO 调试中，允许重复的登录
 //        if (redisTemplate.hasKey(channelKey)) {
-//            log.info("Repeated login");
+//            log.error("Repeated login");
 //            HttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, FORBIDDEN, ByteBufAllocator.DEFAULT.heapBuffer());
 //            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
 //        }

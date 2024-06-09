@@ -24,7 +24,7 @@ public class UserRpcServiceImpl implements UserRpcService {
 
     @Override
     public List<String> queryOnline(String account) {
-        log.info("UserRpcServiceImpl::queryOnline start......");
+        log.info("queryOnline start......");
         LambdaQueryWrapper<Login> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper
                 .select(Login::getUniqueId)

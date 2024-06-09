@@ -45,12 +45,12 @@ public class KafkaConfig {
         return new ProducerListener<String, Msg>() {
             @Override
             public void onSuccess(ProducerRecord<String, Msg> producerRecord, RecordMetadata recordMetadata) {
-                log.info("发送成功");
+                log.info("Success to send ");
             }
 
             @Override
             public void onError(ProducerRecord<String, Msg> producerRecord, RecordMetadata recordMetadata, Exception exception) {
-                log.error("发送失败");
+                log.error("Failed to send");
             }
         };
     }

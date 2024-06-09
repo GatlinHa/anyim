@@ -24,7 +24,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
-        log.info("MsgServerHandler receive a Msg\n{}", msg);
+        log.info("MsgServerHandler receive a Msg:\n{}", msg);
         readIdleTime = 0;
 
         if (!validateMagic(ctx, msg)) return;
@@ -62,7 +62,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
                         clearCache(ctx);
                         log.info("close channel and clear cache success.");
                     } else {
-                        log.info("close channel failed. cause is {}", future.cause());
+                        log.error("close channel failed. cause is {}", future.cause());
                     }
                 });
             }
@@ -88,7 +88,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
         int magic = msg.getHeader().getMagic();
         if (magic != Const.MAGIC) {
             // 非法消息，直接关闭连接
-            log.info("error magic.");
+            log.error("error magic.");
             Header header = Header.newBuilder()
                     .setMagic(Const.MAGIC)
                     .setVersion(0)
@@ -102,7 +102,7 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
                     clearCache(ctx);
                     log.info("close channel success.");
                 } else {
-                    log.info("close channel failed. cause is {}", future.cause());
+                    log.error("close channel failed. cause is {}", future.cause());
                 }
             });
             return false;

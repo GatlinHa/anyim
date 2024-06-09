@@ -23,7 +23,7 @@ public class XssInterceptor implements HandlerInterceptor {
         //  检查body
         String body = getBody(request);
         if (XssUtil.checkXss(body)) {
-            log.info("the body of request contains Illegal parameters, body is {}", body);
+            log.error("The body of request contains Illegal parameters, body is {}", body);
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return false;
         }

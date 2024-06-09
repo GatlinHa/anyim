@@ -43,7 +43,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        log.info("===>AuthorizeFilter start......path is {}", exchange.getRequest().getPath());
+        log.info("AuthorizeFilter start......path is {}", exchange.getRequest().getPath());
         if (ignoreAuthUrls.contains(exchange.getRequest().getURI().getPath())) {
             return chain.filter(exchange);
         }
@@ -54,14 +54,14 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
                 exchange.getRequest().getHeaders().getFirst("accessToken");
 
         if (!StringUtils.hasLength(token)) {
-            log.error("未登陆，url:{}", exchange.getRequest().getURI());
+            log.error("Not logged in, url:{}", exchange.getRequest().getURI());
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
 
         String tokenSecret = isRefreshToken ? jwtProperties.getRefreshTokenSecret() : jwtProperties.getAccessTokenSecret();
         if (!JwtUtil.checkToken(token, tokenSecret)) {
-            log.error("token已失效，url:{}", exchange.getRequest().getURI());
+            log.error("The token has expired,url:{}", exchange.getRequest().getURI());
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
@@ -72,7 +72,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         String key = isRefreshToken ? RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId : RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         JSONObject value = JSON.parseObject((String) redisTemplate.opsForValue().get(key));
         if (!redisTemplate.hasKey(key) || !value.getString("token").equals(token)) {
-            log.error("token已删除，url:{}", exchange.getRequest().getURI());
+            log.error("The token has been deleted, url:{}", exchange.getRequest().getURI());
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
@@ -95,27 +95,27 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         String timestamp = exchange.getRequest().getHeaders().getFirst("timestamp");
         String sign = exchange.getRequest().getHeaders().getFirst("sign");
         if (!StringUtils.hasLength(traceId) || !StringUtils.hasLength(timestamp) || !StringUtils.hasLength(sign)) {
-            log.error("请求头信息不全，url:{}", exchange.getRequest().getURI());
+            log.error("The request header information is incomplete, url:{}", exchange.getRequest().getURI());
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return false;
         }
 
         if (Instant.now().getEpochSecond() - Long.parseLong(timestamp) > Const.REQUEST_SIGN_EXPIRE) {
-            log.error("timestamp超过有效期，url:{}", exchange.getRequest().getURI());
+            log.error("Timestamp exceeds the expiration date, url:{}", exchange.getRequest().getURI());
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return false;
         }
 
         String redisKey = RedisKey.USER_REQ_RECORD + uniqueId + SPLIT_V + traceId;
         if (redisTemplate.hasKey(redisKey)) {
-            log.error("重复的请求，url:{}", exchange.getRequest().getURI());
+            log.error("Duplicate requests, url:{}", exchange.getRequest().getURI());
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return false;
         }
 
         String generatedSign = JwtUtil.generateSign(key, traceId + timestamp);
         if (!sign.equals(generatedSign)) {
-            log.error("校验sign不匹配，url:{}", exchange.getRequest().getURI());
+            log.error("The checksum sign does not match, url:{}", exchange.getRequest().getURI());
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return false;
         }

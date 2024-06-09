@@ -21,6 +21,6 @@ public class WebSocketToByteBufEncoder extends MessageToMessageDecoder<WebSocket
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.info("MsgDecoder exceptionCaught {}", cause.toString());
+        log.error("MsgDecoder exceptionCaught {}", cause.toString());
     }
 }
