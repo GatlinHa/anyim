@@ -18,6 +18,7 @@ enum MsgType {
   GROUP_CHAT = 3; //群聊
   READ = 4; // 已读
   DELIVERED = 5; //已发送
+  SENDER_SYNC = 6; //发送端多设备之间同步的消息
 
   CLOSE_BY_READ_IDLE = 10; //超时关闭
   CLOSE_BY_ERROR_MAGIC = 11; //magic不对关闭
@@ -33,8 +34,8 @@ message Header {
 }
 
 message Body {
-  string fromId = 1;
-  string fromClient = 2;
+  optional string fromId = 1;
+  optional string fromClient = 2;
   optional string toId = 3;
   optional string toClient = 4;
   optional int64 groupId = 5;
@@ -43,6 +44,7 @@ message Body {
   optional int32 ack = 8;
   optional string content = 9;
   optional string tempMsgId = 10; //客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+  optional string sessionId = 11; //MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
 }
 
 message Extension {

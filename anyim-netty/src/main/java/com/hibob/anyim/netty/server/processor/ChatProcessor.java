@@ -51,7 +51,8 @@ public class ChatProcessor implements MsgProcessor{
         String fromId = msg.getBody().getFromId();
         String fromClient = msg.getBody().getFromClient();
         String toId = msg.getBody().getToId(); //端侧发过来的消息，也不知道要发给哪个client，所以没填toClient
-        String msgIdKey = RedisKey.NETTY_REF_MSG_ID + combineId(fromId, toId);
+        String sessionId = combineId(fromId, toId);
+        String msgIdKey = RedisKey.NETTY_REF_MSG_ID + sessionId;
         Long msgId = redisTemplate.opsForValue().increment(msgIdKey);
         long refMsgId;
         AttributeKey<Object> attributeKey = AttributeKey.valueOf(msgIdKey);
@@ -75,17 +76,22 @@ public class ChatProcessor implements MsgProcessor{
         }
 
         saveChat(msg, msgId); //消息入库，当前采用服务方异步入库，因此不支持等待回调结果。
-        sendDeliveredMsg(ctx, msg, msgId); //回复已送达
+        sendDeliveredMsg(ctx, msg, sessionId, msgId); //回复已送达
 
         // 扩散给自己的其他客户端
         Set<Object> fromOnlineClients = queryOnlineClient(fromId);
         fromOnlineClients.remove(CommonUtil.conUniqueId(fromId, fromClient)); //移除发消息这个client
         for (Object fromUniqueId : fromOnlineClients) {
-            Msg msgOut = Msg.newBuilder(msg).setBody(msg.getBody().toBuilder() //修改发给本账号其它client的toId和toClient
-                    .setToId(fromId)
-                    .setToClient(((String) fromUniqueId).split(SPLIT_V)[1])
-                    .setMsgId(msgId)
-                    .build()).build();
+            Msg msgOut = Msg.newBuilder(msg)
+                    .setHeader(msg.getHeader().toBuilder()
+                            .setMsgType(MsgType.SENDER_SYNC).build())
+                    .setBody(msg.getBody().toBuilder() //修改发给本账号其它client的toId和toClient
+                            .setToId(fromId)
+                            .setToClient(((String) fromUniqueId).split(SPLIT_V)[1])
+                            .setSessionId(sessionId)
+                            .setMsgId(msgId)
+                            .build())
+                    .build();
 
             String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + fromUniqueId;
             String instance = (String)redisTemplate.opsForValue().get(routeKey);
@@ -136,7 +142,7 @@ public class ChatProcessor implements MsgProcessor{
         rpcClient.getChatRpcService().asyncSaveChat(msgMap);
     }
 
-    private void sendDeliveredMsg(ChannelHandlerContext ctx, Msg msg, Long msgId) {
+    private void sendDeliveredMsg(ChannelHandlerContext ctx, Msg msg, String sessionId, Long msgId) {
         Header readMsgheader = Header.newBuilder()
                 .setMagic(Const.MAGIC)
                 .setVersion(0)
@@ -144,9 +150,7 @@ public class ChatProcessor implements MsgProcessor{
                 .setIsExtension(false)
                 .build();
         Body readMsgBody = Body.newBuilder()
-                .setFromId(msg.getBody().getFromId())
-                .setFromClient(msg.getBody().getFromClient())
-                .setToId(msg.getBody().getToId())
+                .setSessionId(sessionId)
                 .setTempMsgId(msg.getBody().getTempMsgId())
                 .setMsgId(msgId)
                 .build();

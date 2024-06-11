@@ -59,6 +59,14 @@ public enum MsgType
   DELIVERED(5),
   /**
    * <pre>
+   * 发送端多设备之间同步的消息
+   * </pre>
+   *
+   * <code>SENDER_SYNC = 6;</code>
+   */
+  SENDER_SYNC(6),
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -139,6 +147,14 @@ public enum MsgType
   public static final int DELIVERED_VALUE = 5;
   /**
    * <pre>
+   * 发送端多设备之间同步的消息
+   * </pre>
+   *
+   * <code>SENDER_SYNC = 6;</code>
+   */
+  public static final int SENDER_SYNC_VALUE = 6;
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -189,6 +205,7 @@ public enum MsgType
       case 3: return GROUP_CHAT;
       case 4: return READ;
       case 5: return DELIVERED;
+      case 6: return SENDER_SYNC;
       case 10: return CLOSE_BY_READ_IDLE;
       case 11: return CLOSE_BY_ERROR_MAGIC;
       case 99: return DEFAULT;

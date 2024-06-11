@@ -32,6 +32,7 @@ private static final long serialVersionUID = 0L;
     toClient_ = "";
     content_ = "";
     tempMsgId_ = "";
+    sessionId_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -52,7 +53,15 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object fromId_ = "";
   /**
-   * <code>string fromId = 1;</code>
+   * <code>optional string fromId = 1;</code>
+   * @return Whether the fromId field is set.
+   */
+  @java.lang.Override
+  public boolean hasFromId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional string fromId = 1;</code>
    * @return The fromId.
    */
   @java.lang.Override
@@ -69,7 +78,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string fromId = 1;</code>
+   * <code>optional string fromId = 1;</code>
    * @return The bytes for fromId.
    */
   @java.lang.Override
@@ -91,7 +100,15 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object fromClient_ = "";
   /**
-   * <code>string fromClient = 2;</code>
+   * <code>optional string fromClient = 2;</code>
+   * @return Whether the fromClient field is set.
+   */
+  @java.lang.Override
+  public boolean hasFromClient() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>optional string fromClient = 2;</code>
    * @return The fromClient.
    */
   @java.lang.Override
@@ -108,7 +125,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string fromClient = 2;</code>
+   * <code>optional string fromClient = 2;</code>
    * @return The bytes for fromClient.
    */
   @java.lang.Override
@@ -135,7 +152,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasToId() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return ((bitField0_ & 0x00000004) != 0);
   }
   /**
    * <code>optional string toId = 3;</code>
@@ -182,7 +199,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasToClient() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000008) != 0);
   }
   /**
    * <code>optional string toClient = 4;</code>
@@ -228,7 +245,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasGroupId() {
-    return ((bitField0_ & 0x00000004) != 0);
+    return ((bitField0_ & 0x00000010) != 0);
   }
   /**
    * <code>optional int64 groupId = 5;</code>
@@ -247,7 +264,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasMsgId() {
-    return ((bitField0_ & 0x00000008) != 0);
+    return ((bitField0_ & 0x00000020) != 0);
   }
   /**
    * <code>optional int64 msgId = 6;</code>
@@ -266,7 +283,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasSeq() {
-    return ((bitField0_ & 0x00000010) != 0);
+    return ((bitField0_ & 0x00000040) != 0);
   }
   /**
    * <code>optional int32 seq = 7;</code>
@@ -285,7 +302,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasAck() {
-    return ((bitField0_ & 0x00000020) != 0);
+    return ((bitField0_ & 0x00000080) != 0);
   }
   /**
    * <code>optional int32 ack = 8;</code>
@@ -305,7 +322,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasContent() {
-    return ((bitField0_ & 0x00000040) != 0);
+    return ((bitField0_ & 0x00000100) != 0);
   }
   /**
    * <code>optional string content = 9;</code>
@@ -356,7 +373,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasTempMsgId() {
-    return ((bitField0_ & 0x00000080) != 0);
+    return ((bitField0_ & 0x00000200) != 0);
   }
   /**
    * <pre>
@@ -402,6 +419,65 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int SESSIONID_FIELD_NUMBER = 11;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object sessionId_ = "";
+  /**
+   * <pre>
+   * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+   * </pre>
+   *
+   * <code>optional string sessionId = 11;</code>
+   * @return Whether the sessionId field is set.
+   */
+  @java.lang.Override
+  public boolean hasSessionId() {
+    return ((bitField0_ & 0x00000400) != 0);
+  }
+  /**
+   * <pre>
+   * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+   * </pre>
+   *
+   * <code>optional string sessionId = 11;</code>
+   * @return The sessionId.
+   */
+  @java.lang.Override
+  public java.lang.String getSessionId() {
+    java.lang.Object ref = sessionId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      sessionId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+   * </pre>
+   *
+   * <code>optional string sessionId = 11;</code>
+   * @return The bytes for sessionId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getSessionIdBytes() {
+    java.lang.Object ref = sessionId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      sessionId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -416,35 +492,38 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromId_)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, fromId_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromClient_)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 2, fromClient_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 3, toId_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000008) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 4, toClient_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (((bitField0_ & 0x00000010) != 0)) {
       output.writeInt64(5, groupId_);
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
+    if (((bitField0_ & 0x00000020) != 0)) {
       output.writeInt64(6, msgId_);
     }
-    if (((bitField0_ & 0x00000010) != 0)) {
+    if (((bitField0_ & 0x00000040) != 0)) {
       output.writeInt32(7, seq_);
     }
-    if (((bitField0_ & 0x00000020) != 0)) {
+    if (((bitField0_ & 0x00000080) != 0)) {
       output.writeInt32(8, ack_);
     }
-    if (((bitField0_ & 0x00000040) != 0)) {
+    if (((bitField0_ & 0x00000100) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 9, content_);
     }
-    if (((bitField0_ & 0x00000080) != 0)) {
+    if (((bitField0_ & 0x00000200) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 10, tempMsgId_);
+    }
+    if (((bitField0_ & 0x00000400) != 0)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 11, sessionId_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -455,39 +534,42 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromId_)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, fromId_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromClient_)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(2, fromClient_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(3, toId_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, toClient_);
-    }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(5, groupId_);
-    }
     if (((bitField0_ & 0x00000008) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(6, msgId_);
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, toClient_);
     }
     if (((bitField0_ & 0x00000010) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(7, seq_);
+        .computeInt64Size(5, groupId_);
     }
     if (((bitField0_ & 0x00000020) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(8, ack_);
+        .computeInt64Size(6, msgId_);
     }
     if (((bitField0_ & 0x00000040) != 0)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(9, content_);
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(7, seq_);
     }
     if (((bitField0_ & 0x00000080) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(8, ack_);
+    }
+    if (((bitField0_ & 0x00000100) != 0)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(9, content_);
+    }
+    if (((bitField0_ & 0x00000200) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(10, tempMsgId_);
+    }
+    if (((bitField0_ & 0x00000400) != 0)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(11, sessionId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -504,10 +586,16 @@ private static final long serialVersionUID = 0L;
     }
     com.hibob.anyim.netty.protobuf.Body other = (com.hibob.anyim.netty.protobuf.Body) obj;
 
-    if (!getFromId()
-        .equals(other.getFromId())) return false;
-    if (!getFromClient()
-        .equals(other.getFromClient())) return false;
+    if (hasFromId() != other.hasFromId()) return false;
+    if (hasFromId()) {
+      if (!getFromId()
+          .equals(other.getFromId())) return false;
+    }
+    if (hasFromClient() != other.hasFromClient()) return false;
+    if (hasFromClient()) {
+      if (!getFromClient()
+          .equals(other.getFromClient())) return false;
+    }
     if (hasToId() != other.hasToId()) return false;
     if (hasToId()) {
       if (!getToId()
@@ -548,6 +636,11 @@ private static final long serialVersionUID = 0L;
       if (!getTempMsgId()
           .equals(other.getTempMsgId())) return false;
     }
+    if (hasSessionId() != other.hasSessionId()) return false;
+    if (hasSessionId()) {
+      if (!getSessionId()
+          .equals(other.getSessionId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -559,10 +652,14 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + FROMID_FIELD_NUMBER;
-    hash = (53 * hash) + getFromId().hashCode();
-    hash = (37 * hash) + FROMCLIENT_FIELD_NUMBER;
-    hash = (53 * hash) + getFromClient().hashCode();
+    if (hasFromId()) {
+      hash = (37 * hash) + FROMID_FIELD_NUMBER;
+      hash = (53 * hash) + getFromId().hashCode();
+    }
+    if (hasFromClient()) {
+      hash = (37 * hash) + FROMCLIENT_FIELD_NUMBER;
+      hash = (53 * hash) + getFromClient().hashCode();
+    }
     if (hasToId()) {
       hash = (37 * hash) + TOID_FIELD_NUMBER;
       hash = (53 * hash) + getToId().hashCode();
@@ -596,6 +693,10 @@ private static final long serialVersionUID = 0L;
     if (hasTempMsgId()) {
       hash = (37 * hash) + TEMPMSGID_FIELD_NUMBER;
       hash = (53 * hash) + getTempMsgId().hashCode();
+    }
+    if (hasSessionId()) {
+      hash = (37 * hash) + SESSIONID_FIELD_NUMBER;
+      hash = (53 * hash) + getSessionId().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -738,6 +839,7 @@ private static final long serialVersionUID = 0L;
       ack_ = 0;
       content_ = "";
       tempMsgId_ = "";
+      sessionId_ = "";
       return this;
     }
 
@@ -771,44 +873,50 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(com.hibob.anyim.netty.protobuf.Body result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.fromId_ = fromId_;
+        to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.fromClient_ = fromClient_;
+        to_bitField0_ |= 0x00000002;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.toId_ = toId_;
-        to_bitField0_ |= 0x00000001;
+        to_bitField0_ |= 0x00000004;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.toClient_ = toClient_;
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000008;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
         result.groupId_ = groupId_;
-        to_bitField0_ |= 0x00000004;
+        to_bitField0_ |= 0x00000010;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
         result.msgId_ = msgId_;
-        to_bitField0_ |= 0x00000008;
+        to_bitField0_ |= 0x00000020;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
         result.seq_ = seq_;
-        to_bitField0_ |= 0x00000010;
+        to_bitField0_ |= 0x00000040;
       }
       if (((from_bitField0_ & 0x00000080) != 0)) {
         result.ack_ = ack_;
-        to_bitField0_ |= 0x00000020;
+        to_bitField0_ |= 0x00000080;
       }
       if (((from_bitField0_ & 0x00000100) != 0)) {
         result.content_ = content_;
-        to_bitField0_ |= 0x00000040;
+        to_bitField0_ |= 0x00000100;
       }
       if (((from_bitField0_ & 0x00000200) != 0)) {
         result.tempMsgId_ = tempMsgId_;
-        to_bitField0_ |= 0x00000080;
+        to_bitField0_ |= 0x00000200;
+      }
+      if (((from_bitField0_ & 0x00000400) != 0)) {
+        result.sessionId_ = sessionId_;
+        to_bitField0_ |= 0x00000400;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -825,12 +933,12 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.hibob.anyim.netty.protobuf.Body other) {
       if (other == com.hibob.anyim.netty.protobuf.Body.getDefaultInstance()) return this;
-      if (!other.getFromId().isEmpty()) {
+      if (other.hasFromId()) {
         fromId_ = other.fromId_;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (!other.getFromClient().isEmpty()) {
+      if (other.hasFromClient()) {
         fromClient_ = other.fromClient_;
         bitField0_ |= 0x00000002;
         onChanged();
@@ -865,6 +973,11 @@ private static final long serialVersionUID = 0L;
       if (other.hasTempMsgId()) {
         tempMsgId_ = other.tempMsgId_;
         bitField0_ |= 0x00000200;
+        onChanged();
+      }
+      if (other.hasSessionId()) {
+        sessionId_ = other.sessionId_;
+        bitField0_ |= 0x00000400;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -943,6 +1056,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000200;
               break;
             } // case 82
+            case 90: {
+              sessionId_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000400;
+              break;
+            } // case 90
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -962,7 +1080,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object fromId_ = "";
     /**
-     * <code>string fromId = 1;</code>
+     * <code>optional string fromId = 1;</code>
+     * @return Whether the fromId field is set.
+     */
+    public boolean hasFromId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional string fromId = 1;</code>
      * @return The fromId.
      */
     public java.lang.String getFromId() {
@@ -978,7 +1103,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string fromId = 1;</code>
+     * <code>optional string fromId = 1;</code>
      * @return The bytes for fromId.
      */
     public com.google.protobuf.ByteString
@@ -995,7 +1120,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string fromId = 1;</code>
+     * <code>optional string fromId = 1;</code>
      * @param value The fromId to set.
      * @return This builder for chaining.
      */
@@ -1008,7 +1133,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string fromId = 1;</code>
+     * <code>optional string fromId = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearFromId() {
@@ -1018,7 +1143,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string fromId = 1;</code>
+     * <code>optional string fromId = 1;</code>
      * @param value The bytes for fromId to set.
      * @return This builder for chaining.
      */
@@ -1034,7 +1159,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object fromClient_ = "";
     /**
-     * <code>string fromClient = 2;</code>
+     * <code>optional string fromClient = 2;</code>
+     * @return Whether the fromClient field is set.
+     */
+    public boolean hasFromClient() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional string fromClient = 2;</code>
      * @return The fromClient.
      */
     public java.lang.String getFromClient() {
@@ -1050,7 +1182,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string fromClient = 2;</code>
+     * <code>optional string fromClient = 2;</code>
      * @return The bytes for fromClient.
      */
     public com.google.protobuf.ByteString
@@ -1067,7 +1199,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string fromClient = 2;</code>
+     * <code>optional string fromClient = 2;</code>
      * @param value The fromClient to set.
      * @return This builder for chaining.
      */
@@ -1080,7 +1212,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string fromClient = 2;</code>
+     * <code>optional string fromClient = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearFromClient() {
@@ -1090,7 +1222,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string fromClient = 2;</code>
+     * <code>optional string fromClient = 2;</code>
      * @param value The bytes for fromClient to set.
      * @return This builder for chaining.
      */
@@ -1600,6 +1732,109 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       tempMsgId_ = value;
       bitField0_ |= 0x00000200;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object sessionId_ = "";
+    /**
+     * <pre>
+     * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+     * </pre>
+     *
+     * <code>optional string sessionId = 11;</code>
+     * @return Whether the sessionId field is set.
+     */
+    public boolean hasSessionId() {
+      return ((bitField0_ & 0x00000400) != 0);
+    }
+    /**
+     * <pre>
+     * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+     * </pre>
+     *
+     * <code>optional string sessionId = 11;</code>
+     * @return The sessionId.
+     */
+    public java.lang.String getSessionId() {
+      java.lang.Object ref = sessionId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sessionId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+     * </pre>
+     *
+     * <code>optional string sessionId = 11;</code>
+     * @return The bytes for sessionId.
+     */
+    public com.google.protobuf.ByteString
+        getSessionIdBytes() {
+      java.lang.Object ref = sessionId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sessionId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+     * </pre>
+     *
+     * <code>optional string sessionId = 11;</code>
+     * @param value The sessionId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setSessionId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      sessionId_ = value;
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+     * </pre>
+     *
+     * <code>optional string sessionId = 11;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearSessionId() {
+      sessionId_ = getDefaultInstance().getSessionId();
+      bitField0_ = (bitField0_ & ~0x00000400);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+     * </pre>
+     *
+     * <code>optional string sessionId = 11;</code>
+     * @param value The bytes for sessionId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setSessionIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      sessionId_ = value;
+      bitField0_ |= 0x00000400;
       onChanged();
       return this;
     }

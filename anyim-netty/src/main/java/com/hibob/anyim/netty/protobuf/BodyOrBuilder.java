@@ -9,24 +9,34 @@ public interface BodyOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string fromId = 1;</code>
+   * <code>optional string fromId = 1;</code>
+   * @return Whether the fromId field is set.
+   */
+  boolean hasFromId();
+  /**
+   * <code>optional string fromId = 1;</code>
    * @return The fromId.
    */
   java.lang.String getFromId();
   /**
-   * <code>string fromId = 1;</code>
+   * <code>optional string fromId = 1;</code>
    * @return The bytes for fromId.
    */
   com.google.protobuf.ByteString
       getFromIdBytes();
 
   /**
-   * <code>string fromClient = 2;</code>
+   * <code>optional string fromClient = 2;</code>
+   * @return Whether the fromClient field is set.
+   */
+  boolean hasFromClient();
+  /**
+   * <code>optional string fromClient = 2;</code>
    * @return The fromClient.
    */
   java.lang.String getFromClient();
   /**
-   * <code>string fromClient = 2;</code>
+   * <code>optional string fromClient = 2;</code>
    * @return The bytes for fromClient.
    */
   com.google.protobuf.ByteString
@@ -155,4 +165,33 @@ public interface BodyOrBuilder extends
    */
   com.google.protobuf.ByteString
       getTempMsgIdBytes();
+
+  /**
+   * <pre>
+   * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+   * </pre>
+   *
+   * <code>optional string sessionId = 11;</code>
+   * @return Whether the sessionId field is set.
+   */
+  boolean hasSessionId();
+  /**
+   * <pre>
+   * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+   * </pre>
+   *
+   * <code>optional string sessionId = 11;</code>
+   * @return The sessionId.
+   */
+  java.lang.String getSessionId();
+  /**
+   * <pre>
+   * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+   * </pre>
+   *
+   * <code>optional string sessionId = 11;</code>
+   * @return The bytes for sessionId.
+   */
+  com.google.protobuf.ByteString
+      getSessionIdBytes();
 }
