@@ -21,9 +21,4 @@ public class SessionGroupChat {
     @TableField(value = "ref_msg_id")
     private long refMsgId;
 
-    @TableField(value = "new_msg_id")
-    private long newMsgId;
-
-    @TableField(value = "new_time")
-    private Date newTime;
 }
