@@ -74,8 +74,8 @@ public class ChatProcessor implements MsgProcessor{
             ctx.channel().attr(attributeKey).set(refMsgId);
         }
 
-        saveChat(msg, msgId); //消息入库
-        sendDeliveredMsg(ctx, msg, msgId); //回复已送达 TODO 要考虑入库成功了再回复
+        saveChat(msg, msgId); //消息入库，当前采用服务方异步入库，因此不支持等待回调结果。
+        sendDeliveredMsg(ctx, msg, msgId); //回复已送达
 
         // 扩散给自己的其他客户端
         Set<Object> fromOnlineClients = queryOnlineClient(fromId);

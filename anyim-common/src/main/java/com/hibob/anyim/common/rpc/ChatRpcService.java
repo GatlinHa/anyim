@@ -12,7 +12,31 @@ public interface ChatRpcService {
 
     long updateAndGetRefMsgId(String groupId, int refMsgIdStep, long curRefMsgId);
 
+    /**
+     * chat消息异步入库
+     * @param msg
+     * @return
+     */
     void asyncSaveChat(Map<String, Object> msg);
 
+    /**
+     * chat消息同步入库
+     * @param msg
+     * @return
+     */
+    boolean saveChat(Map<String, Object> msg);
+
+    /**
+     * group chat消息异步入库
+     * @param msg
+     * @return
+     */
     void asyncSaveGroupChat(Map<String, Object> msg);
+
+    /**
+     * group chat消息同步入库
+     * @param msg
+     * @return
+     */
+    boolean saveGroupChat(Map<String, Object> msg);
 }

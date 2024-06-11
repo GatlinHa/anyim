@@ -111,11 +111,11 @@ public class ChatRpcServiceImpl implements ChatRpcService {
             msgChat.setToId(toId);
             msgChat.setMsgId((long) msg.get("msgId"));
             msgChat.setMsgType((int) msg.get("msgType"));
-            msgChat.setContent((String) msg.get("content")); //TODO 内容要考虑加密
+            msgChat.setContent((String) msg.get("content")); //客户端负责加密内容
             msgChat.setMsgTime((Date) msg.get("msgTime"));
             msgChat.setCreateTime(new Date());
             MsgChat insert = mongoTemplate.insert(msgChat);
-            if (insert.getId() != null) {
+            if (insert.getId() != null) { //如果入库成功，id会有值
                 insertToRedis((long) msg.get("msgId"), sessionId, msgChat);
             }
             else {
@@ -134,6 +134,34 @@ public class ChatRpcServiceImpl implements ChatRpcService {
     }
 
     @Override
+    public boolean saveChat(Map<String, Object> msg) {
+        String fromId = (String) msg.get("fromId");
+        String toId = (String) msg.get("toId");
+        String[] sorted = sortId(fromId, toId);
+        String sessionId = combineId(sorted[0], sorted[1]);
+
+        MsgChat msgChat = new MsgChat();
+        msgChat.setSessionId(sessionId);
+        msgChat.setFromId(fromId);
+        msgChat.setFromClient((String) msg.get("fromClient"));
+        msgChat.setToId(toId);
+        msgChat.setMsgId((long) msg.get("msgId"));
+        msgChat.setMsgType((int) msg.get("msgType"));
+        msgChat.setContent((String) msg.get("content")); //客户端负责加密内容
+        msgChat.setMsgTime((Date) msg.get("msgTime"));
+        msgChat.setCreateTime(new Date());
+        MsgChat insert = mongoTemplate.insert(msgChat);
+        if (insert.getId() != null) { //如果入库成功，id会有值
+            insertToRedis((long) msg.get("msgId"), sessionId, msgChat);
+            return true;
+        }
+        else {
+            log.error("saveChat insert failed, sessionId: {}, msgId: {}", sessionId, msg.get("msgId"));
+            return false;
+        }
+    }
+
+    @Override
     public void asyncSaveGroupChat(Map<String, Object> msg) {
         CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
             MsgGroupChat msgGroupChat = new MsgGroupChat();
@@ -142,14 +170,14 @@ public class ChatRpcServiceImpl implements ChatRpcService {
             msgGroupChat.setFromClient((String) msg.get("from_client"));
             msgGroupChat.setMsgId((long) msg.get("msg_id"));
             msgGroupChat.setMsgType((int) msg.get("msgType"));
-            msgGroupChat.setContent((String) msg.get("content")); //TODO 内容要考虑加密
+            msgGroupChat.setContent((String) msg.get("content")); //客户端负责加密内容
             msgGroupChat.setMsgTime((Date) msg.get("msgTime"));
             MsgGroupChat insert = mongoTemplate.insert(msgGroupChat);
             if (insert.getId() != null) {
                 insertToRedis((long) msg.get("msgId"), (String)msg.get("group_id"), msgGroupChat);
             }
             else {
-                log.error("asyncSaveChat insert failed, groupId: {}, msgId: {}", msg.get("group_id"), msg.get("msgId"));
+                log.error("asyncSaveGroupChat insert failed, groupId: {}, msgId: {}", msg.get("group_id"), msg.get("msgId"));
                 return 0;
             }
 
@@ -161,6 +189,27 @@ public class ChatRpcServiceImpl implements ChatRpcService {
                 log.error("asyncSaveGroupChat execute exception: {}", throwable.getCause());
             }
         });
+    }
+
+    @Override
+    public boolean saveGroupChat(Map<String, Object> msg) {
+        MsgGroupChat msgGroupChat = new MsgGroupChat();
+        msgGroupChat.setSessionId((String) msg.get("group_id"));
+        msgGroupChat.setFromId((String) msg.get("from_id"));
+        msgGroupChat.setFromClient((String) msg.get("from_client"));
+        msgGroupChat.setMsgId((long) msg.get("msg_id"));
+        msgGroupChat.setMsgType((int) msg.get("msgType"));
+        msgGroupChat.setContent((String) msg.get("content")); //客户端负责加密内容
+        msgGroupChat.setMsgTime((Date) msg.get("msgTime"));
+        MsgGroupChat insert = mongoTemplate.insert(msgGroupChat);
+        if (insert.getId() != null) {
+            insertToRedis((long) msg.get("msgId"), (String)msg.get("group_id"), msgGroupChat);
+            return true;
+        }
+        else {
+            log.error("saveGroupChat insert failed, groupId: {}, msgId: {}", msg.get("group_id"), msg.get("msgId"));
+            return false;
+        }
     }
 
     private void insertToRedis(long msgId, String sessionId, Object value) {
