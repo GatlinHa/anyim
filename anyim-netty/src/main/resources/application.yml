@@ -58,6 +58,7 @@ spring:
       isolation-level: read_uncommitted
 
 websocket:
+  name: anyim-netty-ws
   port: 8100
   path: /ws
   log-level: DEBUG  # LoggingHandler的日志级别

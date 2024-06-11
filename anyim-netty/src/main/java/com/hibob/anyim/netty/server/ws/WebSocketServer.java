@@ -1,5 +1,10 @@
 package com.hibob.anyim.netty.server.ws;
 
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.nacos.api.PropertyKeyConst;
+import com.alibaba.nacos.api.naming.NamingFactory;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.netty.protobuf.Msg;
 import com.hibob.anyim.netty.server.handler.*;
 import io.netty.bootstrap.ServerBootstrap;
@@ -23,7 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.annotation.Resource;
+import java.net.InetAddress;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +39,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 @RequiredArgsConstructor
 public class WebSocketServer {
+    @Value("${websocket.name}")
+    private String name;
 
     @Value("${websocket.port}")
     private int port;
@@ -40,6 +50,9 @@ public class WebSocketServer {
 
     @Value("${websocket.log-level}")
     private String logLevel;
+
+    @Resource
+    private NacosDiscoveryProperties nacosDiscoveryProperties;
 
     private static Map<String, Channel> localRoute = new ConcurrentHashMap<>(); // TODO 要考虑channel的老化，用map可能不太合适
 
@@ -85,6 +98,7 @@ public class WebSocketServer {
                     });
 
             ChannelFuture future = bootstrap.bind(port).sync(); //绑定端口号，启动服务端，用同步sync()是因为上一步是异步非阻塞操作，如果想要拿到结果需要额外sync()
+            registerWsToNacos();
             future.channel().closeFuture().sync(); //对通道关闭进行监听
         }
         catch (Exception e) {
@@ -98,5 +112,16 @@ public class WebSocketServer {
 
     }
 
+    private void registerWsToNacos() {
+        try {
+            Properties properties = new Properties();
+            properties.setProperty(PropertyKeyConst.NAMESPACE, nacosDiscoveryProperties.getNamespace());
+            properties.setProperty(PropertyKeyConst.SERVER_ADDR, nacosDiscoveryProperties.getServerAddr());
+            NamingService namingService = NamingFactory.createNamingService(properties);
+            namingService.registerInstance(name, CommonUtil.getLocalIp(), port);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

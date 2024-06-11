@@ -36,6 +36,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
     private final static List<String> ignoreAuthUrls = new ArrayList<>();
 
     static {
+        ignoreAuthUrls.add("/ws");
         ignoreAuthUrls.add("/user/login");
         ignoreAuthUrls.add("/user/register");
         ignoreAuthUrls.add("/user/validateAccount");
