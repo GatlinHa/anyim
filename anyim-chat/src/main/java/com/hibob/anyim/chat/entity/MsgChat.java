@@ -42,6 +42,7 @@ public class MsgChat {
     private String content;
 
     @Field("msg_time")
+    @Indexed
     private Date msgTime;
 
     @Field("create_time")

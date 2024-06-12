@@ -45,7 +45,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
     @Value("${custom.msg-ttl-in-redis:604800}")
     private int msgTtlInRedis;
 
-    @Value("${custom.msg-capacity-in-redis:1000}")
+    @Value("${custom.msg-capacity-in-redis:10000}")
     private int msgCapacityInRedis;
 
     @Override

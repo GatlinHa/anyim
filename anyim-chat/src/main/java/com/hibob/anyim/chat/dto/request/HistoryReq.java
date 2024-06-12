@@ -8,8 +8,8 @@ import lombok.Data;
 import javax.validation.constraints.*;
 
 @Data
-@ApiModel("单聊消息拉取接口的请求体参数")
-public class PullChatMsgReq extends BaseRequest {
+@ApiModel("单聊历史消息查询接口的请求体参数")
+public class HistoryReq extends BaseRequest {
 
     @NotEmpty
     @Size(max = 64, message = "账号长度不能大于64字符")
@@ -17,16 +17,21 @@ public class PullChatMsgReq extends BaseRequest {
     private String toAccount;
 
     @NotNull
-    @ApiModelProperty(value = "可选参数，上次更新msgId，没有就传-1")
-    private long lastMsgId;
+    @ApiModelProperty(value = "查询开始时间，UTC秒")
+    private long startTime;
 
     @NotNull
-    @ApiModelProperty(value = "上次更新的时间，UTC时间，单位秒，没有就传-1")
-    private long lastPullTime;
+    @ApiModelProperty(value = "查询结束时间，UTC秒")
+    private long endTime;
+
+    @NotNull
+    @ApiModelProperty(value = "可选参数，上次更新msgId，没有就传-1")
+    private long lastMsgId;
 
     @NotNull
     @Max(value = 100, message = "页大小不能大于100")
     @Min(value = 10, message = "页大小不能小于10")
     @ApiModelProperty(value = "每次拉取的消息数量")
     private int pageSize;
+
 }
