@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Data
-@ApiModel("更新聊天信息的参数")
+@ApiModel("单聊消息拉取接口的")
 public class PullChatMsgReq extends BaseRequest {
 
     @NotEmpty
@@ -17,9 +17,14 @@ public class PullChatMsgReq extends BaseRequest {
     @ApiModelProperty(value = "单聊的对方id")
     private String toAccount;
 
-    @ApiModelProperty(value = "可选参数，上次更新msgId")
+    @NotEmpty
+    @ApiModelProperty(value = "可选参数，上次更新msgId，没有就传-1")
     private long lastMsgId;
 
-    @ApiModelProperty(value = "可选参数，上次更新的时间，UTC时间，单位秒")
+    @NotEmpty
+    @ApiModelProperty(value = "可选参数，上次更新的时间，UTC时间，单位秒，没有就传-1")
     private long lastPullTime;
+
+    @ApiModelProperty(value = "可选参数，每次拉取的消息数量")
+    private int pullCount;
 }

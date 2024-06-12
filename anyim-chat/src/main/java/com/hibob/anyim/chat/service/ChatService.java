@@ -13,6 +13,7 @@ import com.hibob.anyim.common.utils.ResultUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -21,10 +22,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Slf4j
@@ -35,6 +33,9 @@ public class ChatService {
     @Value("${custom.msg-ttl-in-redis:604800}")
     private int msgTtlInRedis;
 
+    @Value("${custom.msg-read-count:100}")
+    private int msgReadCount;
+
     private final RedisTemplate<String, Object> redisTemplate;
     private final MongoTemplate mongoTemplate;
 
@@ -43,41 +44,57 @@ public class ChatService {
         String account = reqSession.getAccount();
         String toAccount = dto.getToAccount();
         String sessionId = CommonUtil.combineId(account, toAccount);
+        int pullCount = dto.getPullCount() == 0 ? msgReadCount : dto.getPullCount();
         long lastMsgId = dto.getLastMsgId();
         long lastPullTime = dto.getLastPullTime();
         long currentTime = new Date().getTime() / 1000;
 
+        String key1 = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
+        long count = redisTemplate.opsForZSet().count(key1, lastMsgId + 1, Double.MAX_VALUE);  //由于msg-capacity-in-redis的限制，最多拉取1000条
+        long msgIdOffset = lastMsgId;
+
         if (currentTime - lastPullTime < msgTtlInRedis) { // 7天内查询Redis
             // 第1次查询缓存，获取sessionId下面的msgId集合
-            String key1 = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
-            Set<Object> msgIds = redisTemplate.opsForZSet().rangeByScore(key1, lastMsgId + 1, Double.MAX_VALUE, 0, 1000);
-            List<MsgChat> msglist = new ArrayList<>();
-            if (msgIds.size() == 0) {
-                return ResultUtil.success(msglist);
-            }
+            List<MsgChat> msgList = new ArrayList<>();
+            if (count > 0) {
+                LinkedHashSet<Object> msgIds = (LinkedHashSet)redisTemplate.opsForZSet().rangeByScore(key1, lastMsgId + 1, Double.MAX_VALUE, 0, pullCount);
+                int last = (int)msgIds.toArray()[msgIds.size() - 1];
+                msgIdOffset = last;
 
-            // 第2次查询缓存或者数据库，获取每个msgId对应的msg内容
-            // TODO 考虑分页，limit
-            List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
-                for (Object msgId : msgIds) {
-                    String key2 = RedisKey.CHAT_SESSION_MSG_ID_MSG + sessionId + Const.SPLIT_C + msgId;
-                    connection.get(key2.getBytes());
+                // 第2次查询缓存或者数据库，获取每个msgId对应的msg内容
+                List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
+                    for (Object msgId : msgIds) {
+                        String key2 = RedisKey.CHAT_SESSION_MSG_ID_MSG + sessionId + Const.SPLIT_C + msgId;
+                        connection.get(key2.getBytes());
+                    }
+                    return null;
+                });
+
+                for (Object obj : result) {
+                    MsgChat msgChat = JSON.parseObject((String) obj, MsgChat.class);
+                    msgList.add(msgChat);
                 }
-                return null;
-            });
-
-            for (Object obj : result) {
-                MsgChat msgChat = JSON.parseObject((String) obj, MsgChat.class);
-                msglist.add(msgChat);
             }
-            return ResultUtil.success(msglist);
+
+            HashMap<String, Object> resultMap = new HashMap<>();
+            resultMap.put("count", count);
+            resultMap.put("msgIdOffset", msgIdOffset);
+            resultMap.put("msgList", msgList);
+            return ResultUtil.success(resultMap);
         }
         else { // 7天外查询MongoDB
-            // TODO 考虑分页，limit
             Query query = new Query();
             query.addCriteria(Criteria.where("sessionId").is(sessionId).and("msgId").gt(lastMsgId));
-            List<MsgChat> msglist = mongoTemplate.find(query, MsgChat.class);
-            return ResultUtil.success(msglist);
+            query.with(Sort.by(Sort.Order.asc("msgId")));
+            query.limit(pullCount);
+            List<MsgChat> msgList = mongoTemplate.find(query, MsgChat.class);
+            msgIdOffset = msgList.get(msgList.size() - 1).getMsgId();
+
+            HashMap<String, Object> resultMap = new HashMap<>();
+            resultMap.put("count", count);
+            resultMap.put("msgIdOffset", msgIdOffset);
+            resultMap.put("msgList", msgList);
+            return ResultUtil.success(resultMap);
         }
     }
 
