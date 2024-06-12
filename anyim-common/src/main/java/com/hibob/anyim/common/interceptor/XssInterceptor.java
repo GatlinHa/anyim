@@ -20,6 +20,7 @@ public class XssInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        log.info("XssInterceptor preHandle......uri is {}", request.getRequestURI());
         //  检查body
         String body = getBody(request);
         if (XssUtil.checkXss(body)) {

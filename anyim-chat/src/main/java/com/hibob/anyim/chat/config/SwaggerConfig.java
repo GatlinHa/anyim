@@ -38,7 +38,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("微服务的api接口文档")
-                .description("anyim-user服务的api接口文档")
+                .description("anyim-chat服务的api接口文档")
                 .contact(new Contact("bob", "", ""))
                 .version("1.0")
                 .build();

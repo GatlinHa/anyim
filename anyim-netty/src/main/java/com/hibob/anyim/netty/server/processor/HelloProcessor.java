@@ -49,7 +49,7 @@ public class HelloProcessor implements MsgProcessor{
         String instance = CommonUtil.getLocalIp() + SPLIT_C + nacosConfig.getPort();
         redisTemplate.opsForValue().set(routeKey, instance, Duration.ofSeconds(Const.CHANNEL_EXPIRE)); //TODO 如果老化了，怎办么？
         redisTemplate.opsForSet().add(onlineKey, uniqueId);
-        redisTemplate.expire(onlineKey, Duration.ofSeconds(Const.CACHE_ONLINE_EXPIRE));
+        redisTemplate.expire(onlineKey, Duration.ofSeconds(Const.CACHE_ONLINE_EXPIRE)); //设置缓存过期时间，防止数据长时间不老化，导致与数据库不一致
         getLocalRoute().put(routeKey, ctx.channel());
     }
 }

@@ -161,7 +161,7 @@ public class ChatProcessor implements MsgProcessor{
     private Set<Object> queryOnlineClient(String account) {
         String onlineKey = RedisKey.NETTY_ONLINE_CLIENT + account;
         Set<Object> members = redisTemplate.opsForSet().members(onlineKey);
-        if (members.size() == 0) {
+        if (members.size() == 0) { //缓存未命中，调RPC查数据库后同步缓存
             rpcClient.getUserRpcService().queryOnline(account).forEach(x -> {
                 redisTemplate.opsForSet().add(onlineKey, x);
                 members.add(x);

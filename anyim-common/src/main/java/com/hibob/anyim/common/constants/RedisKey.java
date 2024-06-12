@@ -66,6 +66,6 @@ public class RedisKey {
      */
     public static final String CHAT_SESSION_MSG_ID = CHAT_PREFIX + "sessionId:";
 
-    public static final String CHAT_SESSION_MSG_ID_MSG = CHAT_PREFIX + "sessionId-MsgId:";
+    public static final String CHAT_SESSION_MSG_ID_MSG = CHAT_PREFIX + "sessionId-msgId:";
 
 }

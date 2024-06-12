@@ -5,7 +5,7 @@ spring:
     gateway:
       discovery:
         locator:
-#          enabled: true # 默认false，开启后创建默认路由，可以通过服务名称进行服务转发，不用显示地配置
+#          enabled: true # 默认false，开启后创建默认路由，可以通过服务名称进行服务转发，不用显示地配置，目前暂未用到
 #          interval: 10000 # 默认30000ms，设置定时拉取服务信息的时间间隔为10秒
       routes:
         - id: anyim-user
@@ -16,8 +16,7 @@ spring:
         - id: anyim-chat
           uri: lb://anyim-chat
           predicates:
-            - Path=/chat/**
-            - Path=/groupChat/**
+            - Path=/chat/**,/groupChat/**
 
         - id: anyim-netty-ws
           uri: lb:ws://anyim-netty-ws
