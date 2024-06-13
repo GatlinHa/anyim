@@ -41,7 +41,7 @@ public class XssFilter implements GlobalFilter, Ordered {
         for (List<String> values : paramMap.values()) {
             for (String value : values) {
                 if (XssUtil.checkXss(value)) {
-                    log.error("The request parameter xss is invalid, and the verification object is as follows:{}", value);
+                    log.info("The xss verification of the request parameter is invalid, and the verification object is:{}", value);
                     exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
                     return exchange.getResponse().setComplete();
                 }

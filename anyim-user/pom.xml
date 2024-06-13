@@ -43,14 +43,6 @@
             <version>${mybatis-plus-plus.version}</version>
         </dependency>
 
-        <!--TODO org.apache.commons.compress.utils.IOUtils依赖包，后面引入minio后自带了这个包-->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.21</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!--这里对应的Springboot版本为2.7.6-->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
