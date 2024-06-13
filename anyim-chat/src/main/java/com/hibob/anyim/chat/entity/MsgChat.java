@@ -2,7 +2,6 @@ package com.hibob.anyim.chat.entity;
 
 import com.hibob.anyim.common.constants.Const;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
