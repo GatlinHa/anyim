@@ -50,7 +50,7 @@ public class ChatService {
         long lastPullTime = dto.getLastPullTime();
         long currentTime = new Date().getTime();
 
-        if (currentTime - lastPullTime < msgTtlInRedis) { // 7天内查询Redis
+        if (currentTime - lastPullTime < msgTtlInRedis * 1000) { // 7天内查询Redis
             // 第1次查询缓存，获取sessionId下面的msgId集合
             String key1 = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
             long count = redisTemplate.opsForZSet().count(key1, lastMsgId + 1, Double.MAX_VALUE);  //由于msg-capacity-in-redis的限制，最多拉取10000条
