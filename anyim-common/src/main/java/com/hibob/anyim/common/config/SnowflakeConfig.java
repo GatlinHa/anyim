@@ -1,4 +1,4 @@
-package com.hibob.anyim.chat.config;
+package com.hibob.anyim.common.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hibob.anyim.common.utils.CommonUtil;
@@ -11,7 +11,7 @@ import static com.hibob.anyim.common.constants.Const.SPLIT_C;
 
 @Configuration
 @Data
-public class NacosConfig implements InitializingBean {
+public class SnowflakeConfig implements InitializingBean {
 
     @Value("${server.port}")
     private int port;

@@ -1,4 +1,4 @@
-package com.hibob.anyim.chat.utils;
+package com.hibob.anyim.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
