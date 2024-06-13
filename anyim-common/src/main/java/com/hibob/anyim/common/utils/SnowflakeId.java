@@ -1,10 +1,8 @@
 package com.hibob.anyim.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class SnowflakeId {
 
     private final long startTimestamp = 1704038400000L; // 开始时间戳，2024-01-01 00:00:00
@@ -25,7 +23,12 @@ public class SnowflakeId {
     private long lastTimestamp = -1L; // 上次生成ID的时间戳
     private long sequence = 0L; // 序列号
 
-    public SnowflakeId() {
+    /**
+     * 单例模式
+     */
+    private static SnowflakeId instance = null;
+
+    private SnowflakeId() {
         long workerId = Long.parseLong(System.getProperties().getProperty("custom.snow-flake.worker-id"));
         long datacenterId = Long.parseLong(System.getProperties().getProperty("custom.snow-flake.datacenter-id"));
         // 初始化工作机器ID和数据中心ID
@@ -37,6 +40,13 @@ public class SnowflakeId {
         }
         this.workerId = workerId;
         this.datacenterId = datacenterId;
+    }
+
+    public static SnowflakeId getInstance() { // 不用加锁，覆盖也没有关系
+        if (instance == null) {
+            instance = new SnowflakeId();
+        }
+        return instance;
     }
 
     public synchronized long nextId() {

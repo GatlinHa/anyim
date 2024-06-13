@@ -6,7 +6,6 @@ import lombok.Data;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
 
 import static com.hibob.anyim.common.constants.Const.SPLIT_C;
 
@@ -17,7 +16,7 @@ public class SnowflakeConfig implements InitializingBean {
     @Value("${server.port}")
     private int port;
 
-    @Value("${custom.snow-flake.worker-datacenter-config}")
+    @Value("${custom.snow-flake.worker-datacenter-config:default}")
     private String workerDatacenterConfig;
 
     public String getInstance() {
@@ -26,7 +25,7 @@ public class SnowflakeConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (StringUtils.hasLength(workerDatacenterConfig)) {
+        if (!workerDatacenterConfig.equals("default")) {
             JSONObject jsonObject = JSONObject.parseObject(workerDatacenterConfig);
             int workerId = (int) jsonObject.getJSONObject(getInstance()).get("worker-id");
             int datacenterId = (int) jsonObject.getJSONObject(getInstance()).get("datacenter-id");
