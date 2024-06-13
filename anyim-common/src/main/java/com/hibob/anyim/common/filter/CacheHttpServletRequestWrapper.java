@@ -1,4 +1,4 @@
-package com.hibob.anyim.chat.filter;
+package com.hibob.anyim.common.filter;
 
 import org.apache.commons.compress.utils.IOUtils;
 

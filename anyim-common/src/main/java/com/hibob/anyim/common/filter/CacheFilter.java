@@ -1,4 +1,4 @@
-package com.hibob.anyim.user.filter;
+package com.hibob.anyim.common.filter;
 
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.stereotype.Component;
