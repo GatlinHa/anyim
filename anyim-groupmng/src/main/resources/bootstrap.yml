@@ -1,0 +1,21 @@
+# bootstrap.yml用来在程序引导时执行，早于application.yml加载，nacos配置的加载应该放在这里，这样application.yml才能用到配置中心的配置
+server:
+  port: 8030
+
+spring:
+  application:
+    name: anyim-groupmng
+  profiles:
+    active: dev # 环境标识
+
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml # 配置文件格式
+        namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147
+
+      discovery:
+        server-addr: localhost:8848
+        namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147
+

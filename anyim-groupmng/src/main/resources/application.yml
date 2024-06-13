@@ -1,0 +1,33 @@
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+
+# 解决这个错误：org.springframework.context.ApplicationContextException: Failed to start bean 'documentationPluginsBootstrapper';
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+#  redis:
+#    host: ${spring.redis.host}
+#    port: ${spring.redis.port}
+#    password: ${spring.redis.password}
+#    pool:
+#      max-active: 100
+#      max-wait: -1 # 连接池最大阻塞等待时间（使用负值表示没有限制）
+#      max-idle: 8
+#      min-idle: 0
+#    timeout: 1200
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#自定义配置
+custom:
+  snow-flake:
+    worker-datacenter-config: ${worker-datacenter-config}

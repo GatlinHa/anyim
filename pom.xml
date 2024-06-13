@@ -35,6 +35,7 @@
         <module>anyim-netty</module>
         <module>anyim-user</module>
         <module>anyim-chat</module>
+        <module>anyim-groupmng</module>
     </modules>
 
     <dependencies>
