@@ -17,11 +17,11 @@ public class HistoryReq extends BaseRequest {
     private String toAccount;
 
     @NotNull
-    @ApiModelProperty(value = "查询开始时间，UTC秒")
+    @ApiModelProperty(value = "查询开始时间，UTC毫秒")
     private long startTime;
 
     @NotNull
-    @ApiModelProperty(value = "查询结束时间，UTC秒")
+    @ApiModelProperty(value = "查询结束时间，UTC毫秒")
     private long endTime;
 
     @NotNull

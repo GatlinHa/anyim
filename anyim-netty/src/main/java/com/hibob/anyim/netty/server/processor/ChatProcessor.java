@@ -50,6 +50,7 @@ public class ChatProcessor implements MsgProcessor{
     public void process(ChannelHandlerContext ctx, Msg msg)  throws Exception{
         String fromId = msg.getBody().getFromId();
         String fromClient = msg.getBody().getFromClient();
+        // TODO 要检验对方ID是否存在
         String toId = msg.getBody().getToId(); //端侧发过来的消息，也不知道要发给哪个client，所以没填toClient
         String sessionId = combineId(fromId, toId);
         String msgIdKey = RedisKey.NETTY_REF_MSG_ID + sessionId;

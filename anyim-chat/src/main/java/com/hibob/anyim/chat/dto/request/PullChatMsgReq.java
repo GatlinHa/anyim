@@ -21,7 +21,7 @@ public class PullChatMsgReq extends BaseRequest {
     private long lastMsgId;
 
     @NotNull
-    @ApiModelProperty(value = "上次更新的时间，UTC时间，单位秒，没有就传-1")
+    @ApiModelProperty(value = "上次更新的时间，UTC时间，单位毫秒，没有就传-1")
     private long lastPullTime;
 
     @NotNull

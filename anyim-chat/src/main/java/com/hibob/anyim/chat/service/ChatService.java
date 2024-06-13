@@ -48,7 +48,7 @@ public class ChatService {
         int pageSize = dto.getPageSize() == 0 ? msgReadCount : dto.getPageSize();
         long lastMsgId = dto.getLastMsgId();
         long lastPullTime = dto.getLastPullTime();
-        long currentTime = new Date().getTime() / 1000;
+        long currentTime = new Date().getTime();
 
         if (currentTime - lastPullTime < msgTtlInRedis) { // 7天内查询Redis
             // 第1次查询缓存，获取sessionId下面的msgId集合
@@ -91,8 +91,8 @@ public class ChatService {
         String account = reqSession.getAccount();
         String toAccount = dto.getToAccount();
         String sessionId = CommonUtil.combineId(account, toAccount);
-        Date startTime = new Date(dto.getStartTime() * 1000);
-        Date endTime = new Date(dto.getEndTime() * 1000);
+        Date startTime = new Date(dto.getStartTime());
+        Date endTime = new Date(dto.getEndTime());
         int pageSize = dto.getPageSize();
         long lastMsgId = dto.getLastMsgId();
 
@@ -115,7 +115,9 @@ public class ChatService {
         query.with(Sort.by(Sort.Order.asc("msgId")));
         query.limit(pageSize);
         List<MsgChat> msgList = mongoTemplate.find(query, MsgChat.class);
-        lastMsgId = msgList.get(msgList.size() - 1).getMsgId();
+        if (msgList.size() > 0) {
+            lastMsgId = msgList.get(msgList.size() - 1).getMsgId();
+        }
         HashMap<String, Object> resultMap = new HashMap<>();
         resultMap.put("count", count);
         resultMap.put("lastMsgId", lastMsgId);
