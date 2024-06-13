@@ -26,7 +26,7 @@ public class RegisterReq extends BaseRequest {
     private String password;
 
     @ApiModelProperty(value = "头像")
-    private String headImage;
+    private String avatar;
 
     @ApiModelProperty(value = "电话号码")
     private String phoneNum;

@@ -24,11 +24,11 @@ public class User extends Model<User> {
     @TableField("nick_name")
     private String nickName;
 
-    @TableField("head_image")
-    private String headImage;
+    @TableField("avatar")
+    private String avatar;
 
-    @TableField("head_image_thumb")
-    private String headImageThumb;
+    @TableField("avatar_thumb")
+    private String avatarThumb;
 
     @TableField("password")
     private String password;

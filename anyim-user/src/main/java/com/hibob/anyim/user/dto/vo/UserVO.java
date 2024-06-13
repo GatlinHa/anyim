@@ -15,10 +15,10 @@ public class UserVO {
     private String nickName;
 
     @ApiModelProperty(value = "头像")
-    private String headImage;
+    private String avatar;
 
     @ApiModelProperty(value = "头像缩略图")
-    private String headImageThumb;
+    private String avatarThumb;
 
     @ApiModelProperty(value = "性别")
     private int sex;
