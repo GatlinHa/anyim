@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hibob.anyim.common.rpc.UserRpcService;
 import com.hibob.anyim.common.config.JwtProperties;
+import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.user.entity.Login;
 import com.hibob.anyim.user.entity.User;
 import com.hibob.anyim.user.mapper.LoginMapper;
@@ -55,9 +56,11 @@ public class UserRpcServiceImpl implements UserRpcService {
         queryWrapper.eq(User::getAccount, account);
         List<User> users = userMapper.selectList(queryWrapper);
         if (users.size() > 0) {
-            Map<String, Object> map = new HashMap<>();
-            BeanUtils.copyProperties(users.get(0), map);
-            return map;
+            try {
+                return BeanUtil.objectToMap(users.get(0));
+            } catch (IllegalAccessException e) {
+                log.error("UserRpcServiceImpl::queryUserInfo type conversion error......exception: {}", e.getMessage());
+            }
         }
         return null;
     }

@@ -19,3 +19,13 @@ spring:
         server-addr: localhost:8848
         namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147
 
+dubbo:
+  application:
+    name: anyim-groupmng-dubbo
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://localhost:8848
+    parameters:
+      namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147

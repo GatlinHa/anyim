@@ -18,6 +18,11 @@ spring:
           predicates:
             - Path=/chat/**,/groupChat/**
 
+        - id: anyim-groupmng
+          uri: lb://anyim-groupmng
+          predicates:
+            - Path=/groupmng/**
+
         - id: anyim-netty-ws
           uri: lb:ws://anyim-netty-ws
           predicates:

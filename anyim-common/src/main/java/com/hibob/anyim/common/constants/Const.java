@@ -24,6 +24,11 @@ public class Const {
      */
     public static final int SERVICE_CODE_CHAT = 400;
 
+    /**
+     * 服务编码：anyim-groupmng服务
+     */
+    public static final int SERVICE_CODE_GROUP_MNG = 500;
+
 
     /**
      * 分隔符：@

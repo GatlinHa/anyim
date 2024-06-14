@@ -25,9 +25,11 @@ public enum ServiceErrorCode {
 
     ERROR_IS_DEREGISTER(Const.SERVICE_CODE_USER + 10, "账号已注销"),
 
-    ERROR_SERVICE_EXCEPTION(Const.SERVICE_CODE_USER + 500, "服务器内部异常"),
+    ERROR_SERVICE_EXCEPTION(Const.SERVICE_CODE_USER + 50, "服务器内部异常"),
 
-    ERROR_CHAT_REFMSGID_EXCEPTION(Const.SERVICE_CODE_CHAT + 1, "ref msgId异常");
+    ERROR_CHAT_REFMSGID_EXCEPTION(Const.SERVICE_CODE_CHAT + 1, "ref msgId异常"),
+
+    ERROR_GROUP_MNG_CREATE_GROUP_NOT_ENOUGH(Const.SERVICE_CODE_GROUP_MNG + 1, "创建群组时成员数必须大于2");
 
 
     private int code;
