@@ -52,7 +52,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("LoginService::validateAccount");
         User user = getOneByAccount(dto.getAccount());
         if (user != null) {
-            log.error("account exist");
+            log.info("account exist");
             return ResultUtil.error(HttpStatus.OK,
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.desc());
@@ -64,7 +64,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("LoginService::register");
         User user = getOneByAccount(dto.getAccount());
         if (user != null) {
-            log.error("account exist");
+            log.info("account exist");
             return ResultUtil.error(HttpStatus.OK,
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
                     ServiceErrorCode.ERROR_ACCOUNT_EXIST.desc());
@@ -124,7 +124,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
         Client client = getOneByUniqueId(uniqueId);
         if (client == null) {
-            log.error("client not found");
+            log.info("client not found");
             insertClient(dto, uniqueId);
         }
         else {
@@ -273,7 +273,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("UserService::query");
         User user = getOneByAccount(dto.getAccount());
         if (user == null) {
-            log.error("user not found");
+            log.info("user not found");
             return ResultUtil.success();
         }
 
