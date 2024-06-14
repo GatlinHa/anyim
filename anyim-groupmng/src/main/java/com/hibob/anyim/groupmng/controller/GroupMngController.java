@@ -2,6 +2,7 @@ package com.hibob.anyim.groupmng.controller;
 
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.groupmng.dao.request.CreateGroupReq;
+import com.hibob.anyim.groupmng.dao.request.QueryGroupReq;
 import com.hibob.anyim.groupmng.service.GroupMngService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -25,6 +26,9 @@ import javax.validation.Valid;
 public class GroupMngController {
     private final GroupMngService groupMngService;
 
+    /**
+     * 创建群组
+     */
     @ApiOperation(value = "创建群组", notes = "创建群组")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
@@ -36,4 +40,37 @@ public class GroupMngController {
     public ResponseEntity<IMHttpResponse> createGroup(@Valid @RequestBody CreateGroupReq dto) {
         return groupMngService.createGroup(dto);
     }
+
+    /**
+     * 查询群信息
+     */
+    @ApiOperation(value = "查询群组", notes = "查询群组")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
+    })
+    @PostMapping("/queryGroup")
+    public ResponseEntity<IMHttpResponse> queryGroup(@Valid @RequestBody QueryGroupReq dto) {
+        return groupMngService.queryGroup(dto);
+    }
+
+
+    /**
+     * 修改群信息
+     */
+
+    /**
+     * 解散群组
+     */
+
+    /**
+     * 群组加/减人
+     */
+
+    /**
+     * 修改成员级别
+     */
+
 }

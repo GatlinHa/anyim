@@ -1,10 +1,13 @@
 package com.hibob.anyim.groupmng.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hibob.anyim.common.enums.ServiceErrorCode;
 import com.hibob.anyim.common.model.IMHttpResponse;
+import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.utils.ResultUtil;
 import com.hibob.anyim.common.utils.SnowflakeId;
 import com.hibob.anyim.groupmng.dao.request.CreateGroupReq;
+import com.hibob.anyim.groupmng.dao.request.QueryGroupReq;
 import com.hibob.anyim.groupmng.dao.vo.GroupVO;
 import com.hibob.anyim.groupmng.entity.GroupInfo;
 import com.hibob.anyim.groupmng.entity.GroupMember;
@@ -71,6 +74,33 @@ public class GroupMngService {
         }
 
         groupMemberMapper.insertBatchSomeColumn(members);
+
+        GroupVO vo = new GroupVO();
+        vo.setGroupInfo(groupInfo);
+        vo.setMembers(members);
+        return ResultUtil.success(vo);
+    }
+
+    public ResponseEntity<IMHttpResponse> queryGroup(QueryGroupReq dto) {
+        log.info("GroupMngService::queryGroup");
+        long groupId = dto.getGroupId();
+        String account = ReqSession.getSession().getAccount();
+
+        // 校验这个用户是否在这个群里
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getMemberAccount, account);
+        Long count = groupMemberMapper.selectCount(queryWrapper);
+        if (count == 0) {
+            return ResultUtil.error(HttpStatus.OK,
+                    ServiceErrorCode.ERROR_GROUP_MNG_QUERY_GROUP_NOT_IN_GROUP.code(),
+                    ServiceErrorCode.ERROR_GROUP_MNG_QUERY_GROUP_NOT_IN_GROUP.desc());
+        }
+
+        GroupInfo groupInfo = groupInfoMapper.selectById(groupId);
+
+        queryWrapper.clear();
+        queryWrapper.eq(GroupMember::getGroupId, groupId);
+        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
 
         GroupVO vo = new GroupVO();
         vo.setGroupInfo(groupInfo);

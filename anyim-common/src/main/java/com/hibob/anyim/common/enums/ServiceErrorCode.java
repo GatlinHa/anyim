@@ -29,7 +29,9 @@ public enum ServiceErrorCode {
 
     ERROR_CHAT_REFMSGID_EXCEPTION(Const.SERVICE_CODE_CHAT + 1, "ref msgId异常"),
 
-    ERROR_GROUP_MNG_CREATE_GROUP_NOT_ENOUGH(Const.SERVICE_CODE_GROUP_MNG + 1, "创建群组时成员数必须大于2");
+    ERROR_GROUP_MNG_CREATE_GROUP_NOT_ENOUGH(Const.SERVICE_CODE_GROUP_MNG + 1, "成员数必须大于2"),
+
+    ERROR_GROUP_MNG_QUERY_GROUP_NOT_IN_GROUP(Const.SERVICE_CODE_GROUP_MNG + 2, "成员不在群组中"),;
 
 
     private int code;
