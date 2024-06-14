@@ -16,7 +16,7 @@ CREATE TABLE `anyim_group_member`(
     `member_account` VARCHAR(255) NOT NULL COMMENT '成员账号',
     `member_nick_name` VARCHAR(255) NOT NULL COMMENT '成员昵称',
     `member_avatar_thumb` VARCHAR(255) DEFAULT '' COMMENT '成员头像缩略图',
-    `member_role` VARCHAR(255) NOT NULL COMMENT '成员角色：0普通成员，1普通管理员，2超级管理员，3群主',
+    `member_role` TINYINT(1) NOT NULL COMMENT '成员角色：0普通成员，1普通管理员，2超级管理员，3群主',
     PRIMARY KEY (group_id, member_account)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '群组成员表';
 
