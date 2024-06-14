@@ -17,7 +17,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.apache.dubbo-version>3.0.9</org.apache.dubbo-version>
-        <mybatis-plus-plus.version>3.5.6</mybatis-plus-plus.version>
+        <mybatis-plus.version>3.5.6</mybatis-plus.version>
     </properties>
 
     <dependencies>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis-plus-plus.version}</version>
+            <version>${mybatis-plus.version}</version>
         </dependency>
 
         <dependency>
