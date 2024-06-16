@@ -6,21 +6,16 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.*;
-import java.util.List;
-import java.util.Map;
 
 @Data
-@ApiModel("创建群组请求的参数")
-public class CreateGroupReq extends BaseRequest {
+@ApiModel("修改群组请求的参数")
+public class ModifyGroupReq extends BaseRequest {
 
-    @ApiModelProperty(value = "群组类型")
+    @ApiModelProperty(value = "群组id")
     @NotNull
-    @Max(value = 10, message = "群组类型不能大于10")
-    @Min(value = 0, message = "群组类型不能小于0")
-    private int groupType;
+    private long groupId;
 
-    @ApiModelProperty(value = "群组名称")
-    @NotEmpty
+    @ApiModelProperty(value = "可选参数，群组名称")
     @Size(max = 255, message = "群组名称长度不能大于255字符")
     private String groupName;
 
@@ -32,8 +27,4 @@ public class CreateGroupReq extends BaseRequest {
     @Size(max = 255, message = "群组头像长度不能大于255字符")
     private String avatar;
 
-    @ApiModelProperty(value = "群组成员：memberAccount, memberRole")
-    @NotNull
-    @Size(min = 3, message = "群组成员不能少于三人")
-    private List<Map<String, Object>> members;
 }

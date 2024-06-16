@@ -29,6 +29,11 @@ public class Const {
      */
     public static final int SERVICE_CODE_GROUP_MNG = 500;
 
+    /**
+     * 服务编码：default占位
+     */
+    public static final int SERVICE_CODE_DEFAULT = 5000;
+
 
     /**
      * 分隔符：@

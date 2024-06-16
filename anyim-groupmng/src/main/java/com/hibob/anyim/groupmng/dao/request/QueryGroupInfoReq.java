@@ -9,7 +9,7 @@ import javax.validation.constraints.*;
 
 @Data
 @ApiModel("查询群组信息请求的参数")
-public class QueryGroupReq extends BaseRequest {
+public class QueryGroupInfoReq extends BaseRequest {
 
     @ApiModelProperty(value = "群组id")
     @NotNull
