@@ -18,8 +18,10 @@ public class ChangeMembersReq extends BaseRequest {
     private long groupId;
 
     @ApiModelProperty(value = "增加的群组成员：memberAccount, memberRole")
+    @NotNull
     private List<Map<String, Object>> addMembers;
 
     @ApiModelProperty(value = "减少的群组成员：memberAccount, memberRole")
+    @NotNull
     private List<Map<String, Object>> delMembers;
 }

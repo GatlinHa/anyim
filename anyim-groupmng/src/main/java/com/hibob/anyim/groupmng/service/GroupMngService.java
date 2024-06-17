@@ -3,6 +3,7 @@ package com.hibob.anyim.groupmng.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.hibob.anyim.common.enums.ServiceErrorCode;
+import com.hibob.anyim.common.exception.ServiceException;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.utils.ResultUtil;
@@ -136,8 +137,8 @@ public class GroupMngService {
         String groupName = dto.getGroupName();
         String avatar = dto.getAvatar();
         if (!StringUtils.hasLength(announcement)
-                && StringUtils.hasLength(groupName)
-                && StringUtils.hasLength(avatar)) {
+                && !StringUtils.hasLength(groupName)
+                && !StringUtils.hasLength(avatar)) {
             return ResultUtil.error(HttpStatus.OK,
                     ServiceErrorCode.ERROR_GROUP_MNG_MODIFY_GROUP_EMPTY_PARAM.code(),
                     ServiceErrorCode.ERROR_GROUP_MNG_MODIFY_GROUP_EMPTY_PARAM.desc());
@@ -208,11 +209,17 @@ public class GroupMngService {
             }
         }
 
-        groupMemberMapper.insertBatchSomeColumn(addMembers);
-        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupMember::getGroupId, groupId);
-        queryWrapper.in(GroupMember::getMemberAccount, dto.getDelMembers().stream().map(map -> map.get("memberAccount")).toArray());
-        groupMemberMapper.delete(queryWrapper);
+        if (!addMembers.isEmpty()) {
+            groupMemberMapper.insertBatchSomeColumn(addMembers);
+        }
+
+        if (!dto.getDelMembers().isEmpty()) {
+            LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(GroupMember::getGroupId, groupId);
+            queryWrapper.ne(GroupMember::getMemberRole, 3); // 群主不能直接删除
+            queryWrapper.in(GroupMember::getMemberAccount, dto.getDelMembers().stream().map(map -> map.get("memberAccount")).toArray());
+            groupMemberMapper.delete(queryWrapper);
+        }
 
         return ResultUtil.success();
     }
@@ -231,6 +238,56 @@ public class GroupMngService {
             return ResultUtil.error(HttpStatus.OK,
                     ServiceErrorCode.ERROR_GROUP_MNG_CHANGE_ROLE_NOT_IN_GROUP.code(),
                     ServiceErrorCode.ERROR_GROUP_MNG_CHANGE_ROLE_NOT_IN_GROUP.desc());
+        }
+
+        return ResultUtil.success();
+    }
+
+    @Transactional
+    public ResponseEntity<IMHttpResponse> ownerTransfer(OwnerTransferReq dto) {
+        log.info("GroupMngService::changeRole");
+        String localAccount = ReqSession.getSession().getAccount();
+        long groupId = dto.getGroupId();
+        String account = dto.getAccount();
+
+        // 校验这个用户是是不是这个群组的owner
+        LambdaQueryWrapper<GroupMember> groupMemberWrapper = new LambdaQueryWrapper<>();
+        groupMemberWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getMemberAccount, localAccount)
+                .eq(GroupMember::getMemberRole, 3);
+        Long count = groupMemberMapper.selectCount(groupMemberWrapper);
+        if (count == 0) {
+            return ResultUtil.error(HttpStatus.OK,
+                    ServiceErrorCode.ERROR_GROUP_MNG_OWNER_TRANSFER_NO_OWNER.code(),
+                    ServiceErrorCode.ERROR_GROUP_MNG_OWNER_TRANSFER_NO_OWNER.desc());
+        }
+
+        // 校验新群主候选人是否在这个群组中
+        groupMemberWrapper.clear();
+        groupMemberWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getMemberAccount, account)
+                .ne(GroupMember::getMemberRole, 3);
+        count = groupMemberMapper.selectCount(groupMemberWrapper);
+        if (count == 0) {
+            return ResultUtil.error(HttpStatus.OK,
+                    ServiceErrorCode.ERROR_GROUP_MNG_OWNER_TRANSFER_NOT_IN_GROUP.code(),
+                    ServiceErrorCode.ERROR_GROUP_MNG_OWNER_TRANSFER_NOT_IN_GROUP.desc());
+        }
+
+        LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getMemberAccount, localAccount)
+                .set(GroupMember::getMemberRole, 2); // 降级为超级管理员
+        if (groupMemberMapper.update(updateWrapper) > 0) {
+            updateWrapper.clear();
+            updateWrapper.eq(GroupMember::getGroupId, groupId)
+                    .eq(GroupMember::getMemberAccount, account)
+                    .set(GroupMember::getMemberRole, 3); // 升级为群主
+            int update = groupMemberMapper.update(updateWrapper);
+            if (update == 0) {
+                // 更新失败，需要根据事务回滚
+                throw new ServiceException(ServiceErrorCode.ERROR_GROUP_MNG_OWNER_TRANSFER_EXCEPTION);
+            }
         }
 
         return ResultUtil.success();

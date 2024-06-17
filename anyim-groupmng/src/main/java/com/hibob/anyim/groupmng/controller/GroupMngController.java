@@ -118,7 +118,7 @@ public class GroupMngController {
     /**
      * 修改成员级别
      */
-    @ApiOperation(value = "群组加/减人", notes = "群组加/减人")
+    @ApiOperation(value = "修改成员角色（非群主转让）", notes = "修改成员角色（非群主转让）")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
             @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
@@ -128,6 +128,21 @@ public class GroupMngController {
     @PostMapping("/changeRole")
     public ResponseEntity<IMHttpResponse> changeRole(@Valid @RequestBody ChangeRoleReq dto) {
         return groupMngService.changeRole(dto);
+    }
+
+    /**
+     * 群主转让
+     */
+    @ApiOperation(value = "群主转让", notes = "群主转让")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
+    })
+    @PostMapping("/ownerTransfer")
+    public ResponseEntity<IMHttpResponse> ownerTransfer(@Valid @RequestBody OwnerTransferReq dto) {
+        return groupMngService.ownerTransfer(dto);
     }
 
 }
