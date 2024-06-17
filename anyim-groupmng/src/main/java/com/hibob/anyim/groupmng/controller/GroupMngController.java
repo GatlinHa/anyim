@@ -1,5 +1,6 @@
 package com.hibob.anyim.groupmng.controller;
 
+import com.hibob.anyim.common.annotation.CommonHeader;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.groupmng.dao.request.*;
 import com.hibob.anyim.groupmng.service.GroupMngService;
@@ -29,12 +30,7 @@ public class GroupMngController {
      * 创建群组
      */
     @ApiOperation(value = "创建群组", notes = "创建群组")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/createGroup")
     public ResponseEntity<IMHttpResponse> createGroup(@Valid @RequestBody CreateGroupReq dto) {
         return groupMngService.createGroup(dto);
@@ -44,12 +40,7 @@ public class GroupMngController {
      * 查询群列表
      */
     @ApiOperation(value = "查询群组列表", notes = "查询群组列表")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/queryGroupList")
     public ResponseEntity<IMHttpResponse> queryGroupList(@Valid @RequestBody QueryGroupListReq dto) {
         return groupMngService.queryGroupList(dto);
@@ -59,12 +50,7 @@ public class GroupMngController {
      * 查询群信息
      */
     @ApiOperation(value = "查询群组", notes = "查询群组")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/queryGroupInfo")
     public ResponseEntity<IMHttpResponse> queryGroupInfo(@Valid @RequestBody QueryGroupInfoReq dto) {
         return groupMngService.queryGroupInfo(dto);
@@ -74,12 +60,7 @@ public class GroupMngController {
      * 修改群信息
      */
     @ApiOperation(value = "修改群组信息", notes = "修改群组信息")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/modifyGroup")
     public ResponseEntity<IMHttpResponse> modifyGroup(@Valid @RequestBody ModifyGroupReq dto) {
         return groupMngService.modifyGroup(dto);
@@ -89,12 +70,7 @@ public class GroupMngController {
      * 解散群组
      */
     @ApiOperation(value = "解散群组", notes = "解散群组")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/delGroup")
     public ResponseEntity<IMHttpResponse> delGroup(@Valid @RequestBody DelGroupReq dto) {
         return groupMngService.delGroup(dto);
@@ -104,12 +80,7 @@ public class GroupMngController {
      * 群组加/减人
      */
     @ApiOperation(value = "群组加/减人", notes = "群组加/减人")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/changeMembers")
     public ResponseEntity<IMHttpResponse> changeMembers(@Valid @RequestBody ChangeMembersReq dto) {
         return groupMngService.changeMembers(dto);
@@ -119,12 +90,7 @@ public class GroupMngController {
      * 修改成员级别
      */
     @ApiOperation(value = "修改成员角色（非群主转让）", notes = "修改成员角色（非群主转让）")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/changeRole")
     public ResponseEntity<IMHttpResponse> changeRole(@Valid @RequestBody ChangeRoleReq dto) {
         return groupMngService.changeRole(dto);
@@ -134,12 +100,7 @@ public class GroupMngController {
      * 群主转让
      */
     @ApiOperation(value = "群主转让", notes = "群主转让")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/ownerTransfer")
     public ResponseEntity<IMHttpResponse> ownerTransfer(@Valid @RequestBody OwnerTransferReq dto) {
         return groupMngService.ownerTransfer(dto);

@@ -1,5 +1,6 @@
 package com.hibob.anyim.user.controller;
 
+import com.hibob.anyim.common.annotation.CommonHeader;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.service.UserService;
@@ -44,12 +45,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "用户注销", notes = "用户注销")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/deregister")
     public ResponseEntity<IMHttpResponse> deregister(@Valid @RequestBody DeregisterReq dto) {
         return userService.deregister(dto);
@@ -66,24 +62,14 @@ public class UserController {
     }
 
     @ApiOperation(value = "用户登出", notes = "用户登出")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/logout")
     public ResponseEntity<IMHttpResponse> logout(@Valid @RequestBody LogoutReq dto) {
         return userService.logout(dto);
     }
 
     @ApiOperation(value = "修改密码", notes = "修改密码")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/modifyPwd")
     public ResponseEntity<IMHttpResponse> modifyPwd(@Valid @RequestBody ModifyPwdReq dto) {
         return userService.modifyPwd(dto);
@@ -97,60 +83,35 @@ public class UserController {
      * @return
      */
     @ApiOperation(value = "刷新token", notes = "刷新token")
-    @ApiImplicitParams(value = {
-        @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-        @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-        @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-        @ApiImplicitParam(name = "refreshToken", value = "refreshToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/refreshToken")
     public ResponseEntity<IMHttpResponse> refreshToken(@RequestHeader("refreshToken") String refreshToken, @Valid @RequestBody RefreshTokenReq dto) {
         return userService.refreshToken(refreshToken, dto);
     }
 
     @ApiOperation(value = "查询自己信息", notes = "查询自己信息")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/querySelf")
     public ResponseEntity<IMHttpResponse> querySelf(@Valid @RequestBody QuerySelfReq dto) {
         return userService.querySelf(dto);
     }
 
     @ApiOperation(value = "修改自己信息", notes = "修改自己信息")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/modifySelf")
     public ResponseEntity<IMHttpResponse> modifySelf(@Valid @RequestBody ModifySelfReq dto) {
         return userService.modifySelf(dto);
     }
 
     @ApiOperation(value = "查询别人信息", notes = "查询别人信息")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/query")
     public ResponseEntity<IMHttpResponse> query(@Valid @RequestBody QueryReq dto) {
         return userService.query(dto);
     }
 
     @ApiOperation(value = "根据昵称找人", notes = "根据昵称找人")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "traceId", value = "日志追踪Id", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "timestamp", value = "时间戳", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "sign", value = "请求签名", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, paramType = "header", dataType = "String"),
-    })
+    @CommonHeader
     @PostMapping("/findByNick")
     public ResponseEntity<IMHttpResponse> findByNick(@Valid @RequestBody FindByNickReq dto) {
         return userService.findByNick(dto);
