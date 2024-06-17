@@ -61,7 +61,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
     }
 
     @Override
-    public long refMsgId(String groupId, int refMsgIdDefault) {
+    public long refMsgId(long groupId, int refMsgIdDefault) {
         SessionGroupChat sessionGroupChat = selectSessionGroupChat(groupId);
         if (sessionGroupChat == null) {
             // 创建session;
@@ -86,7 +86,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
     }
 
     @Override
-    public long updateAndGetRefMsgId(String groupId, int refMsgIdStep, long curRefMsgId) {
+    public long updateAndGetRefMsgId(long groupId, int refMsgIdStep, long curRefMsgId) {
         long newRefMsgId = curRefMsgId + refMsgIdStep;
         LambdaUpdateWrapper<SessionGroupChat> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.eq(SessionGroupChat::getGroupId, groupId)
@@ -165,19 +165,19 @@ public class ChatRpcServiceImpl implements ChatRpcService {
     public void asyncSaveGroupChat(Map<String, Object> msg) {
         CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
             MsgGroupChat msgGroupChat = new MsgGroupChat();
-            msgGroupChat.setSessionId((String) msg.get("group_id"));
-            msgGroupChat.setFromId((String) msg.get("from_id"));
-            msgGroupChat.setFromClient((String) msg.get("from_client"));
-            msgGroupChat.setMsgId((long) msg.get("msg_id"));
+            msgGroupChat.setSessionId(String.valueOf(msg.get("groupId")));
+            msgGroupChat.setFromId((String) msg.get("fromId"));
+            msgGroupChat.setFromClient((String) msg.get("fromClient"));
+            msgGroupChat.setMsgId((long) msg.get("msgId"));
             msgGroupChat.setMsgType((int) msg.get("msgType"));
             msgGroupChat.setContent((String) msg.get("content")); //客户端负责加密内容
             msgGroupChat.setMsgTime((Date) msg.get("msgTime"));
             MsgGroupChat insert = mongoTemplate.insert(msgGroupChat);
             if (insert.getId() != null) {
-                insertToRedis((long) msg.get("msgId"), (String)msg.get("group_id"), msgGroupChat);
+                insertToRedis((long) msg.get("msgId"), String.valueOf(msg.get("groupId")), msgGroupChat);
             }
             else {
-                log.error("asyncSaveGroupChat insert failed, groupId: {}, msgId: {}", msg.get("group_id"), msg.get("msgId"));
+                log.error("asyncSaveGroupChat insert failed, groupId: {}, msgId: {}", msg.get("groupId"), msg.get("msgId"));
                 return 0;
             }
 
@@ -233,10 +233,10 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         sessionChatMapper.insert(sessionChat);
     }
 
-    private void createSessionGroupChat(String groupId, int refMsgIdDefault) {
+    private void createSessionGroupChat(long groupId, int refMsgIdDefault) {
         SessionGroupChat sessionGroupChat = new SessionGroupChat();
-        sessionGroupChat.setSessionId(groupId);
-        sessionGroupChat.setGroupId(Long.parseLong(groupId));
+        sessionGroupChat.setSessionId(String.valueOf(groupId));
+        sessionGroupChat.setGroupId(groupId);
         sessionGroupChat.setRefMsgId(refMsgIdDefault);
         sessionGroupChatMapper.insert(sessionGroupChat);
     }
@@ -255,7 +255,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         }
     }
 
-    private SessionGroupChat selectSessionGroupChat(String groupId) {
+    private SessionGroupChat selectSessionGroupChat(long groupId) {
         LambdaQueryWrapper<SessionGroupChat> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(SessionGroupChat::getSessionId, groupId);
         List<SessionGroupChat> sessionGroupChat = sessionGroupChatMapper.selectList(queryWrapper);

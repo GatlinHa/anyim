@@ -15,7 +15,7 @@ public class ProcessorFactory {
             case READ: // 和ChatProcessor相同处理逻辑，目前来看是这样
                 return SpringContextUtil.getBean(ChatProcessor.class);
             case GROUP_CHAT:
-                return null; //TODO
+                return SpringContextUtil.getBean(GroupChatProcessor.class);
             default:
                 return null;
         }
