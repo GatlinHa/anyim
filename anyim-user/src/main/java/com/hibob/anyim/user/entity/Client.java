@@ -20,7 +20,7 @@ public class Client extends Model<Client> {
     private String account;
 
     @TableField(value = "client_type")
-    private Byte clientType;
+    private int clientType;
 
     @TableField(value = "client_name")
     private String clientName;

@@ -128,7 +128,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             insertClient(dto, uniqueId);
         }
         else {
-            updateClient(uniqueId);
+            updateClient(dto, uniqueId);
         }
         insertLogin(account, uniqueId);
 
@@ -318,13 +318,17 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     private int insertClient(LoginReq dto, String uniqueId) {
         Client client = BeanUtil.copyProperties(dto, Client.class);
         client.setUniqueId(uniqueId);
-        client.setCreatedTime(new Date(System.currentTimeMillis()));
-        client.setLastLoginTime(new Date(System.currentTimeMillis()));
+        Date now = new Date();
+        client.setCreatedTime(now);
+        client.setLastLoginTime(now);
         return clientMapper.insert(client);
     }
 
-    private int updateClient(String uniqueId) {
+    private int updateClient(LoginReq dto, String uniqueId) {
         LambdaUpdateWrapper<Client> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(Client::getClientType, dto.getClientType());
+        updateWrapper.set(Client::getClientName, dto.getClientName());
+        updateWrapper.set(Client::getClientVersion, dto.getClientVersion());
         updateWrapper.set(Client::getLastLoginTime, new Date(System.currentTimeMillis()));
         updateWrapper.eq(Client::getUniqueId, uniqueId);
         return clientMapper.update(updateWrapper);
