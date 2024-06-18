@@ -32,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -294,7 +295,14 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.like(User::getNickName, nickNameKeyWords);
         List<User> lists = this.list(queryWrapper);
-        return ResultUtil.success(lists);
+
+        List<UserVO> voList = new ArrayList<>();
+        lists.forEach(user -> {
+            UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
+            voList.add(vo);
+        });
+
+        return ResultUtil.success(voList);
     }
 
     private User getOneByAccount(String account) {
