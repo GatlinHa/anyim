@@ -1,13 +1,11 @@
 package com.hibob.anyim.chat.controller;
 
-import com.hibob.anyim.chat.dto.request.HistoryReq;
+import com.hibob.anyim.chat.dto.request.ChatHistoryReq;
 import com.hibob.anyim.chat.dto.request.PullChatMsgReq;
 import com.hibob.anyim.chat.service.ChatService;
 import com.hibob.anyim.common.annotation.CommonHeader;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +34,7 @@ public class ChatController {
     @ApiOperation(value = "查询单聊的历史聊天信息", notes = "查询单聊的历史聊天信息")
     @CommonHeader
     @PostMapping("/history")
-    public ResponseEntity<IMHttpResponse> history(@Valid @RequestBody HistoryReq dto) {
+    public ResponseEntity<IMHttpResponse> history(@Valid @RequestBody ChatHistoryReq dto) {
         return chatService.history(dto);
     }
 

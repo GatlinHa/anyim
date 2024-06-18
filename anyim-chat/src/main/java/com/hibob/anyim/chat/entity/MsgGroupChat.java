@@ -27,8 +27,8 @@ public class MsgGroupChat {
     @Field("from_client")
     private String fromClient;
 
-    @Field("to_group_id")
-    private long toGroupId;
+    @Field("group_id")
+    private long groupId;
 
     @Field("msg_id")
     @Indexed

@@ -127,6 +127,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         }, threadPoolExecutor);
 
         future.whenComplete((result, throwable) -> {
+            log.info("==================>asyncSaveChat execute result: {}", result);
             if (throwable != null) {
                 log.error("asyncSaveChat execute exception: {}", throwable.getCause());
             }
@@ -168,6 +169,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
             msgGroupChat.setSessionId(String.valueOf(msg.get("groupId")));
             msgGroupChat.setFromId((String) msg.get("fromId"));
             msgGroupChat.setFromClient((String) msg.get("fromClient"));
+            msgGroupChat.setGroupId((Long) msg.get("groupId"));
             msgGroupChat.setMsgId((long) msg.get("msgId"));
             msgGroupChat.setMsgType((int) msg.get("msgType"));
             msgGroupChat.setContent((String) msg.get("content")); //客户端负责加密内容
@@ -185,6 +187,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         }, threadPoolExecutor);
 
         future.whenComplete((result, throwable) -> {
+            log.info("==================>asyncSaveGroupChat execute result: {}", result);
             if (throwable != null) {
                 log.error("asyncSaveGroupChat execute exception: {}", throwable.getCause());
             }
