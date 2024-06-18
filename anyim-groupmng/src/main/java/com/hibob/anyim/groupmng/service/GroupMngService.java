@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.hibob.anyim.common.enums.ServiceErrorCode;
 import com.hibob.anyim.common.exception.ServiceException;
 import com.hibob.anyim.common.model.IMHttpResponse;
+import com.hibob.anyim.common.rpc.client.RpcClient;
 import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.utils.ResultUtil;
 import com.hibob.anyim.common.utils.SnowflakeId;
@@ -14,7 +15,7 @@ import com.hibob.anyim.groupmng.entity.GroupInfo;
 import com.hibob.anyim.groupmng.entity.GroupMember;
 import com.hibob.anyim.groupmng.mapper.GroupInfoMapper;
 import com.hibob.anyim.groupmng.mapper.GroupMemberMapper;
-import com.hibob.anyim.groupmng.rpc.RpcClient;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -70,8 +71,8 @@ public class GroupMngService {
         }
         if (members.size() < 3) {
             return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_GROUP_MNG_CREATE_GROUP_NOT_ENOUGH.code(),
-                    ServiceErrorCode.ERROR_GROUP_MNG_CREATE_GROUP_NOT_ENOUGH.desc());
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_ENOUGH_MEMBER.code(),
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_ENOUGH_MEMBER.desc());
         }
 
         groupInfoMapper.insert(groupInfo);
@@ -115,8 +116,8 @@ public class GroupMngService {
         Long count = groupMemberMapper.selectCount(queryWrapper);
         if (count == 0) {
             return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_GROUP_MNG_QUERY_GROUP_NOT_IN_GROUP.code(),
-                    ServiceErrorCode.ERROR_GROUP_MNG_QUERY_GROUP_NOT_IN_GROUP.desc());
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.code(),
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.desc());
         }
 
         GroupInfo groupInfo = groupInfoMapper.selectById(groupId);
@@ -140,8 +141,8 @@ public class GroupMngService {
                 && !StringUtils.hasLength(groupName)
                 && !StringUtils.hasLength(avatar)) {
             return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_GROUP_MNG_MODIFY_GROUP_EMPTY_PARAM.code(),
-                    ServiceErrorCode.ERROR_GROUP_MNG_MODIFY_GROUP_EMPTY_PARAM.desc());
+                    ServiceErrorCode.ERROR_GROUP_MNG_EMPTY_PARAM.code(),
+                    ServiceErrorCode.ERROR_GROUP_MNG_EMPTY_PARAM.desc());
         }
 
         LambdaUpdateWrapper<GroupInfo> updateWrapper = new LambdaUpdateWrapper<>();
@@ -185,7 +186,7 @@ public class GroupMngService {
         groupInfoWrapper.eq(GroupInfo::getGroupId, groupId);
         groupInfoMapper.delete(groupInfoWrapper);
 
-        // TODO 调用RPC请求通知chat删除群组的聊天记录
+        // 这里不删除群组的聊天记录，等待自然老化
 
         return ResultUtil.success();
     }
@@ -236,8 +237,8 @@ public class GroupMngService {
         int update = groupMemberMapper.update(updateWrapper);
         if (update == 0) {
             return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_GROUP_MNG_CHANGE_ROLE_NOT_IN_GROUP.code(),
-                    ServiceErrorCode.ERROR_GROUP_MNG_CHANGE_ROLE_NOT_IN_GROUP.desc());
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.code(),
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.desc());
         }
 
         return ResultUtil.success();
@@ -258,8 +259,8 @@ public class GroupMngService {
         Long count = groupMemberMapper.selectCount(groupMemberWrapper);
         if (count == 0) {
             return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_GROUP_MNG_OWNER_TRANSFER_NO_OWNER.code(),
-                    ServiceErrorCode.ERROR_GROUP_MNG_OWNER_TRANSFER_NO_OWNER.desc());
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_OWNER.code(),
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_OWNER.desc());
         }
 
         // 校验新群主候选人是否在这个群组中
@@ -270,8 +271,8 @@ public class GroupMngService {
         count = groupMemberMapper.selectCount(groupMemberWrapper);
         if (count == 0) {
             return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_GROUP_MNG_OWNER_TRANSFER_NOT_IN_GROUP.code(),
-                    ServiceErrorCode.ERROR_GROUP_MNG_OWNER_TRANSFER_NOT_IN_GROUP.desc());
+                    ServiceErrorCode.ERROR_GROUP_MNG_NEW_OWNER_NOT_IN_GROUP.code(),
+                    ServiceErrorCode.ERROR_GROUP_MNG_NEW_OWNER_NOT_IN_GROUP.desc());
         }
 
         LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();

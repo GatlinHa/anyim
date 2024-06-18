@@ -12,7 +12,7 @@ import com.hibob.anyim.chat.mapper.SessionChatMapper;
 import com.hibob.anyim.chat.mapper.SessionGroupChatMapper;
 import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
-import com.hibob.anyim.common.rpc.ChatRpcService;
+import com.hibob.anyim.common.rpc.service.ChatRpcService;
 import com.hibob.anyim.common.utils.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

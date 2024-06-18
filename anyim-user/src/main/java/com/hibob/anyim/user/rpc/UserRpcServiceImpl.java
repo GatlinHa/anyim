@@ -2,7 +2,7 @@ package com.hibob.anyim.user.rpc;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.hibob.anyim.common.rpc.UserRpcService;
+import com.hibob.anyim.common.rpc.service.UserRpcService;
 import com.hibob.anyim.common.config.JwtProperties;
 import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.user.entity.Login;
@@ -12,11 +12,9 @@ import com.hibob.anyim.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

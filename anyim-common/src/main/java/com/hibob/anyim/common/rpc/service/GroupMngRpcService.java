@@ -1,4 +1,4 @@
-package com.hibob.anyim.common.rpc;
+package com.hibob.anyim.common.rpc.service;
 
 import java.util.List;
 import java.util.Map;
@@ -20,4 +20,6 @@ public interface GroupMngRpcService {
      * @return
      */
     List<String> queryGroupMembers(long groupId, String account);
+
+    boolean isMemberInGroup(long groupId, String account);
 }

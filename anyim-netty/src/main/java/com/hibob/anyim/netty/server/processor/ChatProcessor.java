@@ -9,7 +9,7 @@ import com.hibob.anyim.netty.protobuf.Body;
 import com.hibob.anyim.netty.protobuf.Header;
 import com.hibob.anyim.netty.protobuf.Msg;
 import com.hibob.anyim.netty.protobuf.MsgType;
-import com.hibob.anyim.netty.rpc.RpcClient;
+import com.hibob.anyim.common.rpc.client.RpcClient;
 import com.hibob.anyim.netty.utils.SpringContextUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
@@ -142,6 +142,7 @@ public class ChatProcessor implements MsgProcessor{
         msgMap.put("msgType", msg.getHeader().getMsgType().getNumber());
         msgMap.put("content", msg.getBody().getContent());
         msgMap.put("msgTime", new Date());
+        //TODO RPC的能力有限，后面还是要考虑换成MQ
         rpcClient.getChatRpcService().asyncSaveChat(msgMap);
     }
 

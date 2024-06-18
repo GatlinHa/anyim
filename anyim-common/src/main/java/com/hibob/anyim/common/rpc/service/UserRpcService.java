@@ -1,4 +1,4 @@
-package com.hibob.anyim.common.rpc;
+package com.hibob.anyim.common.rpc.service;
 
 import java.util.List;
 import java.util.Map;

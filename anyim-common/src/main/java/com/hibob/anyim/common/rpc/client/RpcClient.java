@@ -1,8 +1,8 @@
-package com.hibob.anyim.netty.rpc;
+package com.hibob.anyim.common.rpc.client;
 
-import com.hibob.anyim.common.rpc.ChatRpcService;
-import com.hibob.anyim.common.rpc.GroupMngRpcService;
-import com.hibob.anyim.common.rpc.UserRpcService;
+import com.hibob.anyim.common.rpc.service.ChatRpcService;
+import com.hibob.anyim.common.rpc.service.GroupMngRpcService;
+import com.hibob.anyim.common.rpc.service.UserRpcService;
 import lombok.Data;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;

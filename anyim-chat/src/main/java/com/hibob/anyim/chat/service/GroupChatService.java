@@ -6,7 +6,10 @@ import com.hibob.anyim.chat.dto.request.PullGroupChatMsgReq;
 import com.hibob.anyim.chat.entity.MsgGroupChat;
 import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
+import com.hibob.anyim.common.enums.ServiceErrorCode;
 import com.hibob.anyim.common.model.IMHttpResponse;
+import com.hibob.anyim.common.rpc.client.RpcClient;
+import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.utils.ResultUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +20,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +36,17 @@ public class GroupChatService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final MongoTemplate mongoTemplate;
+    private final RpcClient rpcClient;
 
     public ResponseEntity<IMHttpResponse> pullMsg(PullGroupChatMsgReq dto) {
         long groupId = dto.getGroupId();
+        String account = ReqSession.getSession().getAccount();
+        if (!rpcClient.getGroupMngRpcService().isMemberInGroup(groupId, account)) {
+            return ResultUtil.error(HttpStatus.OK,
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.code(),
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.desc());
+        }
+
         String sessionId = String.valueOf(groupId);
         int pageSize = dto.getPageSize();
         long lastMsgId = dto.getLastMsgId();
@@ -78,6 +90,13 @@ public class GroupChatService {
 
     public ResponseEntity<IMHttpResponse> history(GroupChatHistoryReq dto) {
         long groupId = dto.getGroupId();
+        String account = ReqSession.getSession().getAccount();
+        if (!rpcClient.getGroupMngRpcService().isMemberInGroup(groupId, account)) {
+            return ResultUtil.error(HttpStatus.OK,
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.code(),
+                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.desc());
+        }
+
         String sessionId = String.valueOf(groupId);
         Date startTime = new Date(dto.getStartTime());
         Date endTime = new Date(dto.getEndTime());

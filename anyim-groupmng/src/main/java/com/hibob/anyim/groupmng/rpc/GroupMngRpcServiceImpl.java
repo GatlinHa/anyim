@@ -2,7 +2,7 @@ package com.hibob.anyim.groupmng.rpc;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.hibob.anyim.common.rpc.GroupMngRpcService;
+import com.hibob.anyim.common.rpc.service.GroupMngRpcService;
 import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.groupmng.entity.GroupInfo;
 import com.hibob.anyim.groupmng.entity.GroupMember;
@@ -59,5 +59,14 @@ public class GroupMngRpcServiceImpl implements GroupMngRpcService {
             accounts.add(x.getMemberAccount());
         });
         return accounts;
+    }
+
+    @Override
+    public boolean isMemberInGroup(long groupId, String account) {
+        LambdaQueryWrapper<GroupMember> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(GroupMember::getGroupId, groupId);
+        queryWrapper.eq(GroupMember::getMemberAccount, account);
+        Long count = groupMemberMapper.selectCount(queryWrapper);
+        return count > 0 ? true : false;
     }
 }
