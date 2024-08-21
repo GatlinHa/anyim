@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 public class LoginReq extends BaseRequest {
 
     @NotEmpty(message = "账号不可为空")
-    @Pattern(regexp = "^[a-zA-Z0-9]{6,32}$", message = "账号长度必须是6-32位的数字或字母")
+    @Pattern(regexp = "^[a-zA-Z0-9_]{6,32}$", message = "账号长度必须是6-32位的字母、数字或下划线")
     @ApiModelProperty(value = "账号")
     private String account;
 
