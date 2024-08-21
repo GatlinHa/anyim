@@ -17,21 +17,20 @@ public class RegisterReq extends BaseRequest {
     @ApiModelProperty(value = "账号")
     private String account;
 
-    @NotEmpty(message = "昵称不可为空")
-    @ApiModelProperty(value = "昵称")
-    private String nickName;
-
     @NotEmpty(message = "密码不可为空")
     @ApiModelProperty(value = "密码")
     private String password;
 
-    @ApiModelProperty(value = "头像")
-    private String avatar;
+    @ApiModelProperty(value = "昵称")
+    private String nickName;
 
-    @ApiModelProperty(value = "电话号码")
-    private String phoneNum;
-
-    @ApiModelProperty(value = "邀请码")
-    private String inviteCode;
+//    @ApiModelProperty(value = "头像")
+//    private String avatar;
+//
+//    @ApiModelProperty(value = "电话号码")
+//    private String phoneNum;
+//
+//    @ApiModelProperty(value = "邀请码")
+//    private String inviteCode;
 
 }
