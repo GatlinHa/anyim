@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
 public class ChatHistoryReq extends BaseRequest {
 
     @NotEmpty
-    @Size(max = 64, message = "账号长度不能大于64字符")
+    @Pattern(regexp = "^[a-zA-Z0-9]{6,32}$", message = "账号长度必须是6-32位的数字或字母")
     @ApiModelProperty(value = "单聊的对方id")
     private String toAccount;
 

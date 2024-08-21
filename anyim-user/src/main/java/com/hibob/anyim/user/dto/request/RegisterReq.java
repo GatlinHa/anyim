@@ -4,6 +4,7 @@ import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -12,8 +13,8 @@ import lombok.Data;
 @ApiModel("注册请求的参数")
 public class RegisterReq extends BaseRequest {
 
-    @Size(max = 64, message = "账号长度不能大于64字符")
     @NotEmpty(message = "账号不可为空")
+    @Pattern(regexp = "^[a-zA-Z0-9]{6,32}$", message = "账号长度必须是6-32位的数字或字母")
     @ApiModelProperty(value = "账号")
     private String account;
 
