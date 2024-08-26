@@ -29,4 +29,13 @@ public class UserVO {
     @ApiModelProperty(value = "个性签名")
     private String signature;
 
+    @ApiModelProperty(value = "手机号码")
+    private String phoneNum;
+
+    @ApiModelProperty(value = "邮箱")
+    private String email;
+
+    @ApiModelProperty(value = "生日")
+    private String birthday;
+
 }

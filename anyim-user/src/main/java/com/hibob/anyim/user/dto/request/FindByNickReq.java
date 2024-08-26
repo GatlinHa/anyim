@@ -14,17 +14,5 @@ public class FindByNickReq extends BaseRequest {
     @NotEmpty(message = "昵称关键字不可为空")
     @ApiModelProperty(value = "昵称昵称关键字")
     private String nickNameKeyWords;
-//
-//    @NotEmpty(message = "密码不可为空")
-//    @ApiModelProperty(value = "密码")
-//    private String password;
-//
-//    @ApiModelProperty(value = "头像")
-//    private String avatar;
-//
-//    @ApiModelProperty(value = "电话号码")
-//    private String phoneNum;
-//
-//    @ApiModelProperty(value = "邀请码")
-//    private String inviteCode;
+
 }

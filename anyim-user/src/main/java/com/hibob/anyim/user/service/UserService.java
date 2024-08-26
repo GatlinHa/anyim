@@ -265,6 +265,9 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 .set(User::getSex, dto.getSex())
                 .set(User::getLevel, dto.getLevel())
                 .set(User::getSignature, dto.getSignature())
+                .set(User::getPhoneNum, dto.getPhoneNum())
+                .set(User::getEmail, dto.getEmail())
+                .set(User::getBirthday, dto.getBirthday())
                 .set(User::getUpdateTime, new Date(System.currentTimeMillis())));
 
         return ResultUtil.success();

@@ -42,6 +42,15 @@ public class User extends Model<User> {
     @TableField("signature")
     private String signature;
 
+    @TableField("phone_num")
+    private String phoneNum;
+
+    @TableField("email")
+    private String email;
+
+    @TableField("birthday")
+    private String birthday;
+
     @TableField("created_time")
     private Date createdTime;
 

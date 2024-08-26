@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import lombok.Data;
 
@@ -25,13 +24,5 @@ public class RegisterReq extends BaseRequest {
     @ApiModelProperty(value = "昵称")
     private String nickName;
 
-//    @ApiModelProperty(value = "头像")
-//    private String avatar;
-//
-//    @ApiModelProperty(value = "电话号码")
-//    private String phoneNum;
-//
-//    @ApiModelProperty(value = "邀请码")
-//    private String inviteCode;
 
 }
