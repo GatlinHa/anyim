@@ -30,6 +30,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -264,18 +265,19 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             return ResultUtil.error(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        this.update(Wrappers.<User>lambdaUpdate()
-                .eq(User::getAccount, account)
-                .set(User::getNickName, dto.getNickName())
-                .set(User::getAvatar, dto.getAvatar())
-                .set(User::getAvatarThumb, dto.getAvatarThumb())
-                .set(User::getSex, dto.getSex())
-                .set(User::getLevel, dto.getLevel())
-                .set(User::getSignature, dto.getSignature())
-                .set(User::getPhoneNum, dto.getPhoneNum())
-                .set(User::getEmail, dto.getEmail())
-                .set(User::getBirthday, dto.getBirthday())
-                .set(User::getUpdateTime, new Date(System.currentTimeMillis())));
+        // 按需更新，dto传了参数才更新，不传不更新
+        LambdaUpdateWrapper<User> updateWrapper = Wrappers.<User>lambdaUpdate().eq(User::getAccount, account);
+        if (StringUtils.hasLength(dto.getNickName())) updateWrapper.set(User::getNickName, dto.getNickName());
+        if (StringUtils.hasLength(dto.getAvatar())) updateWrapper.set(User::getAvatar, dto.getAvatar());
+        if (StringUtils.hasLength(dto.getAvatarThumb())) updateWrapper.set(User::getAvatarThumb, dto.getAvatarThumb());
+        if (dto.getSex() != 0) updateWrapper.set(User::getSex, dto.getSex());
+        if (dto.getLevel() != 0) updateWrapper.set(User::getLevel, dto.getLevel());
+        if (StringUtils.hasLength(dto.getSignature())) updateWrapper.set(User::getSignature, dto.getSignature());
+        if (StringUtils.hasLength(dto.getPhoneNum())) updateWrapper.set(User::getPhoneNum, dto.getPhoneNum());
+        if (StringUtils.hasLength(dto.getEmail())) updateWrapper.set(User::getEmail, dto.getEmail());
+        if (StringUtils.hasLength(dto.getBirthday())) updateWrapper.set(User::getBirthday, dto.getBirthday());
+        updateWrapper.set(User::getUpdateTime, new Date(System.currentTimeMillis()));
+        this.update(updateWrapper);
 
         return ResultUtil.success();
     }
