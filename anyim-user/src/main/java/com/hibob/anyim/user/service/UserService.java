@@ -181,10 +181,15 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public ResponseEntity<IMHttpResponse> modifyPwd(ModifyPwdReq dto) {
         log.info("LoginService::modifyPwd");
+        if (dto.getOldPassword().equals(dto.getPassword())) {
+            log.error("new password equals the old password");
+            return ResultUtil.error(HttpStatus.UNAUTHORIZED);
+        }
+
         ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
-        String clientId = session.getClientId();
-        String uniqueId = CommonUtil.conUniqueId(account, clientId);
+//        String clientId = session.getClientId();
+//        String uniqueId = CommonUtil.conUniqueId(account, clientId);
         User user = getOneByAccount(account);
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
             log.error("password error");
