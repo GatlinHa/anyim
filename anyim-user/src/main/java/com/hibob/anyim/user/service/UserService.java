@@ -195,9 +195,11 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 .set(User::getPassword, passwordEncoder.encode(dto.getPassword()))
                 .set(User::getUpdateTime, new Date(System.currentTimeMillis())));
 
-        // 修改密码之后应该设为登出状态
-        redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN + uniqueId);
-        redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId);
+        // 修改密码之后可以继续保持登录状态，理由如下
+        // 1. 为了保持用户体验，减少不必要的用户操作
+        // 2. 后端校验机制为token，token不需要随密码变更而刷新
+//        redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN + uniqueId);
+//        redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId);
 
         return ResultUtil.success();
     }
