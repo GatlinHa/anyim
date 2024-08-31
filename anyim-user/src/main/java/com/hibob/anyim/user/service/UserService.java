@@ -51,7 +51,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     private final LoginMapper loginMapper;
 
     public ResponseEntity<IMHttpResponse> validateAccount(ValidateAccountReq dto) {
-        log.info("LoginService::validateAccount");
+        log.info("UserService::validateAccount");
         User user = getOneByAccount(dto.getAccount());
         if (user != null) {
             log.info("account exist");
@@ -63,7 +63,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> register(RegisterReq dto) {
-        log.info("LoginService::register");
+        log.info("UserService::register");
         User user = getOneByAccount(dto.getAccount());
         if (user != null) {
             log.info("account exist");
@@ -85,7 +85,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> deregister(DeregisterReq dto) {
-        log.info("LoginService::deregister");
+        log.info("UserService::deregister");
         ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
         String clientId = session.getClientId();
@@ -101,7 +101,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> login(LoginReq dto) {
-        log.info("LoginService::login");
+        log.info("UserService::login");
         String account = dto.getAccount();
         String clientId = dto.getClientId();
         String uniqueId = CommonUtil.conUniqueId(account, clientId);
@@ -170,7 +170,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> logout(LogoutReq dto) {
-        log.info("LoginService::logout");
+        log.info("UserService::logout");
         ReqSession session = ReqSession.getSession();
         String uniqueId = CommonUtil.conUniqueId(session.getAccount(), session.getClientId());
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN + uniqueId);
@@ -181,7 +181,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> modifyPwd(ModifyPwdReq dto) {
-        log.info("LoginService::modifyPwd");
+        log.info("UserService::modifyPwd");
         if (dto.getOldPassword().equals(dto.getPassword())) {
             log.error("new password equals the old password");
             return ResultUtil.error(HttpStatus.UNAUTHORIZED);
@@ -211,7 +211,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     public ResponseEntity<IMHttpResponse> refreshToken(String refreshToken, RefreshTokenReq dto) {
-        log.info("LoginService::refreshToken");
+        log.info("UserService::refreshToken");
         String account = JwtUtil.getAccount(refreshToken);
         String client = JwtUtil.getInfo(refreshToken);
         String accessToken = JwtUtil.generateToken(

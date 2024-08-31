@@ -27,6 +27,7 @@ public final class ResultUtil {
         return new ResponseEntity<>(status);
     }
 
+    // TODO 自定义错误码都是在status=200的基础上返回的，所以可以省略第一个参数
     public static ResponseEntity<IMHttpResponse> error(HttpStatus status, int code, String desc) {
         IMHttpResponse response = new IMHttpResponse();
         response.setCode(code);

@@ -25,6 +25,14 @@ public enum ServiceErrorCode {
 
     ERROR_IS_DEREGISTER(Const.SERVICE_CODE_USER + 10, "账号已注销"),
 
+    ERROR_IMAGE_TOO_BIG(Const.SERVICE_CODE_USER + 11, "图像过大"),
+
+    ERROR_FILE_TOO_BIG(Const.SERVICE_CODE_USER + 12, "文件过大"),
+
+    ERROR_IMAGE_FORMAT_ERROR(Const.SERVICE_CODE_USER + 13, "图片格式错误"),
+
+    ERROR_FILE_UPLOAD_ERROR(Const.SERVICE_CODE_USER + 14, "文件上传失败"),
+
     ERROR_SERVICE_EXCEPTION(Const.SERVICE_CODE_USER + 50, "服务器内部异常"),
 
     ERROR_CHAT_REFMSGID_EXCEPTION(Const.SERVICE_CODE_CHAT + 1, "ref msgId异常"),
