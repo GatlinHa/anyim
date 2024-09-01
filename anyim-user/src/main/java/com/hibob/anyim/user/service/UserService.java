@@ -55,9 +55,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         User user = getOneByAccount(dto.getAccount());
         if (user != null) {
             log.info("account exist");
-            return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
-                    ServiceErrorCode.ERROR_ACCOUNT_EXIST.desc());
+            return ResultUtil.error(ServiceErrorCode.ERROR_ACCOUNT_EXIST);
         }
         return ResultUtil.success();
     }
@@ -67,9 +65,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         User user = getOneByAccount(dto.getAccount());
         if (user != null) {
             log.info("account exist");
-            return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_ACCOUNT_EXIST.code(),
-                    ServiceErrorCode.ERROR_ACCOUNT_EXIST.desc());
+            return ResultUtil.error(ServiceErrorCode.ERROR_ACCOUNT_EXIST);
         }
 
         // 把dto转成User对象

@@ -1,5 +1,6 @@
 package com.hibob.anyim.common.utils;
 
+import com.hibob.anyim.common.enums.ServiceErrorCode;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +29,10 @@ public final class ResultUtil {
     }
 
     // TODO 自定义错误码都是在status=200的基础上返回的，所以可以省略第一个参数
-    public static ResponseEntity<IMHttpResponse> error(HttpStatus status, int code, String desc) {
+    public static ResponseEntity<IMHttpResponse> error(ServiceErrorCode errorCode) {
         IMHttpResponse response = new IMHttpResponse();
-        response.setCode(code);
-        response.setDesc(desc);
-        return new ResponseEntity<>(response, status);
+        response.setCode(errorCode.code());
+        response.setDesc(errorCode.desc());
+        return new ResponseEntity<>(response, HttpStatus.OK); //自定义码实在HttpStatus.OK基础上返回的下一层code
     }
 }

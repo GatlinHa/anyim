@@ -20,7 +20,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -42,9 +41,7 @@ public class GroupChatService {
         long groupId = dto.getGroupId();
         String account = ReqSession.getSession().getAccount();
         if (!rpcClient.getGroupMngRpcService().isMemberInGroup(groupId, account)) {
-            return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.code(),
-                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.desc());
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP);
         }
 
         String sessionId = String.valueOf(groupId);
@@ -92,9 +89,7 @@ public class GroupChatService {
         long groupId = dto.getGroupId();
         String account = ReqSession.getSession().getAccount();
         if (!rpcClient.getGroupMngRpcService().isMemberInGroup(groupId, account)) {
-            return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.code(),
-                    ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP.desc());
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP);
         }
 
         String sessionId = String.valueOf(groupId);

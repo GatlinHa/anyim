@@ -13,7 +13,6 @@ import com.hibob.anyim.user.minio.MinioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -59,16 +58,12 @@ public class FileService {
         String fileName = file.getOriginalFilename();
         // 大小校验
         if (file.getSize() > minioConfig.getImageMaxLimit() * 1024 * 1024) {
-            return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_IMAGE_TOO_BIG.code(),
-                    ServiceErrorCode.ERROR_IMAGE_TOO_BIG.desc());
+            return ResultUtil.error(ServiceErrorCode.ERROR_IMAGE_TOO_BIG);
         }
 
         // 文件后缀校验
         if (!FileType.isImageFile(fileName)) {
-            return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_IMAGE_FORMAT_ERROR.code(),
-                    ServiceErrorCode.ERROR_IMAGE_FORMAT_ERROR.desc());
+            return ResultUtil.error(ServiceErrorCode.ERROR_IMAGE_FORMAT_ERROR);
         }
 
 
@@ -83,9 +78,7 @@ public class FileService {
 
         String originUrl = minioService.uploadFile(file);
         if (!StringUtils.hasLength(originUrl)) {
-            return ResultUtil.error(HttpStatus.OK,
-                    ServiceErrorCode.ERROR_FILE_UPLOAD_ERROR.code(),
-                    ServiceErrorCode.ERROR_FILE_UPLOAD_ERROR.desc());
+            return ResultUtil.error(ServiceErrorCode.ERROR_FILE_UPLOAD_ERROR);
         }
 
         String thumbUrl = originUrl;
