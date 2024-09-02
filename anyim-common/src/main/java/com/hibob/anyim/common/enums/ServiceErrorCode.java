@@ -11,11 +11,11 @@ public enum ServiceErrorCode {
 
     ERROR_NO_LOGIN(Const.SERVICE_CODE_USER + 3, "未登录"),
 
-    ERROR_MULTI_LOGIN(Const.SERVICE_CODE_USER + 4, "重复登录"),
+    ERROR_LOGIN(Const.SERVICE_CODE_USER + 4, "账号或密码错误"),
 
-    ERROR_NO_REGISTER(Const.SERVICE_CODE_USER + 5, "账号未注册"),
+    ERROR_OLD_PASSWORD_ERROR(Const.SERVICE_CODE_USER + 5, "旧密码错误"),
 
-    ERROR_PASSWORD(Const.SERVICE_CODE_USER + 6, "密码错误"),
+    ERROR_NEW_PASSWORD_EQUAL_OLD(Const.SERVICE_CODE_USER + 6, "新旧密码相等"),
 
     ERROR_ACCESS_TOKEN_EXPIRED(Const.SERVICE_CODE_USER + 7, "AccessToken已过期"),
 

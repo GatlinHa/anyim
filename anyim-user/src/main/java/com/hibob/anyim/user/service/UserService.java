@@ -113,11 +113,11 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         User user = getOneByAccount(account);
         if (user == null) {
             log.error("no register");
-            return ResultUtil.error(HttpStatus.UNAUTHORIZED);
+            return ResultUtil.error(ServiceErrorCode.ERROR_LOGIN);
         }
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             log.error("password error");
-            return ResultUtil.error(HttpStatus.UNAUTHORIZED);
+            return ResultUtil.error(ServiceErrorCode.ERROR_LOGIN);
         }
 
         Client client = getOneByUniqueId(uniqueId);
@@ -180,7 +180,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("UserService::modifyPwd");
         if (dto.getOldPassword().equals(dto.getPassword())) {
             log.error("new password equals the old password");
-            return ResultUtil.error(HttpStatus.UNAUTHORIZED);
+            return ResultUtil.error(ServiceErrorCode.ERROR_NEW_PASSWORD_EQUAL_OLD);
         }
 
         ReqSession session = ReqSession.getSession();
@@ -190,7 +190,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         User user = getOneByAccount(account);
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
             log.error("password error");
-            return ResultUtil.error(HttpStatus.UNAUTHORIZED);
+            return ResultUtil.error(ServiceErrorCode.ERROR_OLD_PASSWORD_ERROR);
         }
         this.update(Wrappers.<User>lambdaUpdate()
                 .eq(User::getAccount, account)
