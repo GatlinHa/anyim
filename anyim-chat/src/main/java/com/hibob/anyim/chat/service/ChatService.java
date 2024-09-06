@@ -1,13 +1,20 @@
 package com.hibob.anyim.chat.service;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hibob.anyim.chat.dto.request.ChatHistoryReq;
+import com.hibob.anyim.chat.dto.request.ChatSessionListReq;
 import com.hibob.anyim.chat.dto.request.PullChatMsgReq;
 
+import com.hibob.anyim.chat.dto.vo.ChatSessionVO;
 import com.hibob.anyim.chat.entity.MsgChat;
+import com.hibob.anyim.chat.entity.SessionChat;
+import com.hibob.anyim.chat.mapper.SessionChatMapper;
 import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.model.IMHttpResponse;
+import com.hibob.anyim.common.rpc.client.RpcClient;
 import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.common.utils.ResultUtil;
@@ -34,8 +41,10 @@ public class ChatService {
     @Value("${custom.msg-ttl-in-redis:604800}")
     private int msgTtlInRedis;
 
+    private final SessionChatMapper sessionChatMapper;
     private final RedisTemplate<String, Object> redisTemplate;
     private final MongoTemplate mongoTemplate;
+    private final RpcClient rpcClient;
 
     public ResponseEntity<IMHttpResponse> pullMsg(PullChatMsgReq dto) {
         ReqSession reqSession = ReqSession.getSession();
@@ -95,6 +104,46 @@ public class ChatService {
 
         HashMap<String, Object> resultMap = queryMsgFromDB(sessionId, startTime, endTime, lastMsgId, pageSize);
         return ResultUtil.success(resultMap);
+    }
+
+    public ResponseEntity<IMHttpResponse> sessionList(ChatSessionListReq dto) {
+        ReqSession reqSession = ReqSession.getSession();
+        String account = reqSession.getAccount();
+        LambdaQueryWrapper<SessionChat> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(SessionChat::getUserA, account);
+        List<SessionChat> SessionChats = sessionChatMapper.selectList(queryWrapper);
+        List<ChatSessionVO> voList = new ArrayList<>();
+        List<String> toAccountList = new ArrayList<>();
+        for (SessionChat item : SessionChats) {
+            ChatSessionVO vo = new ChatSessionVO();
+            vo.setSessionId(item.getSessionId());
+            vo.setAccount(item.getUserB());
+            voList.add(vo);
+            toAccountList.add(item.getUserB());
+        }
+
+        queryWrapper.clear();
+        SessionChats.clear();
+        queryWrapper.eq(SessionChat::getUserB, account);
+        SessionChats = sessionChatMapper.selectList(queryWrapper);
+        for (SessionChat item : SessionChats) {
+            ChatSessionVO vo = new ChatSessionVO();
+            vo.setSessionId(item.getSessionId());
+            vo.setAccount(item.getUserA());
+            voList.add(vo);
+            toAccountList.add(item.getUserA());
+        }
+
+        if (toAccountList.size() == 0) {
+            return ResultUtil.success(voList);
+        }
+
+        Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(toAccountList);
+        for (ChatSessionVO vo : voList) {
+            vo.setObjectInfo(usersMap.get(vo.getAccount()));
+        }
+
+        return ResultUtil.success(voList);
     }
 
     private HashMap<String, Object> queryMsgFromDB(String sessionId, long lastMsgId, int pageSize) {

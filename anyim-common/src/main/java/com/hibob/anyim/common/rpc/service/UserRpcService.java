@@ -8,4 +8,6 @@ public interface UserRpcService {
 
     Map<String, Object> queryUserInfo(String account);
 
+    Map<String, Map<String, Object>> queryUserInfoBatch(List<String> accountList);
+
 }

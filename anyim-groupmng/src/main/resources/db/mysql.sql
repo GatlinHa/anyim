@@ -5,8 +5,8 @@ CREATE TABLE `anyim_group_info`(
     `group_type`  TINYINT(1) DEFAULT 1 COMMENT '群类型：0普通群，1临时群，2其他',
     `group_name` VARCHAR(255) NOT NULL COMMENT '名称',
     `announcement` VARCHAR(1024) NOT NULL COMMENT '公告',
-    `avatar` VARCHAR(255) DEFAULT '' COMMENT '用户头像',
-    `avatar_thumb` VARCHAR(255) DEFAULT '' COMMENT '用户头像缩略图',
+    `avatar` VARCHAR(255) DEFAULT '' COMMENT '群组头像',
+    `avatar_thumb` VARCHAR(255) DEFAULT '' COMMENT '群组头像缩略图',
     PRIMARY KEY (group_id)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '群组信息表';
 

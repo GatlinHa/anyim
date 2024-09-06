@@ -15,6 +15,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,6 +62,24 @@ public class UserRpcServiceImpl implements UserRpcService {
             }
         }
         return null;
+    }
+
+
+    @Override
+    public Map<String, Map<String, Object>> queryUserInfoBatch(List<String> accountList) {
+        log.info("UserRpcServiceImpl::queryUserInfoBatch start......");
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(User::getAccount, accountList.toArray());
+        List<User> users = userMapper.selectList(queryWrapper);
+        Map<String, Map<String, Object>> result = new HashMap();
+        try {
+            for (User user : users) {
+                result.put(user.getAccount(), BeanUtil.objectToMap(user));
+            }
+        } catch (IllegalAccessException e) {
+            log.error("UserRpcServiceImpl::queryUserInfoBatch type conversion error......exception: {}", e.getMessage());
+        }
+        return result;
     }
 
 }
