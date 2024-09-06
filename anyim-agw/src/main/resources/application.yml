@@ -41,5 +41,5 @@ jwt:
     expire: 1800 #半个小时
     secret: ${jwt.accessToken.secret}
   refreshToken:
-    expire: 3600 #1小时
+    expire: 604800 #7天
     secret: ${jwt.refreshToken.secret}
