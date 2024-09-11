@@ -12,6 +12,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.StringUtils;
 
 import static com.hibob.anyim.common.constants.Const.SPLIT_V;
 import static com.hibob.anyim.netty.server.ws.WebSocketServer.getLocalRoute;
@@ -112,6 +113,11 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
 
     private void clearCache(ChannelHandlerContext ctx) {
         String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.UNIQUE_ID)).get();
+        if (!StringUtils.hasLength(uniqueId))
+        {
+            return;
+        }
+
         String account = uniqueId.split(SPLIT_V)[0];
         String routeKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
         String onlineKey = RedisKey.NETTY_ONLINE_CLIENT + account;

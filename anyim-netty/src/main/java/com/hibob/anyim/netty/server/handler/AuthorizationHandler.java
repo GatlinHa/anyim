@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.utils.CommonUtil;
+import com.hibob.anyim.common.utils.JwtUtil;
 import com.hibob.anyim.netty.utils.SpringContextUtil;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelFutureListener;
@@ -15,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import static io.netty.handler.codec.http.HttpResponseStatus.UNAUTHORIZED;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -25,8 +29,14 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
     protected void channelRead0(ChannelHandlerContext ctx, HttpRequest msg) throws Exception {
         log.info("do AuthorizationHandler ");
         RedisTemplate<String, Object> redisTemplate = SpringContextUtil.getBean("redisTemplate");
-        String token = msg.headers().get(HttpHeaderNames.AUTHORIZATION);
-        String uniqueId = CommonUtil.conUniqueId(msg.headers().get("account"), msg.headers().get("clientId"));
+        // 获取参数
+        Map<String, String> params = Arrays.stream(msg.uri().split("\\?")[1].split("&"))
+                .map(param -> param.split("="))
+                .collect(java.util.stream.Collectors.toMap(param -> param[0], param -> param[1]));
+        String token = params.get("token");
+        String account = JwtUtil.getAccount(token);
+        String clientId = JwtUtil.getInfo(token);
+        String uniqueId = CommonUtil.conUniqueId(account, clientId);
         String key = RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         String value = (String) redisTemplate.opsForValue().get(key);
         String cacheToken = StringUtils.hasLength(value) ? JSON.parseObject(value).getString("token") : "";
@@ -38,19 +48,12 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<HttpReques
             HttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, UNAUTHORIZED, ByteBufAllocator.DEFAULT.heapBuffer());
             ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
         }
-
-        String channelKey = RedisKey.NETTY_GLOBAL_ROUTE + uniqueId;
-        // 登录过了就不要重复登录了，1800s登录一次
-        //TODO 调试中，允许重复的登录
-//        if (redisTemplate.hasKey(channelKey)) {
-//            log.error("Repeated login");
-//            HttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, FORBIDDEN, ByteBufAllocator.DEFAULT.heapBuffer());
-//            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
-//        }
-
-        log.info("Authorization validate success");
-        ctx.channel().attr(AttributeKey.valueOf(Const.UNIQUE_ID)).set(uniqueId);
-        ctx.fireChannelRead(msg);
+        else {
+            // 这里允许重复连接，不做限制
+            log.info("Authorization validate success");
+            ctx.channel().attr(AttributeKey.valueOf(Const.UNIQUE_ID)).set(uniqueId);
+            ctx.fireChannelRead(msg);
+        }
     }
 
     @Override

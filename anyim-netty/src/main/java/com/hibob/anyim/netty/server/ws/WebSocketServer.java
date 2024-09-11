@@ -86,7 +86,7 @@ public class WebSocketServer {
                             pipeline.addLast(new ChunkedWriteHandler()); // 支持分块写入  在网络通信中，如果要传输的数据量较大，直接将数据一次性写入到网络缓冲区可能会导致内存占用过大或者网络拥塞等问题
                             pipeline.addLast(new AuthorizationHandler()); //处理登录
                             pipeline.addLast(new WebSocketServerCompressionHandler()); // WebSocket数据压缩
-                            pipeline.addLast(new WebSocketServerProtocolHandler(path)); // WebSocket协议处理器
+                            pipeline.addLast(new WebSocketServerProtocolHandler(path, true)); // WebSocket协议处理器，如果以url拼接方式传参，第二个参数要设置成true
                             pipeline.addLast(new WebSocketToByteBufEncoder()); //解码：WebSocketFrame -> ByteBuf
                             pipeline.addLast(new ProtobufVarint32FrameDecoder()); //解码：处理半包黏包，参数类型是ByteBuf
                             pipeline.addLast(new ProtobufDecoder(Msg.getDefaultInstance())); //解码：ByteBuf -> Msg
@@ -120,6 +120,7 @@ public class WebSocketServer {
             NamingService namingService = NamingFactory.createNamingService(properties);
             namingService.registerInstance(name, CommonUtil.getLocalIp(), port);
         } catch (Exception e) {
+            log.error("register websocket server to nacos error: {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }
