@@ -34,7 +34,7 @@ public class HelloProcessor implements MsgProcessor{
         writeCache(ctx);
         Header headerOut = Header.newBuilder()
                 .setMagic(Const.MAGIC)
-                .setVersion(0)
+                .setVersion(0) //TODO 服务器版本
                 .setMsgType(MsgType.HELLO)
                 .build();
         Msg msgOut = Msg.newBuilder().setHeader(headerOut).build();
