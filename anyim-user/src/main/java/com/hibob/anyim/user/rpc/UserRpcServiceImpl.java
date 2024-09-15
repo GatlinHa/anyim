@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hibob.anyim.common.rpc.service.UserRpcService;
 import com.hibob.anyim.common.config.JwtProperties;
 import com.hibob.anyim.common.utils.BeanUtil;
+import com.hibob.anyim.user.dto.vo.UserVO;
 import com.hibob.anyim.user.entity.Login;
 import com.hibob.anyim.user.entity.User;
 import com.hibob.anyim.user.mapper.LoginMapper;
@@ -74,7 +75,9 @@ public class UserRpcServiceImpl implements UserRpcService {
         Map<String, Map<String, Object>> result = new HashMap();
         try {
             for (User user : users) {
-                result.put(user.getAccount(), BeanUtil.objectToMap(user));
+                // 把User对象转成返回对象
+                UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
+                result.put(user.getAccount(), BeanUtil.objectToMap(vo));
             }
         } catch (IllegalAccessException e) {
             log.error("UserRpcServiceImpl::queryUserInfoBatch type conversion error......exception: {}", e.getMessage());

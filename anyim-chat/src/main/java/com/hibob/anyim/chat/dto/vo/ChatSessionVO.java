@@ -13,8 +13,8 @@ public class ChatSessionVO {
     @ApiModelProperty(value = "会话ID")
     private String sessionId;
 
-    @ApiModelProperty(value = "会话类型")
-    private String sessionType = "chat";
+    @ApiModelProperty(value = "会话类型CHAT(2)")
+    private int sessionType = 2;
 
     @ApiModelProperty(value = "账号")
     private String account;
