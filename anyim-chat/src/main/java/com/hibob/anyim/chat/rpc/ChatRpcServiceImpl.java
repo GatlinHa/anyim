@@ -220,6 +220,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         redisTemplate.opsForZSet().add(key1, msgId, msgId);
         Long card = redisTemplate.opsForZSet().zCard(key1);
         if (card > msgCapacityInRedis) {
+            // 超出限制，删除10%的数据
             redisTemplate.opsForZSet().removeRange(key1, 0, msgCapacityInRedis / 10);
         }
         String key2 = RedisKey.CHAT_SESSION_MSG_ID_MSG + sessionId + Const.SPLIT_C + msgId;

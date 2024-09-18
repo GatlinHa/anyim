@@ -6,6 +6,8 @@ import java.util.Map;
 public interface GroupMngRpcService {
     Map<String, Object> queryGroupInfo(long groupId);
 
+    Map<Long, Map<String, Object>> queryGroupInfoBatch(List<Long> groupIdList);
+
     /**
      * 查询所有群成员
      * @param groupId

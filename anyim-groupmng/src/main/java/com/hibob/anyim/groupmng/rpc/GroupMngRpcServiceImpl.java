@@ -14,6 +14,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,23 @@ public class GroupMngRpcServiceImpl implements GroupMngRpcService {
             }
         }
         return null;
+    }
+
+    @Override
+    public Map<Long, Map<String, Object>> queryGroupInfoBatch(List<Long> groupIdList) {
+        log.info("GroupMngRpcServiceImpl::queryGroupInfoBatch start......");
+        LambdaQueryWrapper<GroupInfo> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(GroupInfo::getGroupId, groupIdList.toArray());
+        List<GroupInfo> groups = groupInfoMapper.selectList(queryWrapper);
+        Map<Long, Map<String, Object>> result = new HashMap<>();
+        try {
+            for (GroupInfo item : groups) {
+                result.put(item.getGroupId(), BeanUtil.objectToMap(item));
+            }
+        } catch (IllegalAccessException e) {
+            log.error("GroupMngRpcServiceImpl::queryGroupInfoBatch type conversion error......exception: {}", e.getMessage());
+        }
+        return result;
     }
 
     @Override

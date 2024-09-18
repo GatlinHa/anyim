@@ -6,15 +6,15 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.*;
+import java.util.Date;
 
 @Data
 @ApiModel("单聊消息拉取接口的请求体参数")
 public class PullChatMsgReq extends BaseRequest {
 
     @NotEmpty
-    @Pattern(regexp = "^[a-zA-Z0-9_]{6,32}$", message = "账号必须是6-32位的字母、数字或下划线")
-    @ApiModelProperty(value = "单聊的对方id")
-    private String toAccount;
+    @ApiModelProperty(value = "会话Id")
+    private String sessionId;
 
     @NotNull
     @ApiModelProperty(value = "可选参数，上次更新msgId，没有就传-1")
@@ -22,7 +22,7 @@ public class PullChatMsgReq extends BaseRequest {
 
     @NotNull
     @ApiModelProperty(value = "上次更新的时间，UTC时间，单位毫秒，没有就传-1")
-    private long lastPullTime;
+    private Date lastPullTime;
 
     @NotNull
     @Max(value = 100, message = "页大小不能大于100")
