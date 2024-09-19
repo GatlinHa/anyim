@@ -48,7 +48,7 @@ public class ChatService {
     private final RpcClient rpcClient;
 
     public ResponseEntity<IMHttpResponse> pullMsg(PullChatMsgReq dto) {
-        HashMap<String, Object> resultMap = null;
+        HashMap<String, Object> resultMap = new HashMap<>();
         String sessionId = dto.getSessionId();
         int pageSize = dto.getPageSize();
         long readMsgId = dto.getReadMsgId();
