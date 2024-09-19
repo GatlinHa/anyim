@@ -4,11 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.hibob.anyim.chat.dto.request.ChatHistoryReq;
-import com.hibob.anyim.chat.dto.request.ChatSessionListReq;
-import com.hibob.anyim.chat.dto.request.PullChatMsgReq;
+import com.hibob.anyim.chat.dto.request.*;
 
-import com.hibob.anyim.chat.dto.request.UpdateSessionReq;
+import com.hibob.anyim.chat.dto.vo.ChatMsgVO;
 import com.hibob.anyim.chat.dto.vo.ChatSessionVO;
 import com.hibob.anyim.chat.entity.MsgChat;
 import com.hibob.anyim.chat.entity.Session;
@@ -18,6 +16,7 @@ import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.common.rpc.client.RpcClient;
 import com.hibob.anyim.common.session.ReqSession;
+import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.common.utils.ResultUtil;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -49,7 +47,7 @@ public class ChatService {
     private final RpcClient rpcClient;
 
     public ResponseEntity<IMHttpResponse> pullMsg(PullChatMsgReq dto) {
-        ReqSession reqSession = ReqSession.getSession();
+        HashMap<String, Object> resultMap = null;
         String sessionId = dto.getSessionId();
         int pageSize = dto.getPageSize();
         long lastMsgId = dto.getLastMsgId();
@@ -59,7 +57,6 @@ public class ChatService {
         // 获取sessionId下面的msgId集合
         String key1 = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
         long count = redisTemplate.opsForZSet().count(key1, lastMsgId + 1, Double.MAX_VALUE);  //由于msg-capacity-in-redis的限制，最多拉取10000条
-
         if (currentTime - lastPullTime < msgTtlInRedis * 1000) { // 7天内查询Redis
             List<MsgChat> msgList = new ArrayList<>();
             final LinkedHashSet<Object> msgIds;
@@ -86,20 +83,26 @@ public class ChatService {
                 msgList.add(msgChat);
             }
 
-            HashMap<String, Object> resultMap = new HashMap<>();
+            Object[] array = msgList.stream().map(item -> BeanUtil.copyProperties(item, ChatMsgVO.class)).toArray();
             resultMap.put("count", count);
             resultMap.put("lastMsgId", lastMsgId);
-            resultMap.put("msgList", msgList);
-            return ResultUtil.success(resultMap);
+            resultMap.put("msgList", array);
         }
         else { // 7天外查询MongoDB
-            if (count > 0) { // 有未读消息，一次查完
-                return ResultUtil.success(queryMsgFromDbForUnRead(sessionId, lastMsgId));
-            }
-            else { // 没有未读消息，按pageSize数量查询历史消息（倒序）
-                return ResultUtil.success(queryMsgFromDbReverse(sessionId, pageSize));
-            }
+            resultMap = count > 0 ? queryMsgFromDbForUnRead(sessionId, lastMsgId) : queryMsgFromDbReverse(sessionId, pageSize);
+
         }
+
+        // 拉去消息后，把session中的已读更新了
+        String account = ReqSession.getSession().getAccount();
+        LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(Session::getAccount, account)
+                .eq(Session::getSessionId, sessionId);
+        updateWrapper.set(Session::getReadMsgId, resultMap.get("lastMsgId"));
+        updateWrapper.set(Session::getReadTime, new Date());
+        sessionMapper.update(updateWrapper);
+
+        return ResultUtil.success(resultMap);
     }
 
     public ResponseEntity<IMHttpResponse> history(ChatHistoryReq dto) {
@@ -146,7 +149,7 @@ public class ChatService {
         }
 
         Map<String, Map<String, Object>> usersMap = null;
-        Map<Long, Map<String, Object>> groupInfoMap = null;;
+        Map<Long, Map<String, Object>> groupInfoMap = null;
         if (toAccountList.size() == 0 && groupIdList.size() == 0) {
             return ResultUtil.success(voMap);
         } else if (toAccountList.size() > 0) {
@@ -171,8 +174,6 @@ public class ChatService {
         ReqSession reqSession = ReqSession.getSession();
         String account = reqSession.getAccount();
         String sessionId = dto.getSessionId();
-        Long readMsgId = dto.getReadMsgId();
-        Date readTime = dto.getReadTime();
         Boolean top = dto.getTop();
         Boolean muted = dto.getMuted();
         String draft = dto.getDraft();
@@ -180,14 +181,43 @@ public class ChatService {
         LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.eq(Session::getAccount, account)
                 .eq(Session::getSessionId, sessionId);
-        if (readMsgId != null) updateWrapper.set(Session::getReadMsgId, readMsgId.longValue());
-        if (readTime != null) updateWrapper.set(Session::getReadTime, readTime);
         if (top != null) updateWrapper.set(Session::isTop, top.booleanValue());
         if (muted != null) updateWrapper.set(Session::isMuted, muted.booleanValue());
         if (draft != null) updateWrapper.set(Session::getDraft, draft);
         sessionMapper.update(updateWrapper);
 
         return ResultUtil.success();
+    }
+
+    public ResponseEntity<IMHttpResponse> querySession(QuerySessionReq dto) {
+        ReqSession reqSession = ReqSession.getSession();
+        String account = reqSession.getAccount();
+        String sessionId = dto.getSessionId();
+        LambdaQueryWrapper<Session> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Session::getAccount, account).eq(Session::getSessionId, sessionId);
+        Session session = sessionMapper.selectOne(queryWrapper);
+
+        ChatSessionVO vo = new ChatSessionVO();
+        vo.setSessionId(session.getSessionId());
+        vo.setSessionType(session.getSessionType());
+        vo.setRemoteId(session.getRemoteId());
+        vo.setReadMsgId(session.getReadMsgId());
+        vo.setReadTime(session.getReadTime());
+        vo.setTop(session.isTop());
+        vo.setMuted(session.isMuted());
+        vo.setDraft(session.getDraft());
+        Map<String, Object> objectInfo = null;
+        if (session.getSessionType() == 2) {  // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
+            objectInfo = rpcClient.getUserRpcService().queryUserInfo(session.getRemoteId());
+        }
+        else if(session.getSessionType() == 3) { // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
+            objectInfo = rpcClient.getGroupMngRpcService().queryGroupInfo(Long.parseLong(session.getRemoteId()));
+        }
+        vo.setObjectInfo(objectInfo);
+
+        loadLastMsg(session.getSessionId(), session.getReadMsgId(), vo);
+
+        return ResultUtil.success(vo);
     }
 
     private HashMap<String, Object> queryMsgFromDbForUnRead(String sessionId, long lastMsgId) {
@@ -210,13 +240,15 @@ public class ChatService {
         query.with(sort);
         query.limit(pageSize);
         List<MsgChat> msgList = mongoTemplate.find(query, MsgChat.class);
+        Object[] array = msgList.stream().map(item -> BeanUtil.copyProperties(item, ChatMsgVO.class)).toArray();
         if (msgList.size() > 0) {
             lastMsgId = msgList.get(msgList.size() - 1).getMsgId();
         }
+
         HashMap<String, Object> resultMap = new HashMap<>();
         resultMap.put("count", count);
         resultMap.put("lastMsgId", lastMsgId);
-        resultMap.put("msgList", msgList);
+        resultMap.put("msgList", array);
         return resultMap;
     }
 
@@ -224,7 +256,7 @@ public class ChatService {
         Query query = new Query();
         query.addCriteria(Criteria.where("sessionId").is(sessionId).and("msgId").is(msgId));
         List<MsgChat> msgList = mongoTemplate.find(query, MsgChat.class);
-        return  msgList.get(0);
+        return  msgList.size() > 0 ? msgList.get(0) : null;
     }
 
     private void loadLastMsg(String sessionId, long readMsgId, ChatSessionVO vo) {

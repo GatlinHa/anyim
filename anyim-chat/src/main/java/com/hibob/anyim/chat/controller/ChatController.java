@@ -1,9 +1,6 @@
 package com.hibob.anyim.chat.controller;
 
-import com.hibob.anyim.chat.dto.request.ChatHistoryReq;
-import com.hibob.anyim.chat.dto.request.ChatSessionListReq;
-import com.hibob.anyim.chat.dto.request.PullChatMsgReq;
-import com.hibob.anyim.chat.dto.request.UpdateSessionReq;
+import com.hibob.anyim.chat.dto.request.*;
 import com.hibob.anyim.chat.service.ChatService;
 import com.hibob.anyim.common.annotation.CommonHeader;
 import com.hibob.anyim.common.model.IMHttpResponse;
@@ -52,6 +49,13 @@ public class ChatController {
     @PostMapping("/updateSession")
     public ResponseEntity<IMHttpResponse> updateSession(@Valid @RequestBody UpdateSessionReq dto) {
         return chatService.updateSession(dto);
+    }
+
+    @ApiOperation(value = "查询某个会话记录的信息", notes = "查询某个会话记录的信息")
+    @CommonHeader
+    @PostMapping("/querySession")
+    public ResponseEntity<IMHttpResponse> querySession(@Valid @RequestBody QuerySessionReq dto) {
+        return chatService.querySession(dto);
     }
 
 }

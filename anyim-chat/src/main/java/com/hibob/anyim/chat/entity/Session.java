@@ -3,6 +3,7 @@ package com.hibob.anyim.chat.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.Date;
 
@@ -12,9 +13,11 @@ public class Session {
     private static final long serialVersionUID = 1L;
 
     @TableField(value = "account")
+    @Indexed
     private String account;
 
     @TableField(value = "session_id")
+    @Indexed
     private String sessionId;
 
     @TableField(value = "remote_id")
