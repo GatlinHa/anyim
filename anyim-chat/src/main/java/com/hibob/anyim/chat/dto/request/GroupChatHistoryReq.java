@@ -24,8 +24,8 @@ public class GroupChatHistoryReq extends BaseRequest {
     private long endTime;
 
     @NotNull
-    @ApiModelProperty(value = "可选参数，上次更新msgId，没有就传-1")
-    private long lastMsgId;
+    @ApiModelProperty(value = "可选参数，已读msgId，没有就传-1")
+    private long readMsgId;
 
     @NotNull
     @Max(value = 100, message = "页大小不能大于100")

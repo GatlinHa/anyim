@@ -17,12 +17,12 @@ public class PullChatMsgReq extends BaseRequest {
     private String sessionId;
 
     @NotNull
-    @ApiModelProperty(value = "可选参数，上次更新msgId，没有就传-1")
-    private long lastMsgId;
+    @ApiModelProperty(value = "可选参数，已读msgId，没有就传-1")
+    private long readMsgId;
 
     @NotNull
-    @ApiModelProperty(value = "上次更新的时间，UTC时间，单位毫秒，没有就传-1")
-    private Date lastPullTime;
+    @ApiModelProperty(value = "已读的时间，UTC时间，单位毫秒，没有就传-1")
+    private Date readTime;
 
     @NotNull
     @Max(value = 100, message = "页大小不能大于100")

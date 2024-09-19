@@ -50,20 +50,20 @@ public class ChatService {
         HashMap<String, Object> resultMap = null;
         String sessionId = dto.getSessionId();
         int pageSize = dto.getPageSize();
-        long lastMsgId = dto.getLastMsgId();
-        long lastPullTime = dto.getLastPullTime().getTime();
+        long readMsgId = dto.getReadMsgId();
+        long readTime = dto.getReadTime().getTime();
         long currentTime = new Date().getTime();
 
         // 获取sessionId下面的msgId集合
         String key1 = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
-        long count = redisTemplate.opsForZSet().count(key1, lastMsgId + 1, Double.MAX_VALUE);  //由于msg-capacity-in-redis的限制，最多拉取10000条
-        if (currentTime - lastPullTime < msgTtlInRedis * 1000) { // 7天内查询Redis
+        long count = redisTemplate.opsForZSet().count(key1, readMsgId + 1, Double.MAX_VALUE);  //由于msg-capacity-in-redis的限制，最多拉取10000条
+        if (currentTime - readTime < msgTtlInRedis * 1000) { // 7天内查询Redis
             List<MsgChat> msgList = new ArrayList<>();
             final LinkedHashSet<Object> msgIds;
             if (count > 0) { // 有未读消息，一次查完
-                msgIds = (LinkedHashSet)redisTemplate.opsForZSet().rangeByScore(key1, lastMsgId + 1, Double.MAX_VALUE);
+                msgIds = (LinkedHashSet)redisTemplate.opsForZSet().rangeByScore(key1, readMsgId + 1, Double.MAX_VALUE);
                 int last = (int)msgIds.toArray()[msgIds.size() - 1];
-                lastMsgId = last;
+                readMsgId = last;
             }
             else { // 没有未读消息，按pageSize数量查询历史消息（倒序）
                 msgIds = (LinkedHashSet)redisTemplate.opsForZSet().reverseRangeByScore(key1, -1, Double.MAX_VALUE, 0, pageSize);
@@ -85,11 +85,11 @@ public class ChatService {
 
             Object[] array = msgList.stream().map(item -> BeanUtil.copyProperties(item, ChatMsgVO.class)).toArray();
             resultMap.put("count", count);
-            resultMap.put("lastMsgId", lastMsgId);
+            resultMap.put("lastMsgId", readMsgId);
             resultMap.put("msgList", array);
         }
         else { // 7天外查询MongoDB
-            resultMap = count > 0 ? queryMsgFromDbForUnRead(sessionId, lastMsgId) : queryMsgFromDbReverse(sessionId, pageSize);
+            resultMap = count > 0 ? queryMsgFromDbForUnRead(sessionId, readMsgId) : queryMsgFromDbReverse(sessionId, pageSize);
 
         }
 
@@ -113,9 +113,9 @@ public class ChatService {
         Date startTime = new Date(dto.getStartTime());
         Date endTime = new Date(dto.getEndTime());
         int pageSize = dto.getPageSize();
-        long lastMsgId = dto.getLastMsgId();
+        long readMsgId = dto.getReadMsgId();
 
-        HashMap<String, Object> resultMap = queryMsgFromDB(sessionId, startTime, endTime, lastMsgId, pageSize, false);
+        HashMap<String, Object> resultMap = queryMsgFromDB(sessionId, startTime, endTime, readMsgId, pageSize, false);
         return ResultUtil.success(resultMap);
     }
 
@@ -220,17 +220,17 @@ public class ChatService {
         return ResultUtil.success(vo);
     }
 
-    private HashMap<String, Object> queryMsgFromDbForUnRead(String sessionId, long lastMsgId) {
-        return queryMsgFromDB(sessionId, null, null, lastMsgId, Integer.MAX_VALUE, false);
+    private HashMap<String, Object> queryMsgFromDbForUnRead(String sessionId, long readMsgId) {
+        return queryMsgFromDB(sessionId, null, null, readMsgId, Integer.MAX_VALUE, false);
     }
 
     private HashMap<String, Object> queryMsgFromDbReverse(String sessionId, int pageSize) {
         return queryMsgFromDB(sessionId, null, null, -1, pageSize, true);
     }
 
-    private HashMap<String, Object> queryMsgFromDB(String sessionId, Date startTime, Date endTime, long lastMsgId, int pageSize, boolean reverse) {
+    private HashMap<String, Object> queryMsgFromDB(String sessionId, Date startTime, Date endTime, long readMsgId, int pageSize, boolean reverse) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("sessionId").is(sessionId).and("msgId").gt(lastMsgId));
+        query.addCriteria(Criteria.where("sessionId").is(sessionId).and("msgId").gt(readMsgId));
         if (startTime != null && endTime != null) {
             query.addCriteria(Criteria.where("msgTime").gte(startTime).lt(endTime));
         }
@@ -241,6 +241,7 @@ public class ChatService {
         query.limit(pageSize);
         List<MsgChat> msgList = mongoTemplate.find(query, MsgChat.class);
         Object[] array = msgList.stream().map(item -> BeanUtil.copyProperties(item, ChatMsgVO.class)).toArray();
+        long lastMsgId = 0;
         if (msgList.size() > 0) {
             lastMsgId = msgList.get(msgList.size() - 1).getMsgId();
         }
