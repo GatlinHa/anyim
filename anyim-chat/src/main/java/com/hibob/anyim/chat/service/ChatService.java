@@ -13,6 +13,7 @@ import com.hibob.anyim.chat.entity.Session;
 import com.hibob.anyim.chat.mapper.SessionMapper;
 import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
+import com.hibob.anyim.common.enums.ServiceErrorCode;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.common.rpc.client.RpcClient;
 import com.hibob.anyim.common.session.ReqSession;
@@ -177,6 +178,9 @@ public class ChatService {
         Boolean top = dto.getTop();
         Boolean muted = dto.getMuted();
         String draft = dto.getDraft();
+        if (top == null && muted == null && draft == null) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_UPDATE_SESSION);
+        }
 
         LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.eq(Session::getAccount, account)
