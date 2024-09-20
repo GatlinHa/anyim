@@ -4,12 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.hibob.anyim.chat.entity.MsgChat;
-import com.hibob.anyim.chat.entity.MsgGroupChat;
-import com.hibob.anyim.chat.entity.SessionChat;
-import com.hibob.anyim.chat.entity.SessionGroupChat;
+import com.hibob.anyim.chat.entity.*;
 import com.hibob.anyim.chat.mapper.SessionChatMapper;
 import com.hibob.anyim.chat.mapper.SessionGroupChatMapper;
+import com.hibob.anyim.chat.mapper.SessionMapper;
 import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.rpc.service.ChatRpcService;
@@ -37,6 +35,7 @@ import static com.hibob.anyim.common.utils.CommonUtil.sortId;
 public class ChatRpcServiceImpl implements ChatRpcService {
 
     private final ThreadPoolExecutor threadPoolExecutor;
+    private final SessionMapper sessionMapper;
     private final SessionChatMapper sessionChatMapper;
     private final SessionGroupChatMapper sessionGroupChatMapper;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -122,6 +121,14 @@ public class ChatRpcServiceImpl implements ChatRpcService {
                 log.error("asyncSaveChat insert failed, sessionId: {}, msgId: {}", sessionId, msg.get("msgId"));
                 return 0;
             }
+
+            // 更新anyim_chat_session表，fromid用户的在这个session中的read_msg_id应该是最后一条（即本条消息的msgId）
+            LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
+            updateWrapper.eq(Session::getAccount, fromId)
+                    .eq(Session::getSessionId, sessionId);
+            updateWrapper.set(Session::getReadMsgId, msg.get("msgId"));
+            updateWrapper.set(Session::getReadTime, new Date());
+            sessionMapper.update(updateWrapper);
 
             return 1;
         }, threadPoolExecutor);
