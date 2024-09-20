@@ -37,7 +37,9 @@ public enum ServiceErrorCode {
 
     ERROR_CHAT_REFMSGID_EXCEPTION(Const.SERVICE_CODE_CHAT + 1, "ref msgId异常"),
 
-    ERROR_CHAT_UPDATE_SESSION(Const.SERVICE_CODE_CHAT + 1, "更新session异常"),
+    ERROR_CHAT_CREATE_SESSION(Const.SERVICE_CODE_CHAT + 2, "创建session异常"),
+
+    ERROR_CHAT_UPDATE_SESSION(Const.SERVICE_CODE_CHAT + 3, "更新session异常"),
 
     ERROR_GROUP_MNG_NOT_ENOUGH_MEMBER(Const.SERVICE_CODE_GROUP_MNG + 1, "成员数不够"),
 

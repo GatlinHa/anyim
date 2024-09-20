@@ -94,7 +94,7 @@ public class ChatService {
 
         }
 
-        // 拉去消息后，把session中的已读更新了
+        // 拉取消息后，把session中的已读更新了
         String account = ReqSession.getSession().getAccount();
         LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.eq(Session::getAccount, account)
@@ -194,9 +194,31 @@ public class ChatService {
     }
 
     public ResponseEntity<IMHttpResponse> querySession(QuerySessionReq dto) {
+        return ResultUtil.success(querySession(ReqSession.getSession().getAccount(), dto.getSessionId()));
+    }
+
+    public ResponseEntity<IMHttpResponse> createSession(CreateSessionReq dto) {
         ReqSession reqSession = ReqSession.getSession();
         String account = reqSession.getAccount();
         String sessionId = dto.getSessionId();
+        String remoteId = dto.getRemoteId();
+        int sessionType = dto.getSessionType();
+
+        Session session = new Session();
+        session.setAccount(account);
+        session.setSessionId(sessionId);
+        session.setRemoteId(remoteId);
+        session.setSessionType(sessionType);
+        int insert = sessionMapper.insert(session);
+        if (insert > 0) {
+            return ResultUtil.success(querySession(account,sessionId));
+        }
+        else {
+            return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_CREATE_SESSION);
+        }
+    }
+
+    private ChatSessionVO querySession(String account, String sessionId) {
         LambdaQueryWrapper<Session> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Session::getAccount, account).eq(Session::getSessionId, sessionId);
         Session session = sessionMapper.selectOne(queryWrapper);
@@ -218,10 +240,9 @@ public class ChatService {
             objectInfo = rpcClient.getGroupMngRpcService().queryGroupInfo(Long.parseLong(session.getRemoteId()));
         }
         vo.setObjectInfo(objectInfo);
-
         loadLastMsg(session.getSessionId(), session.getReadMsgId(), vo);
 
-        return ResultUtil.success(vo);
+        return vo;
     }
 
     private HashMap<String, Object> queryMsgFromDbForUnRead(String sessionId, long readMsgId) {

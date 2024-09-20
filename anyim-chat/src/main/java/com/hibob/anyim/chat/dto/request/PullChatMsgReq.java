@@ -21,7 +21,7 @@ public class PullChatMsgReq extends BaseRequest {
     private long readMsgId;
 
     @NotNull
-    @ApiModelProperty(value = "已读的时间，UTC时间，单位毫秒，没有就传-1")
+    @ApiModelProperty(value = "已读的时间，UTC时间，单位毫秒")
     private Date readTime;
 
     @NotNull

@@ -58,4 +58,11 @@ public class ChatController {
         return chatService.querySession(dto);
     }
 
+    @ApiOperation(value = "创建一个会话记录", notes = "创建一个会话记录")
+    @CommonHeader
+    @PostMapping("/createSession")
+    public ResponseEntity<IMHttpResponse> createSession(@Valid @RequestBody CreateSessionReq dto) {
+        return chatService.createSession(dto);
+    }
+
 }
