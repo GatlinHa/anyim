@@ -61,14 +61,13 @@ public class ChatService {
         // 获取sessionId下面的msgId集合
         String key1 = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
         long count = redisTemplate.opsForZSet().count(key1, lastMsgId + 1, Double.MAX_VALUE);  //由于msg-capacity-in-redis的限制，最多拉取10000条
-        long maxMsgId = lastMsgId;
         if (currentTime.getTime() - lastMsgTime.getTime() < msgTtlInRedis * 1000) { // 7天内查询Redis
             List<MsgChat> msgList = new ArrayList<>();
             final LinkedHashSet<Object> msgIds;
             if (count > 0) { // 有未读消息，一次查完
                 msgIds = (LinkedHashSet)redisTemplate.opsForZSet().rangeByScore(key1, lastMsgId + 1, Double.MAX_VALUE);
                 int max = (int) msgIds.toArray()[msgIds.size() - 1];
-                maxMsgId = max;
+                lastMsgId = max;  //lastMsgId更新
             }
             else { // 没有未读消息，按pageSize数量查询历史消息（倒序）
                 msgIds = (LinkedHashSet)redisTemplate.opsForZSet().reverseRangeByScore(key1, -1, Double.MAX_VALUE, 0, pageSize);
@@ -90,7 +89,7 @@ public class ChatService {
 
             Object[] array = msgList.stream().map(item -> BeanUtil.copyProperties(item, ChatMsgVO.class)).toArray();
             resultMap.put("count", count);
-            resultMap.put("maxMsgId", maxMsgId);
+            resultMap.put("lastMsgId", lastMsgId);
             resultMap.put("msgList", array);
         }
         else { // 7天外查询MongoDB
@@ -144,7 +143,7 @@ public class ChatService {
             vo.setTop(item.isTop());
             vo.setMuted(item.isMuted());
             vo.setDraft(item.getDraft());
-            loadMaxMsg(item.getSessionId(), item.getLastMsgId(), vo);
+            loadLastMsg(item.getSessionId(), item.getLastMsgId(), vo);
             voMap.put(item.getSessionId(), vo);
         }
 
@@ -239,7 +238,7 @@ public class ChatService {
             objectInfo = rpcClient.getGroupMngRpcService().queryGroupInfo(Long.parseLong(session.getRemoteId()));
         }
         vo.setObjectInfo(objectInfo);
-        loadMaxMsg(session.getSessionId(), session.getLastMsgId(), vo);
+        loadLastMsg(session.getSessionId(), session.getLastMsgId(), vo);
 
         return vo;
     }
@@ -267,15 +266,14 @@ public class ChatService {
         query.with(sort);
         query.limit(pageSize);
         List<MsgChat> msgList = mongoTemplate.find(query, MsgChat.class);
-        long maxMsgId = lastMsgId;
         Object[] array = msgList.stream().map(item -> BeanUtil.copyProperties(item, ChatMsgVO.class)).toArray();
         if (!msgList.isEmpty()) {
-            maxMsgId = msgList.get(msgList.size() - 1).getMsgId();
+            lastMsgId = msgList.get(msgList.size() - 1).getMsgId();  //lastMsgId更新
         }
 
         HashMap<String, Object> resultMap = new HashMap<>();
         resultMap.put("count", count);
-        resultMap.put("maxMsgId", maxMsgId);
+        resultMap.put("lastMsgId", lastMsgId);
         resultMap.put("msgList", array);
         return resultMap;
     }
@@ -287,16 +285,15 @@ public class ChatService {
         return  msgList.size() > 0 ? msgList.get(0) : null;
     }
 
-    private void loadMaxMsg(String sessionId, long lastMsgId, ChatSessionVO vo) {
+    private void loadLastMsg(String sessionId, long lastMsgId, ChatSessionVO vo) {
         String key = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
         long count = redisTemplate.opsForZSet().count(key, lastMsgId + 1, Double.MAX_VALUE);
-        long maxMsgId = lastMsgId;
         if (count > 0) {
             Set<Object> objects = redisTemplate.opsForZSet().reverseRange(key, 0, 0);//倒序只取第0个元素，即为msgId最大的拿一个（lastMsgId）
-            maxMsgId = ((Integer) objects.toArray()[0]).longValue();
+            lastMsgId = ((Integer) objects.toArray()[0]).longValue();  //lastMsgId更新
         }
 
-        Object obj = redisTemplate.opsForValue().get(RedisKey.CHAT_SESSION_MSG_ID_MSG + sessionId + Const.SPLIT_C + maxMsgId);
+        Object obj = redisTemplate.opsForValue().get(RedisKey.CHAT_SESSION_MSG_ID_MSG + sessionId + Const.SPLIT_C + lastMsgId);
         MsgChat msg;
         if (obj != null) {
             msg = JSON.parseObject((String) obj, MsgChat.class);
@@ -306,9 +303,9 @@ public class ChatService {
         }
 
         if (msg != null) {
-            vo.setMaxMsgId(maxMsgId);
-            vo.setMaxMsgContent(msg.getContent());
-            vo.setMaxMsgTime(msg.getMsgTime());
+            vo.setLastMsgId(lastMsgId);
+            vo.setLastMsgContent(msg.getContent());
+            vo.setLastMsgTime(msg.getMsgTime());
             vo.setUnreadCount((int) count);
         }
     }

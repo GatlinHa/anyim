@@ -27,13 +27,13 @@ public class ChatSessionVO {
     private Date readTime;
 
     @ApiModelProperty(value = "最后一条消息的MsgId")
-    private long maxMsgId;
+    private long lastMsgId;
 
     @ApiModelProperty(value = "最后一条消息内容")
-    private String maxMsgContent;
+    private String lastMsgContent;
 
     @ApiModelProperty(value = "最后一条消息的时间")
-    private Date maxMsgTime;
+    private Date lastMsgTime;
 
     @ApiModelProperty(value = "未读消息数量")
     private int unreadCount;

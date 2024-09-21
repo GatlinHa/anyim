@@ -63,13 +63,12 @@ public class GroupChatService {
         // 获取sessionId下面的msgId集合
         String key1 = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
         long count = redisTemplate.opsForZSet().count(key1, lastMsgId + 1, Double.MAX_VALUE);  //由于msg-capacity-in-redis的限制，最多拉取10000条
-        long maxMsgId = lastMsgId;
         if (currentTime.getTime() - lastMsgTime.getTime() < msgTtlInRedis * 1000) { // 7天内查询Redis
             List<MsgGroupChat> msgList = new ArrayList<>();
             if (count > 0) {
                 LinkedHashSet<Object> msgIds = (LinkedHashSet)redisTemplate.opsForZSet().rangeByScore(key1, lastMsgId + 1, Double.MAX_VALUE, 0, pageSize);
                 int max = (int) msgIds.toArray()[msgIds.size() - 1];
-                maxMsgId = max;
+                lastMsgId = max; //lastMsgId更新
 
                 // 查询缓存或者数据库，获取每个msgId对应的msg内容
                 List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
@@ -87,7 +86,7 @@ public class GroupChatService {
             }
 
             resultMap.put("count", count);
-            resultMap.put("maxMsgId", maxMsgId);
+            resultMap.put("lastMsgId", lastMsgId);
             resultMap.put("msgList", msgList);
             return ResultUtil.success(resultMap);
         }
@@ -146,13 +145,12 @@ public class GroupChatService {
         query.with(sort);
         query.limit(pageSize);
         List<MsgGroupChat> msgList = mongoTemplate.find(query, MsgGroupChat.class);
-        long maxMsgId = lastMsgId;
         if (!msgList.isEmpty()) {
-            maxMsgId = msgList.get(msgList.size() - 1).getMsgId();
+            lastMsgId = msgList.get(msgList.size() - 1).getMsgId(); //lastMsgId更新
         }
         HashMap<String, Object> resultMap = new HashMap<>();
         resultMap.put("count", count);
-        resultMap.put("maxMsgId", maxMsgId);
+        resultMap.put("lastMsgId", lastMsgId);
         resultMap.put("msgList", msgList);
         return resultMap;
     }
