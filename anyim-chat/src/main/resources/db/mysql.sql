@@ -29,6 +29,8 @@ CREATE TABLE `anyim_chat_session`
     `session_type`  TINYINT(1) DEFAULT 99 COMMENT '会话类型：按照MsgType定义',
     `read_msg_id` BIGINT DEFAULT 0 COMMENT '已读消息Id，初始值0，表示没有已读的',
     `read_time` DATETIME DEFAULT '1970-01-01 00:00:00' COMMENT '已读消息的时间',
+    `last_msg_id` BIGINT DEFAULT 0 COMMENT '已拉取的最后消息Id，初始值0，表示没有拉取过',
+    `last_msg_time` DATETIME DEFAULT '1970-01-01 00:00:00' COMMENT '已拉取最后消息的时间',
     `top` BOOLEAN DEFAULT FALSE COMMENT '会话是否置顶，默认false',
     `muted` BOOLEAN DEFAULT FALSE COMMENT '会话是否静音（免打扰），默认false',
     `draft` VARCHAR(3000) DEFAULT NULL COMMENT '草稿',

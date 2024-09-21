@@ -122,12 +122,12 @@ public class ChatRpcServiceImpl implements ChatRpcService {
                 return 0;
             }
 
-            // 更新anyim_chat_session表，fromid用户的在这个session中的read_msg_id应该是最后一条（即本条消息的msgId）
+            // 更新anyim_chat_session表，fromid用户的在这个session中的last_msg_id应该是最后一条（即本条消息的msgId）
             LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
             updateWrapper.eq(Session::getAccount, fromId)
                     .eq(Session::getSessionId, sessionId);
-            updateWrapper.set(Session::getReadMsgId, msg.get("msgId"));
-            updateWrapper.set(Session::getReadTime, new Date());
+            updateWrapper.set(Session::getLastMsgId, msg.get("msgId"));
+            updateWrapper.set(Session::getLastMsgTime, new Date());
             sessionMapper.update(updateWrapper);
 
             return 1;

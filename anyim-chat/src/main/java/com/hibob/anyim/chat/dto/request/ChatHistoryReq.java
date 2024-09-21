@@ -12,9 +12,8 @@ import javax.validation.constraints.*;
 public class ChatHistoryReq extends BaseRequest {
 
     @NotEmpty
-    @Pattern(regexp = "^[a-zA-Z0-9_]{6,32}$", message = "账号必须是6-32位的字母、数字或下划线")
-    @ApiModelProperty(value = "单聊的对方id")
-    private String toAccount;
+    @ApiModelProperty(value = "会话Id")
+    private String sessionId;
 
     @NotNull
     @ApiModelProperty(value = "查询开始时间，UTC毫秒")
@@ -23,10 +22,6 @@ public class ChatHistoryReq extends BaseRequest {
     @NotNull
     @ApiModelProperty(value = "查询结束时间，UTC毫秒")
     private long endTime;
-
-    @NotNull
-    @ApiModelProperty(value = "可选参数，已读msgId，没有就传-1")
-    private long readMsgId;
 
     @NotNull
     @Max(value = 100, message = "页大小不能大于100")
