@@ -32,12 +32,6 @@ public class Session {
     @TableField(value = "read_time")
     private Date readTime;
 
-    @TableField(value = "last_msg_id")
-    private long lastMsgId;
-
-    @TableField(value = "last_msg_time")
-    private Date lastMsgTime;
-
     @TableField(value = "top")
     private boolean top;
 

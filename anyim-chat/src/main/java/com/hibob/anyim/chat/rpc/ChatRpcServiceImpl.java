@@ -121,15 +121,6 @@ public class ChatRpcServiceImpl implements ChatRpcService {
                 log.error("asyncSaveChat insert failed, sessionId: {}, msgId: {}", sessionId, msg.get("msgId"));
                 return 0;
             }
-
-            // 更新anyim_chat_session表，fromid用户的在这个session中的last_msg_id应该是最后一条（即本条消息的msgId）
-            LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
-            updateWrapper.eq(Session::getAccount, fromId)
-                    .eq(Session::getSessionId, sessionId);
-            updateWrapper.set(Session::getLastMsgId, msg.get("msgId"));
-            updateWrapper.set(Session::getLastMsgTime, new Date());
-            sessionMapper.update(updateWrapper);
-
             return 1;
         }, threadPoolExecutor);
 
@@ -224,11 +215,11 @@ public class ChatRpcServiceImpl implements ChatRpcService {
 
     private void insertToRedis(long msgId, String sessionId, Object value) {
         String key1 = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
-        redisTemplate.opsForZSet().add(key1, msgId, msgId);
+        redisTemplate.opsForZSet().add(key1, msgId + Const.SPLIT_V + new Date().getTime(), msgId);
         Long card = redisTemplate.opsForZSet().zCard(key1);
         if (card > msgCapacityInRedis) {
             // 超出限制，删除10%的数据
-            redisTemplate.opsForZSet().removeRange(key1, 0, msgCapacityInRedis / 10);
+            redisTemplate.opsForZSet().removeRangeByScore(key1, 0, msgCapacityInRedis / 10);
         }
         String key2 = RedisKey.CHAT_SESSION_MSG_ID_MSG + sessionId + Const.SPLIT_C + msgId;
         redisTemplate.opsForValue().set(key2, JSON.toJSONString(value), Duration.ofSeconds(msgTtlInRedis));

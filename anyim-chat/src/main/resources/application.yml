@@ -42,5 +42,5 @@ custom:
     keep-alive-time: 1000
     queue-size: 200
   msg-ttl-in-redis: 604800 #7天
-  msg-capacity-in-redis: 10000
+  msg-capacity-in-redis: 1000000
   msg-read-count: 100
