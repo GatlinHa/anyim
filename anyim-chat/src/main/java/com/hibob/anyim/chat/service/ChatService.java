@@ -322,7 +322,7 @@ public class ChatService {
     private void loadLastMsg(String sessionId, long readMsgId , ChatSessionVO vo) {
         String key = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
         long count = redisTemplate.opsForZSet().count(key, readMsgId + 1, Double.MAX_VALUE);
-        Set<Object> objects = redisTemplate.opsForZSet().reverseRangeByScore(key, 0, 0);//倒序只取第0个元素，即为msgId最大的那一个（lastMsgId）
+        Set<Object> objects = redisTemplate.opsForZSet().reverseRangeByScore(key, -1, Double.MAX_VALUE, 0, 1);//倒序只取第1个元素，即为msgId最大的那一个（lastMsgId）
         if (objects.size() == 0) {
             vo.setLastMsgId(0);
             vo.setLastMsgContent(null);
