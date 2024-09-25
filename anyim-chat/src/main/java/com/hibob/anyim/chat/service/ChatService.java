@@ -140,7 +140,7 @@ public class ChatService {
         Date endTime = new Date(dto.getEndTime());
         int pageSize = dto.getPageSize();
 
-        HashMap<String, Object> resultMap = queryMsgFromDB(sessionId, startTime, endTime, 0, pageSize, false);
+        HashMap<String, Object> resultMap = queryMsgFromDB(sessionId, startTime, endTime, 0, pageSize);
         return ResultUtil.success(resultMap);
     }
 
@@ -169,7 +169,7 @@ public class ChatService {
             vo.setTop(item.isTop());
             vo.setMuted(item.isMuted());
             vo.setDraft(item.getDraft());
-            loadLastMsg(item.getSessionId(), item.getReadMsgId(), vo);
+            loadLastMsg(item.getSessionId(), account, item.getReadMsgId(), vo);
             voMap.put(item.getSessionId(), vo);
         }
 
@@ -201,7 +201,7 @@ public class ChatService {
         String sessionId = dto.getSessionId();
         Boolean top = dto.getTop();
         Boolean muted = dto.getMuted();
-        String draft = dto.getDraft();
+        String draft = dto.getDraft(); // 注意，当前端设置draft=""的意思是清空草稿
         if (top == null && muted == null && draft == null) {
             return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_UPDATE_SESSION);
         }
@@ -235,7 +235,7 @@ public class ChatService {
         session.setSessionType(sessionType);
         int insert = sessionMapper.insert(session);
         if (insert > 0) {
-            return ResultUtil.success(querySession(account,sessionId));
+            return ResultUtil.success(querySession(account, sessionId));
         }
         else {
             return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_CREATE_SESSION);
@@ -264,17 +264,9 @@ public class ChatService {
             objectInfo = rpcClient.getGroupMngRpcService().queryGroupInfo(Long.parseLong(session.getRemoteId()));
         }
         vo.setObjectInfo(objectInfo);
-        loadLastMsg(session.getSessionId(), session.getReadMsgId(), vo);
+        loadLastMsg(session.getSessionId(), account, session.getReadMsgId(), vo);
 
         return vo;
-    }
-
-    private HashMap<String, Object> queryMsgFromDbForUnRead(String sessionId, long lastMsgId) {
-        return queryMsgFromDB(sessionId, null, null, lastMsgId, Integer.MAX_VALUE, false);
-    }
-
-    private HashMap<String, Object> queryMsgFromDbReverse(String sessionId, int pageSize) {
-        return queryMsgFromDB(sessionId, null, null, 0, pageSize, true);
     }
 
     private List<MsgDb> queryMsgFromDbByIn(String sessionId, List<Long> msgIds) {
@@ -285,19 +277,15 @@ public class ChatService {
         return msgList;
     }
 
-    private HashMap<String, Object> queryMsgFromDB(String sessionId, Date startTime, Date endTime, long lastMsgId, int pageSize, boolean reverse) {
+    private HashMap<String, Object> queryMsgFromDB(String sessionId, Date startTime, Date endTime, long lastMsgId, int pageSize) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("sessionId").is(sessionId));
-        if (lastMsgId > 0) {
-            query.addCriteria(Criteria.where("msgId").gt(lastMsgId));
-        }
-        if (startTime != null && endTime != null) {
-            query.addCriteria(Criteria.where("msgTime").gte(startTime).lt(endTime));
-        }
-        long count = mongoTemplate.count(query, MsgDb.class);
+        query.addCriteria(Criteria
+                .where("sessionId").is(sessionId)
+                .and("msgId").gt(lastMsgId)
+                .and("msgTime").gte(startTime).lt(endTime));
 
-        Sort sort = reverse ? Sort.by(Sort.Order.desc("msgId")) : Sort.by(Sort.Order.asc("msgId"));
-        query.with(sort);
+        long count = mongoTemplate.count(query, MsgDb.class);
+        query.with(Sort.by(Sort.Order.asc("msgId")));
         query.limit(pageSize);
         List<MsgDb> msgList = mongoTemplate.find(query, MsgDb.class);
         Object[] array = msgList.stream().map(item -> BeanUtil.copyProperties(item, ChatMsgVO.class)).toArray();
@@ -312,6 +300,16 @@ public class ChatService {
         return resultMap;
     }
 
+    private int getUnReadCount(String sessionId, String account, long lastMsgId) {
+        Query query = new Query();
+        query.addCriteria(Criteria
+                .where("sessionId").is(sessionId)
+                .and("fromId").ne(account)
+                .and("msgId").gt(lastMsgId));
+        return (int) mongoTemplate.count(query, MsgDb.class);
+    }
+
+
     private MsgDb queryMsgFromDbById(String sessionId, long msgId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("sessionId").is(sessionId).and("msgId").is(msgId));
@@ -319,21 +317,20 @@ public class ChatService {
         return  msgList.size() > 0 ? msgList.get(0) : null;
     }
 
-    private void loadLastMsg(String sessionId, long readMsgId , ChatSessionVO vo) {
+    private void loadLastMsg(String sessionId, String account, long readMsgId , ChatSessionVO vo) {
+        // 查最后一条msg
         String key = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
-        long count = redisTemplate.opsForZSet().count(key, readMsgId + 1, Double.MAX_VALUE);
         Set<Object> objects = redisTemplate.opsForZSet().reverseRangeByScore(key, -1, Double.MAX_VALUE, 0, 1);//倒序只取第1个元素，即为msgId最大的那一个（lastMsgId）
         if (objects.size() == 0) {
             vo.setLastMsgId(0);
             vo.setLastMsgContent(null);
             vo.setLastMsgTime(null);
-            vo.setUnreadCount((int) count);
+            vo.setUnreadCount(0);
             return;
         }
-
         String[] split = ((String) objects.toArray()[0]).split(Const.SPLIT_V);
-        long msgId = Long.parseLong(split[0]);
-        long time = Long.parseLong(split[1]);
+        long msgId = Long.parseLong(split[0]); // 最后一条msg的id
+        long time = Long.parseLong(split[1]);  // 最后一条msg的时间
         Date currentTime = new Date();
         MsgDb msg = null;
         if (currentTime.getTime() - time < msgTtlInRedis * 1000L) {
@@ -346,11 +343,13 @@ public class ChatService {
             msg = queryMsgFromDbById(sessionId, msgId);
         }
 
+        // 查未读的消息数
+        int unReadCount = getUnReadCount(sessionId, account, readMsgId);
         if (msg != null) {
             vo.setLastMsgId(msgId);
             vo.setLastMsgContent(msg.getContent());
             vo.setLastMsgTime(msg.getMsgTime());
-            vo.setUnreadCount((int) count);
+            vo.setUnreadCount(unReadCount);
         }
     }
 

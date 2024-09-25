@@ -18,6 +18,6 @@ CREATE TABLE `anyim_chat_session`
     `read_time` DATETIME DEFAULT '1970-01-01 00:00:00' COMMENT '已读消息的时间',
     `top` BOOLEAN DEFAULT FALSE COMMENT '会话是否置顶，默认false',
     `muted` BOOLEAN DEFAULT FALSE COMMENT '会话是否静音（免打扰），默认false',
-    `draft` VARCHAR(3000) DEFAULT NULL COMMENT '草稿',
+    `draft` VARCHAR(3000) DEFAULT '' COMMENT '草稿',
     PRIMARY KEY(`account`, `session_id`)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户的会话信息表';
