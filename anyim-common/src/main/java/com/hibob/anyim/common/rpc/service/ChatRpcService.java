@@ -4,39 +4,23 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public interface ChatRpcService {
-    long refMsgId(String fromId, String toId, int refMsgIdDefault);
+    long refMsgId(String session, int refMsgIdDefault);
 
-    long refMsgId(long groupId, int refMsgIdDefault);
-
-    long updateAndGetRefMsgId(String fromId, String toId, int refMsgIdStep, long curRefMsgId);
-
-    long updateAndGetRefMsgId(long groupId, int refMsgIdStep, long curRefMsgId);
+    long updateAndGetRefMsgId(String session, int refMsgIdStep, long curRefMsgId);
 
     /**
-     * chat消息异步入库
+     * 消息异步入库
      * @param msg
      * @return
      */
-    void asyncSaveChat(Map<String, Object> msg);
+    void asyncSaveMsg(Map<String, Object> msg);
 
     /**
-     * chat消息同步入库
+     * 消息同步入库
      * @param msg
      * @return
      */
-    boolean saveChat(Map<String, Object> msg);
+    boolean saveMsg(Map<String, Object> msg);
 
-    /**
-     * group chat消息异步入库
-     * @param msg
-     * @return
-     */
-    void asyncSaveGroupChat(Map<String, Object> msg);
-
-    /**
-     * group chat消息同步入库
-     * @param msg
-     * @return
-     */
-    boolean saveGroupChat(Map<String, Object> msg);
+    boolean updateReadMsgId(Map<String, Object> map);
 }

@@ -10,8 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.Date;
 
 @Data
-@Document("anyim_chat_msg_chat") //项目启动后会自动创建这张表，以及索引（索引需要打开auto-index-creation开关）
-public class MsgChat {
+@Document("anyim_chat_msg") //项目启动后会自动创建这张表，以及索引（索引需要打开auto-index-creation开关）
+public class MsgDb {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -27,8 +27,11 @@ public class MsgChat {
     @Field("from_client")
     private String fromClient;
 
-    @Field("to_id")
-    private String toId;
+    /**
+     * 消息接收方，如果是单聊就是toId，如果是群聊就是groupId
+     */
+    @Field("to")
+    private String to;
 
     @Field("msg_id")
     @Indexed

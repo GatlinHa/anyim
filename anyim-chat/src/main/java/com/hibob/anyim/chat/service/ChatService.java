@@ -8,7 +8,7 @@ import com.hibob.anyim.chat.dto.request.*;
 
 import com.hibob.anyim.chat.dto.vo.ChatMsgVO;
 import com.hibob.anyim.chat.dto.vo.ChatSessionVO;
-import com.hibob.anyim.chat.entity.MsgChat;
+import com.hibob.anyim.chat.entity.MsgDb;
 import com.hibob.anyim.chat.entity.Session;
 import com.hibob.anyim.chat.mapper.SessionMapper;
 import com.hibob.anyim.common.constants.Const;
@@ -100,7 +100,7 @@ public class ChatService {
             }
         }
 
-        List<MsgChat> msgList = new ArrayList<>();
+        List<MsgDb> msgList = new ArrayList<>();
         if (msgIdInRedis.size() > 0) {
             // 获取每个msgId对应的msg内容
             List<Object> resultRedis = redisTemplate.executePipelined((RedisConnection connection) -> {
@@ -110,7 +110,7 @@ public class ChatService {
                 }
                 return null;
             });
-            msgList = resultRedis.stream().map(obj -> JSON.parseObject((String) obj, MsgChat.class)).collect(Collectors.toList());
+            msgList = resultRedis.stream().map(obj -> JSON.parseObject((String) obj, MsgDb.class)).collect(Collectors.toList());
         }
 
         if (msgIdInMongoDb.size() > 0) {
@@ -277,11 +277,11 @@ public class ChatService {
         return queryMsgFromDB(sessionId, null, null, 0, pageSize, true);
     }
 
-    private List<MsgChat> queryMsgFromDbByIn(String sessionId, List<Long> msgIds) {
+    private List<MsgDb> queryMsgFromDbByIn(String sessionId, List<Long> msgIds) {
         Query query = new Query();
         query.addCriteria(Criteria.where("sessionId").is(sessionId).and("msgId").in(msgIds));
         query.with(Sort.by(Sort.Order.asc("msgId")));
-        List<MsgChat> msgList = mongoTemplate.find(query, MsgChat.class);
+        List<MsgDb> msgList = mongoTemplate.find(query, MsgDb.class);
         return msgList;
     }
 
@@ -294,12 +294,12 @@ public class ChatService {
         if (startTime != null && endTime != null) {
             query.addCriteria(Criteria.where("msgTime").gte(startTime).lt(endTime));
         }
-        long count = mongoTemplate.count(query, MsgChat.class);
+        long count = mongoTemplate.count(query, MsgDb.class);
 
         Sort sort = reverse ? Sort.by(Sort.Order.desc("msgId")) : Sort.by(Sort.Order.asc("msgId"));
         query.with(sort);
         query.limit(pageSize);
-        List<MsgChat> msgList = mongoTemplate.find(query, MsgChat.class);
+        List<MsgDb> msgList = mongoTemplate.find(query, MsgDb.class);
         Object[] array = msgList.stream().map(item -> BeanUtil.copyProperties(item, ChatMsgVO.class)).toArray();
         if (!msgList.isEmpty()) {
             lastMsgId = msgList.get(msgList.size() - 1).getMsgId();  //lastMsgId更新
@@ -312,10 +312,10 @@ public class ChatService {
         return resultMap;
     }
 
-    private MsgChat queryMsgFromDbById(String sessionId, long msgId) {
+    private MsgDb queryMsgFromDbById(String sessionId, long msgId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("sessionId").is(sessionId).and("msgId").is(msgId));
-        List<MsgChat> msgList = mongoTemplate.find(query, MsgChat.class);
+        List<MsgDb> msgList = mongoTemplate.find(query, MsgDb.class);
         return  msgList.size() > 0 ? msgList.get(0) : null;
     }
 
@@ -335,11 +335,11 @@ public class ChatService {
         long msgId = Long.parseLong(split[0]);
         long time = Long.parseLong(split[1]);
         Date currentTime = new Date();
-        MsgChat msg = null;
+        MsgDb msg = null;
         if (currentTime.getTime() - time < msgTtlInRedis * 1000L) {
             Object obj = redisTemplate.opsForValue().get(RedisKey.CHAT_SESSION_MSG_ID_MSG + sessionId + Const.SPLIT_C + msgId);
             if (obj != null) {
-                msg = JSON.parseObject((String) obj, MsgChat.class);
+                msg = JSON.parseObject((String) obj, MsgDb.class);
             }
         }
         else {

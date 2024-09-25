@@ -21,7 +21,7 @@ import static com.hibob.anyim.netty.server.ws.WebSocketServer.getLocalRoute;
 
 
 @Component
-public class HelloProcessor implements MsgProcessor{
+public class HelloProcessor extends MsgProcessor{
 
     @Autowired
     private NacosConfig nacosConfig;

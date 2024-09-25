@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HeartBeatProcessor implements MsgProcessor{
+public class HeartBeatProcessor extends MsgProcessor{
 
     @Override
     public void process(ChannelHandlerContext ctx, Msg msg)  throws Exception{

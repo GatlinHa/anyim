@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hibob.anyim.chat.dto.request.GroupChatHistoryReq;
 import com.hibob.anyim.chat.dto.request.PullGroupChatMsgReq;
-import com.hibob.anyim.chat.entity.MsgGroupChat;
 import com.hibob.anyim.chat.entity.Session;
 import com.hibob.anyim.chat.mapper.SessionMapper;
 import com.hibob.anyim.common.constants.Const;
@@ -123,27 +122,27 @@ public class GroupChatService {
 
 
     private HashMap<String, Object> queryMsgFromDB(String sessionId, Date startTime, Date endTime, long lastMsgId, int pageSize, boolean reverse) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("sessionId").is(sessionId));
-        if (lastMsgId > 0) {
-            query.addCriteria(Criteria.where("msgId").gt(lastMsgId));
-        }
-        if (startTime != null && endTime != null) {
-            query.addCriteria(Criteria.where("msgTime").gte(startTime).lt(endTime));
-        }
-        long count = mongoTemplate.count(query, MsgGroupChat.class);
-
-        Sort sort = reverse ? Sort.by(Sort.Order.desc("msgId")) : Sort.by(Sort.Order.asc("msgId"));
-        query.with(sort);
-        query.limit(pageSize);
-        List<MsgGroupChat> msgList = mongoTemplate.find(query, MsgGroupChat.class);
-        if (!msgList.isEmpty()) {
-            lastMsgId = msgList.get(msgList.size() - 1).getMsgId(); //lastMsgId更新
-        }
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("sessionId").is(sessionId));
+//        if (lastMsgId > 0) {
+//            query.addCriteria(Criteria.where("msgId").gt(lastMsgId));
+//        }
+//        if (startTime != null && endTime != null) {
+//            query.addCriteria(Criteria.where("msgTime").gte(startTime).lt(endTime));
+//        }
+//        long count = mongoTemplate.count(query, MsgGroupChat.class);
+//
+//        Sort sort = reverse ? Sort.by(Sort.Order.desc("msgId")) : Sort.by(Sort.Order.asc("msgId"));
+//        query.with(sort);
+//        query.limit(pageSize);
+//        List<MsgGroupChat> msgList = mongoTemplate.find(query, MsgGroupChat.class);
+//        if (!msgList.isEmpty()) {
+//            lastMsgId = msgList.get(msgList.size() - 1).getMsgId(); //lastMsgId更新
+//        }
         HashMap<String, Object> resultMap = new HashMap<>();
-        resultMap.put("count", count);
-        resultMap.put("lastMsgId", lastMsgId);
-        resultMap.put("msgList", msgList);
+//        resultMap.put("count", count);
+//        resultMap.put("lastMsgId", lastMsgId);
+//        resultMap.put("msgList", msgList);
         return resultMap;
     }
 
