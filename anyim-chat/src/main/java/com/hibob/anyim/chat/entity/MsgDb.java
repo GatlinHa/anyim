@@ -30,8 +30,8 @@ public class MsgDb {
     /**
      * 消息接收方，如果是单聊就是toId，如果是群聊就是groupId
      */
-    @Field("to")
-    private String to;
+    @Field("remote_id")
+    private String remoteId;
 
     @Field("msg_id")
     @Indexed

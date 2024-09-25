@@ -1,9 +1,7 @@
 package com.hibob.anyim.netty.server.processor;
 
 import com.hibob.anyim.netty.protobuf.Msg;
-import com.hibob.anyim.common.rpc.client.RpcClient;
 import io.netty.channel.ChannelHandlerContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.hibob.anyim.common.utils.CommonUtil.combineId;
@@ -13,9 +11,6 @@ import static com.hibob.anyim.common.utils.CommonUtil.combineId;
  */
 @Component
 public class ChatProcessor extends MsgProcessor{
-
-    @Autowired
-    private RpcClient rpcClient;
 
     @Override
     public void process(ChannelHandlerContext ctx, Msg msg)  throws Exception{

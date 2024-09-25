@@ -18,7 +18,6 @@ public class GroupChatProcessor extends MsgProcessor{
 
     @Override
     public void process(ChannelHandlerContext ctx, Msg msg)  throws Exception{
-        String fromId = msg.getBody().getFromId();
         long groupId = msg.getBody().getGroupId();
         List<String> members = rpcClient.getGroupMngRpcService().queryGroupMembers(groupId);
         String sessionId = String.valueOf(groupId);

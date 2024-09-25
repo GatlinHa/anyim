@@ -83,7 +83,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         msgDb.setSessionId(sessionId);
         msgDb.setFromId((String) msg.get("fromId"));
         msgDb.setFromClient((String) msg.get("fromClient"));
-        msgDb.setTo((String) msg.get("to"));
+        msgDb.setRemoteId((String) msg.get("remoteId"));
         msgDb.setMsgId((long) msg.get("msgId"));
         msgDb.setMsgType((int) msg.get("msgType"));
         msgDb.setContent((String) msg.get("content")); //客户端负责加密内容

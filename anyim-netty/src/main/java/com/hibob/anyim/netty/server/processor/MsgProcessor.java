@@ -74,24 +74,24 @@ public abstract class MsgProcessor {
 
     void saveMsg(Msg msg, long msgId) {
         String sessionId = null;
-        String to = null;
+        String remoteId = null;
         if (msg.getHeader().getMsgType() == MsgType.CHAT) {
             String fromId = msg.getBody().getFromId();
             String toId =  msg.getBody().getToId();
-            to = toId;
+            remoteId = toId;
             String[] sorted = sortId(fromId, toId);
             sessionId = combineId(sorted[0], sorted[1]);
         }
         else if (msg.getHeader().getMsgType() == MsgType.GROUP_CHAT) {
-            to = String.valueOf(msg.getBody().getGroupId());
-            sessionId = to;
+            remoteId = String.valueOf(msg.getBody().getGroupId());
+            sessionId = remoteId;
         }
 
         Map<String, Object> msgMap = new HashMap<>();
         msgMap.put("sessionId", sessionId);
         msgMap.put("fromId", msg.getBody().getFromId());
         msgMap.put("fromClient", msg.getBody().getFromClient());
-        msgMap.put("to", to);
+        msgMap.put("remoteId", remoteId);
         msgMap.put("msgId", msgId);
         msgMap.put("msgType", msg.getHeader().getMsgType().getNumber());
         msgMap.put("content", msg.getBody().getContent());
