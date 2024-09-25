@@ -16,9 +16,10 @@ enum MsgType {
   HEART_BEAT = 1; //心跳
   CHAT = 2; //单聊
   GROUP_CHAT = 3; //群聊
-  READ = 4; // 已读
-  DELIVERED = 5; //已发送
-  SENDER_SYNC = 6; //发送端多设备之间同步的消息
+  CHAT_READ = 4; // 单聊已读
+  GROUP_CHAT_READ = 5; // 群聊已读
+  DELIVERED = 6; //已发送
+  SENDER_SYNC = 7; //发送端多设备之间同步的消息
 
   CLOSE_BY_READ_IDLE = 10; //超时关闭
   CLOSE_BY_ERROR_MAGIC = 11; //magic不对关闭

@@ -80,12 +80,13 @@ public final class MsgOuterClass {
       "ap\030\001 \003(\0132;.com.hibob.anyim.netty.protobu" +
       "f.Extension.ExtensionMapEntry\0323\n\021Extensi" +
       "onMapEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\002" +
-      "8\001*\247\001\n\007MsgType\022\t\n\005HELLO\020\000\022\016\n\nHEART_BEAT\020" +
-      "\001\022\010\n\004CHAT\020\002\022\016\n\nGROUP_CHAT\020\003\022\010\n\004READ\020\004\022\r\n" +
-      "\tDELIVERED\020\005\022\017\n\013SENDER_SYNC\020\006\022\026\n\022CLOSE_B" +
-      "Y_READ_IDLE\020\n\022\030\n\024CLOSE_BY_ERROR_MAGIC\020\013\022" +
-      "\013\n\007DEFAULT\020cB\"\n\036com.hibob.anyim.netty.pr" +
-      "otobufP\001b\006proto3"
+      "8\001*\301\001\n\007MsgType\022\t\n\005HELLO\020\000\022\016\n\nHEART_BEAT\020" +
+      "\001\022\010\n\004CHAT\020\002\022\016\n\nGROUP_CHAT\020\003\022\r\n\tCHAT_READ" +
+      "\020\004\022\023\n\017GROUP_CHAT_READ\020\005\022\r\n\tDELIVERED\020\006\022\017" +
+      "\n\013SENDER_SYNC\020\007\022\026\n\022CLOSE_BY_READ_IDLE\020\n\022" +
+      "\030\n\024CLOSE_BY_ERROR_MAGIC\020\013\022\013\n\007DEFAULT\020cB\"" +
+      "\n\036com.hibob.anyim.netty.protobufP\001b\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

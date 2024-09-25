@@ -43,28 +43,36 @@ public enum MsgType
   GROUP_CHAT(3),
   /**
    * <pre>
-   * 已读
+   * 单聊已读
    * </pre>
    *
-   * <code>READ = 4;</code>
+   * <code>CHAT_READ = 4;</code>
    */
-  READ(4),
+  CHAT_READ(4),
+  /**
+   * <pre>
+   * 群聊已读
+   * </pre>
+   *
+   * <code>GROUP_CHAT_READ = 5;</code>
+   */
+  GROUP_CHAT_READ(5),
   /**
    * <pre>
    * 已发送
    * </pre>
    *
-   * <code>DELIVERED = 5;</code>
+   * <code>DELIVERED = 6;</code>
    */
-  DELIVERED(5),
+  DELIVERED(6),
   /**
    * <pre>
    * 发送端多设备之间同步的消息
    * </pre>
    *
-   * <code>SENDER_SYNC = 6;</code>
+   * <code>SENDER_SYNC = 7;</code>
    */
-  SENDER_SYNC(6),
+  SENDER_SYNC(7),
   /**
    * <pre>
    * 超时关闭
@@ -131,28 +139,36 @@ public enum MsgType
   public static final int GROUP_CHAT_VALUE = 3;
   /**
    * <pre>
-   * 已读
+   * 单聊已读
    * </pre>
    *
-   * <code>READ = 4;</code>
+   * <code>CHAT_READ = 4;</code>
    */
-  public static final int READ_VALUE = 4;
+  public static final int CHAT_READ_VALUE = 4;
+  /**
+   * <pre>
+   * 群聊已读
+   * </pre>
+   *
+   * <code>GROUP_CHAT_READ = 5;</code>
+   */
+  public static final int GROUP_CHAT_READ_VALUE = 5;
   /**
    * <pre>
    * 已发送
    * </pre>
    *
-   * <code>DELIVERED = 5;</code>
+   * <code>DELIVERED = 6;</code>
    */
-  public static final int DELIVERED_VALUE = 5;
+  public static final int DELIVERED_VALUE = 6;
   /**
    * <pre>
    * 发送端多设备之间同步的消息
    * </pre>
    *
-   * <code>SENDER_SYNC = 6;</code>
+   * <code>SENDER_SYNC = 7;</code>
    */
-  public static final int SENDER_SYNC_VALUE = 6;
+  public static final int SENDER_SYNC_VALUE = 7;
   /**
    * <pre>
    * 超时关闭
@@ -203,9 +219,10 @@ public enum MsgType
       case 1: return HEART_BEAT;
       case 2: return CHAT;
       case 3: return GROUP_CHAT;
-      case 4: return READ;
-      case 5: return DELIVERED;
-      case 6: return SENDER_SYNC;
+      case 4: return CHAT_READ;
+      case 5: return GROUP_CHAT_READ;
+      case 6: return DELIVERED;
+      case 7: return SENDER_SYNC;
       case 10: return CLOSE_BY_READ_IDLE;
       case 11: return CLOSE_BY_ERROR_MAGIC;
       case 99: return DEFAULT;

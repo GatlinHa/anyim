@@ -225,4 +225,14 @@ public abstract class MsgProcessor {
             }
         }
     }
+
+
+    void updateReadMsgId(String fromId, String sessionId, String readMsgId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("account", fromId);
+        map.put("sessionId", sessionId);
+        map.put("readMsgId", readMsgId);
+        map.put("readTime", new Date());
+        rpcClient.getChatRpcService().updateReadMsgId(map);
+    }
 }
