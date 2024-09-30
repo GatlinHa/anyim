@@ -94,7 +94,7 @@ public abstract class MsgProcessor {
         msgMap.put("remoteId", remoteId);
         msgMap.put("msgId", msgId);
         msgMap.put("msgType", msg.getHeader().getMsgType().getNumber());
-        msgMap.put("content", msg.getBody().getContent());
+        msgMap.put("content", CommonUtil.truncate(msg.getBody().getContent(), Const.MSG_CONTENT_LIMIT));
         msgMap.put("msgTime", new Date());
         //TODO RPC的能力有限，后面还是要考虑换成MQ
         rpcClient.getChatRpcService().asyncSaveMsg(msgMap);
