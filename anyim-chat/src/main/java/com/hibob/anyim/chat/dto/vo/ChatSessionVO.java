@@ -26,6 +26,9 @@ public class ChatSessionVO {
     @ApiModelProperty(value = "已读时间")
     private Date readTime;
 
+    @ApiModelProperty(value = "对方已读到哪条消息了")
+    private long remoteRead;
+
     @ApiModelProperty(value = "最后一条消息的MsgId")
     private long lastMsgId;
 

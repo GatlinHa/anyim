@@ -227,6 +227,12 @@ public abstract class MsgProcessor {
     }
 
 
+    /**
+     * 发送已读消息时，入库保存
+     * @param fromId
+     * @param sessionId
+     * @param readMsgId
+     */
     void updateReadMsgId(String fromId, String sessionId, String readMsgId) {
         Map<String, Object> map = new HashMap<>();
         map.put("account", fromId);
@@ -234,5 +240,19 @@ public abstract class MsgProcessor {
         map.put("readMsgId", readMsgId);
         map.put("readTime", new Date());
         rpcClient.getChatRpcService().updateReadMsgId(map);
+    }
+
+    /**
+     * 收到对方的已读消息时，入库保存
+     * @param toId
+     * @param sessionId
+     * @param remoteRead
+     */
+    void updateRemoteRead(String toId, String sessionId, String remoteRead) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("account", toId);
+        map.put("sessionId", sessionId);
+        map.put("remoteRead", remoteRead);
+        rpcClient.getChatRpcService().updateRemoteRead(map);
     }
 }

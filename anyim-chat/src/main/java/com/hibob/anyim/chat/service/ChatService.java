@@ -166,6 +166,7 @@ public class ChatService {
             }
             vo.setReadMsgId(item.getReadMsgId());
             vo.setReadTime(item.getReadTime());
+            vo.setRemoteRead(item.getRemoteRead());
             vo.setTop(item.isTop());
             vo.setMuted(item.isMuted());
             vo.setDraft(item.getDraft());
@@ -252,6 +253,7 @@ public class ChatService {
         vo.setSessionType(session.getSessionType());
         vo.setRemoteId(session.getRemoteId());
         vo.setReadMsgId(session.getReadMsgId());
+        vo.setRemoteRead(session.getRemoteRead());
         vo.setReadTime(session.getReadTime());
         vo.setTop(session.isTop());
         vo.setMuted(session.isMuted());
