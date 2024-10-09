@@ -5,6 +5,25 @@
 package com.hibob.anyim.netty.protobuf;
 
 /**
+ * <pre>
+ * *
+ * 每种消息需要携带的字段规定：M必须，o非必须，-不带
+ * NO       filed      HELLO  HEART_BEAT  CHAT  GROUP_CHAT  CHAT_READ  GROUP_CHAT_READ  DELIVERED  SENDER_SYNC  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
+ * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+------------+-------------------+---------------------+
+ * | 1  | fromId       |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
+ * | 2  | fromClient   |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
+ * | 3  | toId         |   -  |    -      |  M  |     O     |     M    |        O       |    -     |     M      |       todo        |         todo        |
+ * | 4  | toClient     |   -  |    -      |  O  |     O     |     O    |        O       |    -     |     M      |       todo        |         todo        |
+ * | 5  | groupId      |   -  |    -      |  -  |     M     |     -    |        M       |    -     |     -      |       todo        |         todo        |
+ * | 6  | msgId        |   -  |    -      |  O  |     O     |     O    |        O       |    M     |     O      |       todo        |         todo        |
+ * | 7  | seq(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |     -      |       todo        |         todo        |
+ * | 8  | ack(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |     -      |       todo        |         todo        |
+ * | 9  | content      |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
+ * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |     O      |       todo        |         todo        |
+ * | 11 | sessionId    |   -  |    -      |  -  |     -     |     -    |        -       |    M     |     M      |       todo        |         todo        |
+ * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+------------+-------------------+---------------------+
+ * </pre>
+ *
  * Protobuf type {@code com.hibob.anyim.netty.protobuf.Body}
  */
 public final class Body extends
@@ -796,6 +815,25 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * *
+   * 每种消息需要携带的字段规定：M必须，o非必须，-不带
+   * NO       filed      HELLO  HEART_BEAT  CHAT  GROUP_CHAT  CHAT_READ  GROUP_CHAT_READ  DELIVERED  SENDER_SYNC  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
+   * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+------------+-------------------+---------------------+
+   * | 1  | fromId       |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
+   * | 2  | fromClient   |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
+   * | 3  | toId         |   -  |    -      |  M  |     O     |     M    |        O       |    -     |     M      |       todo        |         todo        |
+   * | 4  | toClient     |   -  |    -      |  O  |     O     |     O    |        O       |    -     |     M      |       todo        |         todo        |
+   * | 5  | groupId      |   -  |    -      |  -  |     M     |     -    |        M       |    -     |     -      |       todo        |         todo        |
+   * | 6  | msgId        |   -  |    -      |  O  |     O     |     O    |        O       |    M     |     O      |       todo        |         todo        |
+   * | 7  | seq(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |     -      |       todo        |         todo        |
+   * | 8  | ack(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |     -      |       todo        |         todo        |
+   * | 9  | content      |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
+   * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |     O      |       todo        |         todo        |
+   * | 11 | sessionId    |   -  |    -      |  -  |     -     |     -    |        -       |    M     |     M      |       todo        |         todo        |
+   * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+------------+-------------------+---------------------+
+   * </pre>
+   *
    * Protobuf type {@code com.hibob.anyim.netty.protobuf.Body}
    */
   public static final class Builder extends

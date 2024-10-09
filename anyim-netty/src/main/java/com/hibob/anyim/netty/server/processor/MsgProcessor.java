@@ -45,6 +45,12 @@ public abstract class MsgProcessor {
 
     public abstract void process(ChannelHandlerContext ctx, Msg msg) throws Exception;
 
+    /**
+     * 计算生成msgId
+     * @param ctx
+     * @param sessionId
+     * @return
+     */
     long computeMsgId(ChannelHandlerContext ctx, String sessionId) {
         String msgIdKey = RedisKey.NETTY_REF_MSG_ID + sessionId;
         long refMsgId;
@@ -72,6 +78,11 @@ public abstract class MsgProcessor {
         return msgId;
     }
 
+    /**
+     * 消息入库，当前采用服务方异步入库，因此不支持等待回调结果。
+     * @param msg
+     * @param msgId
+     */
     void saveMsg(Msg msg, long msgId) {
         String sessionId = null;
         String remoteId = null;
@@ -100,20 +111,27 @@ public abstract class MsgProcessor {
         rpcClient.getChatRpcService().asyncSaveMsg(msgMap);
     }
 
+    /**
+     * 回复已送达
+     * @param ctx
+     * @param msg
+     * @param sessionId
+     * @param msgId
+     */
     void sendDeliveredMsg(ChannelHandlerContext ctx, Msg msg, String sessionId, Long msgId) {
-        Header readMsgheader = Header.newBuilder()
+        Header header = Header.newBuilder()
                 .setMagic(Const.MAGIC)
                 .setVersion(0)
                 .setMsgType(MsgType.DELIVERED)
                 .setIsExtension(false)
                 .build();
-        Body readMsgBody = Body.newBuilder()
+        Body body = Body.newBuilder()
                 .setSessionId(sessionId)
                 .setTempMsgId(msg.getBody().getTempMsgId())
                 .setMsgId(msgId)
                 .build();
-        Msg readMsg = Msg.newBuilder().setHeader(readMsgheader).setBody(readMsgBody).build();
-        ctx.writeAndFlush(readMsg);
+        Msg deliveredMsg = Msg.newBuilder().setHeader(header).setBody(body).build();
+        ctx.writeAndFlush(deliveredMsg);
     }
 
     Set<Object> queryOnlineClient(String account) {
@@ -174,7 +192,6 @@ public abstract class MsgProcessor {
         Set<Object> toOnlineClients = queryOnlineClient(toId);
         for (Object toUniqueId : toOnlineClients) {
             Msg msgOut = Msg.newBuilder(msg).setBody(msg.getBody().toBuilder()
-                    .setToId(toId)
                     .setToClient(((String) toUniqueId).split(SPLIT_V)[1])
                     .setMsgId(msgId)
                     .build()).build();
