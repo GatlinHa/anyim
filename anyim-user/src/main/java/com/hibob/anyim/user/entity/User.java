@@ -33,8 +33,8 @@ public class User extends Model<User> {
     @TableField("password")
     private String password;
 
-    @TableField("sex")
-    private int sex;
+    @TableField("gender")
+    private int gender;
 
     @TableField("level")
     private int level;

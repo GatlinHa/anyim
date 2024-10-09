@@ -21,7 +21,7 @@ public class UserVO {
     private String avatarThumb;
 
     @ApiModelProperty(value = "性别")
-    private int sex;
+    private int gender;
 
     @ApiModelProperty(value = "级别")
     private int level;

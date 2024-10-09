@@ -266,7 +266,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         if (StringUtils.hasLength(dto.getNickName())) updateWrapper.set(User::getNickName, dto.getNickName());
         if (StringUtils.hasLength(dto.getAvatar())) updateWrapper.set(User::getAvatar, dto.getAvatar());
         if (StringUtils.hasLength(dto.getAvatarThumb())) updateWrapper.set(User::getAvatarThumb, dto.getAvatarThumb());
-        if (dto.getSex() != 0) updateWrapper.set(User::getSex, dto.getSex());
+        if (dto.getGender() != 0) updateWrapper.set(User::getGender, dto.getGender());
         if (dto.getLevel() != 0) updateWrapper.set(User::getLevel, dto.getLevel());
         if (StringUtils.hasLength(dto.getSignature())) updateWrapper.set(User::getSignature, dto.getSignature());
         if (StringUtils.hasLength(dto.getPhoneNum())) updateWrapper.set(User::getPhoneNum, dto.getPhoneNum());

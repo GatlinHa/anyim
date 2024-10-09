@@ -7,7 +7,7 @@ CREATE TABLE `anyim_user_info`(
     `avatar` VARCHAR(255) DEFAULT '' COMMENT '用户头像',
     `avatar_thumb` VARCHAR(255) DEFAULT '' COMMENT '用户头像缩略图',
     `password` VARCHAR(255) NOT NULL COMMENT '密码',
-    `sex`  TINYINT(1) DEFAULT 0 COMMENT '性别 0:默认值（无效） 1:男 2:女',
+    `gender`  TINYINT(1) DEFAULT 0 COMMENT '性别 0:默认值（无效） 1:男 2:女',
     `level`  TINYINT(1) DEFAULT 1 COMMENT '用户级别 1:普通用户 其他TODO',
     `signature` VARCHAR(1024) DEFAULT '' COMMENT '个性签名',
     `phone_num` VARCHAR(20) DEFAULT '' COMMENT '手机号码',
