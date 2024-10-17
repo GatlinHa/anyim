@@ -227,13 +227,28 @@ public class ChatService {
         String remoteId = dto.getRemoteId();
         int sessionType = dto.getSessionType();
 
-        Session session = new Session();
-        session.setAccount(account);
-        session.setSessionId(sessionId);
-        session.setRemoteId(remoteId);
-        session.setSessionType(sessionType);
-        int insert = sessionMapper.insert(session);
-        if (insert > 0) {
+        LambdaQueryWrapper<Session> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Session::getAccount, account)
+                .eq(Session::getSessionId, sessionId);
+        // 这里是读多写少场景，优先用主键查询确认接下来是update还是insert，这样更快
+        int result;
+        if (sessionMapper.selectOne(queryWrapper) != null) {
+            LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
+            updateWrapper.eq(Session::getAccount, account)
+                    .eq(Session::getSessionId, sessionId)
+                    .set(Session::getDelFlag, false);
+            result = sessionMapper.update(updateWrapper);
+        }
+        else {
+            Session session = new Session();
+            session.setAccount(account);
+            session.setSessionId(sessionId);
+            session.setRemoteId(remoteId);
+            session.setSessionType(sessionType);
+            result = sessionMapper.insert(session);
+        }
+
+        if (result > 0) {
             return ResultUtil.success(querySession(account, sessionId));
         }
         else {
