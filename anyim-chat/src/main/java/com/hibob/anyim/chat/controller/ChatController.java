@@ -65,4 +65,10 @@ public class ChatController {
         return chatService.createSession(dto);
     }
 
+    @ApiOperation(value = "删除一个会话记录", notes = "删除一个会话记录")
+    @CommonHeader
+    @PostMapping("/deleteSession")
+    public ResponseEntity<IMHttpResponse> deleteSession(@Valid @RequestBody DeleteSessionReq dto) {
+        return chatService.deleteSession(dto);
+    }
 }

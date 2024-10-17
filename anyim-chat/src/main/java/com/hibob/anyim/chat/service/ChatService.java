@@ -243,6 +243,18 @@ public class ChatService {
         }
     }
 
+    public ResponseEntity<IMHttpResponse> deleteSession(DeleteSessionReq dto) {
+        ReqSession reqSession = ReqSession.getSession();
+        String account = reqSession.getAccount();
+        String sessionId = dto.getSessionId();
+
+        LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(Session::getAccount, account)
+                .eq(Session::getSessionId, sessionId);
+        sessionMapper.delete(updateWrapper);
+        return ResultUtil.success();
+    }
+
     private ChatSessionVO querySession(String account, String sessionId) {
         LambdaQueryWrapper<Session> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Session::getAccount, account).eq(Session::getSessionId, sessionId);

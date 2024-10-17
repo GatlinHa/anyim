@@ -49,7 +49,7 @@ public class User extends Model<User> {
     private String email;
 
     @TableField("birthday")
-    private String birthday;
+    private Date birthday;
 
     @TableField("created_time")
     private Date createdTime;
