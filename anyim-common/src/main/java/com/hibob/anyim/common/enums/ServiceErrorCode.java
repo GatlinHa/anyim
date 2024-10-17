@@ -43,6 +43,8 @@ public enum ServiceErrorCode {
 
     ERROR_CHAT_PULL_MSG(Const.SERVICE_CODE_CHAT + 4, "拉取消息异常"),
 
+    ERROR_CHAT_DELETE_SESSION(Const.SERVICE_CODE_CHAT + 5, "删除session异常"),
+
     ERROR_GROUP_MNG_NOT_ENOUGH_MEMBER(Const.SERVICE_CODE_GROUP_MNG + 1, "成员数不够"),
 
     ERROR_GROUP_MNG_NOT_IN_GROUP(Const.SERVICE_CODE_GROUP_MNG + 2, "用户不在群组中"),

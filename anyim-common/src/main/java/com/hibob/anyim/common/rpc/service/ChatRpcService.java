@@ -24,5 +24,4 @@ public interface ChatRpcService {
 
     boolean updateReadMsgId(Map<String, Object> map);
 
-    boolean updateRemoteRead(Map<String, Object> map);
 }

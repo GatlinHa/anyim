@@ -21,6 +21,5 @@ public class ChatReadProcessor extends MsgProcessor{
         syncOtherClients(msg, sessionId, msgId); // 扩散给自己的其他客户端
         sendToClients(msg, toId, msgId); // 扩散给接收端的（多个）客户端
         updateReadMsgId(fromId, sessionId, msg.getBody().getContent()); // 已读消息不入库，只记录最新的已读消息
-        updateRemoteRead(toId, sessionId, msg.getBody().getContent());
     }
 }

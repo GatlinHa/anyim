@@ -147,9 +147,7 @@ public class ChatService {
     public ResponseEntity<IMHttpResponse> sessionList(ChatSessionListReq dto) {
         ReqSession reqSession = ReqSession.getSession();
         String account = reqSession.getAccount();
-        LambdaQueryWrapper<Session> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(Session::getAccount, account);
-        List<Session> sessionList = sessionMapper.selectList(queryWrapper);
+        List<Session> sessionList = sessionMapper.selectSessionList(account);
         Map<String, ChatSessionVO> voMap = new HashMap<>();
         List<String> toAccountList = new ArrayList<>();
         List<Long> groupIdList = new ArrayList<>();
@@ -248,18 +246,22 @@ public class ChatService {
         String account = reqSession.getAccount();
         String sessionId = dto.getSessionId();
 
+        // 这里采用软删除的方式
         LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.eq(Session::getAccount, account)
-                .eq(Session::getSessionId, sessionId);
-        sessionMapper.delete(updateWrapper);
-        return ResultUtil.success();
+                .eq(Session::getSessionId, sessionId)
+                .set(Session::getDelFlag, true);
+        int update = sessionMapper.update(updateWrapper);
+        if (update > 0) {
+            return ResultUtil.success();
+        }
+        else {
+            return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_DELETE_SESSION);
+        }
     }
 
     private ChatSessionVO querySession(String account, String sessionId) {
-        LambdaQueryWrapper<Session> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(Session::getAccount, account).eq(Session::getSessionId, sessionId);
-        Session session = sessionMapper.selectOne(queryWrapper);
-
+        Session session = sessionMapper.selectSession(account, sessionId);
         ChatSessionVO vo = new ChatSessionVO();
         vo.setSessionId(session.getSessionId());
         vo.setSessionType(session.getSessionType());

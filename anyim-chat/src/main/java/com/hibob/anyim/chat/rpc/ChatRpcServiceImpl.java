@@ -140,12 +140,4 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         return sessionMapper.update(updateWrapper) > 0;
     }
 
-    @Override
-    public boolean updateRemoteRead(Map<String, Object> map) {
-        LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
-        updateWrapper.eq(Session::getAccount, map.get("account"))
-                .eq(Session::getSessionId, map.get("sessionId"))
-                .set(Session::getRemoteRead, map.get("remoteRead"));
-        return sessionMapper.update(updateWrapper) > 0;
-    }
 }

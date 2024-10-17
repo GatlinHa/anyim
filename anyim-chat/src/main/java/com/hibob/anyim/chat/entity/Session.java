@@ -32,9 +32,6 @@ public class Session {
     @TableField(value = "read_time")
     private Date readTime;
 
-    @TableField(value = "remote_read")
-    private long remoteRead;
-
     @TableField(value = "top")
     private boolean top;
 
@@ -43,4 +40,10 @@ public class Session {
 
     @TableField(value = "draft")
     private String draft;
+
+    @TableField(value = "del_flag")
+    private String delFlag;
+
+    @TableField(value = "remote_read", exist = false)
+    private long remoteRead;
 }
