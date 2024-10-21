@@ -14,7 +14,7 @@ public interface UserStatusMapper extends BaseMapper<UserStatus> {
     @Select("<script>" +
             " SELECT " +
             " <foreach item='account' index='index' collection='accounts' open='' separator=', ' close=''> " +
-            "   MAX(CASE WHEN account = #{account} THEN STATUS END) AS #{account} " +
+            "   MAX(CASE WHEN account = #{account} THEN status END) AS #{account} " +
             " </foreach> " +
             " FROM anyim_user_status " +
             " WHERE account in " +
@@ -24,4 +24,10 @@ public interface UserStatusMapper extends BaseMapper<UserStatus> {
             " GROUP BY account " +
             "</script>")
     Map<String, Integer> queryStatusByAccountList(List<String> accounts);
+
+    @Select("SELECT account, MAX(status) AS status " +
+            " FROM anyim_user_status " +
+            " WHERE account = #{account} " +
+            " LIMIT 1 ")
+    UserStatus queryStatus(String account);
 }

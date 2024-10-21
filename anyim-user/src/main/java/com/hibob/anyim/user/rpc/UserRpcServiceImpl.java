@@ -62,7 +62,10 @@ public class UserRpcServiceImpl implements UserRpcService {
         List<User> users = userMapper.selectList(queryWrapper);
         if (users.size() > 0) {
             try {
-                UserVO vo = BeanUtil.copyProperties(users.get(0), UserVO.class);
+                User user = users.get(0);
+                UserStatus userStatus = userStatusMapper.queryStatus(account);
+                user.setStatus(userStatus == null ? ConnectStatus.OFFLINE.getValue() : userStatus.getStatus());
+                UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
                 return BeanUtil.objectToMap(vo);
             } catch (IllegalAccessException e) {
                 log.error("UserRpcServiceImpl::queryUserInfo type conversion error......exception: {}", e.getMessage());

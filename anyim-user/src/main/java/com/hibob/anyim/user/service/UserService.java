@@ -244,7 +244,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
 
         // 查询用户连接状态，如果查不到，这里默认为online
-        UserStatus userStatus = getUserStatus(account);
+        UserStatus userStatus = userStatusMapper.queryStatus(account);
         user.setStatus(userStatus == null ? ConnectStatus.ONLINE.getValue() : userStatus.getStatus());
         // 把User对象转成返回对象
         UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
@@ -292,7 +292,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
 
         // 查询用户连接状态，如果查不到，这里默认为offline
-        UserStatus userStatus = getUserStatus(dto.getAccount());
+        UserStatus userStatus = userStatusMapper.queryStatus(dto.getAccount());
         user.setStatus(userStatus == null ? ConnectStatus.OFFLINE.getValue() : userStatus.getStatus());
 
         // 把User对象转成返回对象
@@ -340,20 +340,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(User::getAccount, account);
         return this.getOne(queryWrapper);
-    }
-
-    private UserStatus getUserStatus(String account) {
-        LambdaQueryWrapper<UserStatus> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(UserStatus::getAccount, account);
-        queryWrapper.orderByDesc(UserStatus::getStatus);
-        queryWrapper.last("limit 1");
-        List<UserStatus> list = userStatusMapper.selectList(queryWrapper);
-        if (list.size() > 0) {
-            return list.get(0);
-        }
-        else {
-            return null;
-        }
     }
 
     private Client getOneByUniqueId(String uniqueId) {
