@@ -38,4 +38,7 @@ public class UserVO {
     @ApiModelProperty(value = "生日")
     private String birthday;
 
+    @ApiModelProperty(value = "状态")
+    private int status;
+
 }

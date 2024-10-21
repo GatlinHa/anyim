@@ -1,15 +1,19 @@
 package com.hibob.anyim.user.rpc;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.hibob.anyim.common.enums.ConnectStatus;
 import com.hibob.anyim.common.rpc.service.UserRpcService;
 import com.hibob.anyim.common.config.JwtProperties;
 import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.user.dto.vo.UserVO;
 import com.hibob.anyim.user.entity.Login;
 import com.hibob.anyim.user.entity.User;
+import com.hibob.anyim.user.entity.UserStatus;
 import com.hibob.anyim.user.mapper.LoginMapper;
 import com.hibob.anyim.user.mapper.UserMapper;
+import com.hibob.anyim.user.mapper.UserStatusMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -28,6 +32,7 @@ public class UserRpcServiceImpl implements UserRpcService {
     private final JwtProperties jwtProperties;
     private final LoginMapper loginMapper;
     private final UserMapper userMapper;
+    private final UserStatusMapper userStatusMapper;
 
     @Override
     public List<String> queryOnline(String account) {
@@ -73,9 +78,16 @@ public class UserRpcServiceImpl implements UserRpcService {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.in(User::getAccount, accountList.toArray());
         List<User> users = userMapper.selectList(queryWrapper);
+        Map<String, Integer> statusMap = userStatusMapper.queryStatusByAccountList(accountList);
         Map<String, Map<String, Object>> result = new HashMap();
         try {
             for (User user : users) {
+                if (statusMap == null || statusMap.get(user.getAccount()) == null) {
+                    user.setStatus(ConnectStatus.OFFLINE.getValue());
+                }
+                else {
+                    user.setStatus(statusMap.get(user.getAccount()));
+                }
                 // 把User对象转成返回对象
                 UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
                 result.put(user.getAccount(), BeanUtil.objectToMap(vo));
@@ -86,4 +98,28 @@ public class UserRpcServiceImpl implements UserRpcService {
         return result;
     }
 
+    @Override
+    public boolean updateUserStatus(String account, String uniqueId, ConnectStatus status) {
+        log.info("UserRpcServiceImpl::updateUserStatus start......");
+
+        // 先查询，没有就插入，有则更新
+        LambdaQueryWrapper<UserStatus> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(UserStatus::getAccount, account)
+                .eq(UserStatus::getUniqueId, uniqueId);
+        UserStatus userStatus = userStatusMapper.selectOne(queryWrapper);
+        if (userStatus == null) {
+            userStatus = new UserStatus();
+            userStatus.setAccount(account);
+            userStatus.setUniqueId(uniqueId);
+            userStatus.setStatus(status.getValue());
+            return userStatusMapper.insert(userStatus) > 0;
+        }
+        else {
+            LambdaUpdateWrapper<UserStatus> updateWrapper = Wrappers.lambdaUpdate();
+            updateWrapper.eq(UserStatus::getAccount, account)
+                    .eq(UserStatus::getUniqueId, uniqueId)
+                    .set(UserStatus::getStatus, status.getValue());
+            return userStatusMapper.update(updateWrapper) > 0;
+        }
+    }
 }

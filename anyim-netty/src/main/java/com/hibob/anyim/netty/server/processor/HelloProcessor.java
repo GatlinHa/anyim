@@ -2,6 +2,8 @@ package com.hibob.anyim.netty.server.processor;
 
 import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
+import com.hibob.anyim.common.enums.ConnectStatus;
+import com.hibob.anyim.common.rpc.client.RpcClient;
 import com.hibob.anyim.common.utils.CommonUtil;
 import com.hibob.anyim.netty.config.NacosConfig;
 import com.hibob.anyim.netty.protobuf.Header;
@@ -29,6 +31,9 @@ public class HelloProcessor extends MsgProcessor{
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    private RpcClient rpcClient;
+
     @Override
     public void process(ChannelHandlerContext ctx, Msg msg)  throws Exception{
         writeCache(ctx);
@@ -51,5 +56,6 @@ public class HelloProcessor extends MsgProcessor{
         redisTemplate.opsForSet().add(onlineKey, uniqueId);
         redisTemplate.expire(onlineKey, Duration.ofSeconds(Const.CACHE_ONLINE_EXPIRE)); //设置缓存过期时间，防止数据长时间不老化，导致与数据库不一致
         getLocalRoute().put(routeKey, ctx.channel());
+        rpcClient.getUserRpcService().updateUserStatus(account, uniqueId, ConnectStatus.ONLINE);
     }
 }

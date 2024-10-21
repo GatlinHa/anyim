@@ -57,4 +57,7 @@ public class User extends Model<User> {
     @TableField("update_time")
     private Date updateTime;
 
+    @TableField(value = "status", exist = false)
+    private int status;
+
 }

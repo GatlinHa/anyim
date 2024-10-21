@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hibob.anyim.common.constants.RedisKey;
+import com.hibob.anyim.common.enums.ConnectStatus;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.common.utils.CommonUtil;
@@ -18,11 +19,13 @@ import com.hibob.anyim.user.entity.Client;
 import com.hibob.anyim.user.entity.Login;
 import com.hibob.anyim.user.entity.User;
 import com.hibob.anyim.common.enums.ServiceErrorCode;
+import com.hibob.anyim.user.entity.UserStatus;
 import com.hibob.anyim.user.mapper.ClientMapper;
 import com.hibob.anyim.user.mapper.LoginMapper;
 import com.hibob.anyim.user.mapper.UserMapper;
 import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.config.JwtProperties;
+import com.hibob.anyim.user.mapper.UserStatusMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,10 +36,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -49,6 +50,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ClientMapper clientMapper;
     private final LoginMapper loginMapper;
+    private final UserStatusMapper userStatusMapper;
 
     public ResponseEntity<IMHttpResponse> validateAccount(ValidateAccountReq dto) {
         log.info("UserService::validateAccount");
@@ -241,6 +243,9 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             return ResultUtil.error(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        // 查询用户连接状态，如果查不到，这里默认为online
+        UserStatus userStatus = getUserStatus(account);
+        user.setStatus(userStatus == null ? ConnectStatus.ONLINE.getValue() : userStatus.getStatus());
         // 把User对象转成返回对象
         UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
         if (vo == null) {
@@ -286,6 +291,10 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             return ResultUtil.success();
         }
 
+        // 查询用户连接状态，如果查不到，这里默认为offline
+        UserStatus userStatus = getUserStatus(dto.getAccount());
+        user.setStatus(userStatus == null ? ConnectStatus.OFFLINE.getValue() : userStatus.getStatus());
+
         // 把User对象转成返回对象
         UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
         if (vo == null) {
@@ -303,9 +312,23 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.like(User::getNickName, nickNameKeyWords);
         List<User> lists = this.list(queryWrapper);
+        List<String> accountList = lists.stream().map(User::getAccount).collect(Collectors.toList());
+        Map<String, Integer> statusMap;
+        if (accountList.size() > 0) {
+            statusMap = userStatusMapper.queryStatusByAccountList(accountList);
+        } else {
+            statusMap = null;
+        }
 
         List<UserVO> voList = new ArrayList<>();
         lists.forEach(user -> {
+            if (statusMap == null || statusMap.get(user.getAccount()) == null) {
+                // 如果用户连接状态查不到，这里默认为offline
+                user.setStatus(ConnectStatus.OFFLINE.getValue());
+            }
+            else {
+                user.setStatus(statusMap.get(user.getAccount()));
+            }
             UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
             voList.add(vo);
         });
@@ -317,6 +340,20 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(User::getAccount, account);
         return this.getOne(queryWrapper);
+    }
+
+    private UserStatus getUserStatus(String account) {
+        LambdaQueryWrapper<UserStatus> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(UserStatus::getAccount, account);
+        queryWrapper.orderByDesc(UserStatus::getStatus);
+        queryWrapper.last("limit 1");
+        List<UserStatus> list = userStatusMapper.selectList(queryWrapper);
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+        else {
+            return null;
+        }
     }
 
     private Client getOneByUniqueId(String uniqueId) {
