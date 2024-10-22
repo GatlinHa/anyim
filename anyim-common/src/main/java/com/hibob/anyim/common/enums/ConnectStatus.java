@@ -15,6 +15,15 @@ public enum ConnectStatus {
     */
     private final int value;
 
+    public static ConnectStatus fromValue(int value) {
+        for (ConnectStatus status : ConnectStatus.values()) {
+            if (status.value == value) {
+                return status;
+            }
+        }
+        return null;
+    }
+
     public int getValue() {
         return value;
     }

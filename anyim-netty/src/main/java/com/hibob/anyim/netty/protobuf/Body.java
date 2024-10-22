@@ -22,20 +22,20 @@ package com.hibob.anyim.netty.protobuf;
  * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |     O      |       todo        |         todo        |
  * | 11 | sessionId    |   -  |    -      |  -  |     -     |     -    |        -       |    M     |     M      |       todo        |         todo        |
  * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+------------+-------------------+---------------------+
- * NO       filed      STATUS_SYNC
- * +----+--------------+--------------+
- * | 1  | fromId       |       M      |
- * | 2  | fromClient   |       M      |
- * | 3  | toId         |       -      |
- * | 4  | toClient     |       -      |
- * | 5  | groupId      |       -      |
- * | 6  | msgId        |       -      |
- * | 7  | seq(todo)    |       -      |
- * | 8  | ack(todo)    |       -      |
- * | 9  | content      |       M      |
- * | 10 | tempMsgId    |       -      |
- * | 11 | sessionId    |       O      |
- * +----+--------------+---------------+
+ * NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC
+ * +----+--------------+------------+------------+------------+
+ * | 1  | fromId       |      M     |      M     |      M     |
+ * | 2  | fromClient   |      M     |      M     |      M     |
+ * | 3  | toId         |      -     |      -     |      -     |
+ * | 4  | toClient     |      -     |      -     |      -     |
+ * | 5  | groupId      |      -     |      -     |      -     |
+ * | 6  | msgId        |      -     |      -     |      -     |
+ * | 7  | seq(todo)    |      -     |      -     |      -     |
+ * | 8  | ack(todo)    |      -     |      -     |      -     |
+ * | 9  | content      |      M     |      M     |      M     |
+ * | 10 | tempMsgId    |      -     |      -     |      -     |
+ * | 11 | sessionId    |      -     |      -     |      -     |
+ * +----+--------------+------------+------------+------------+
  * </pre>
  *
  * Protobuf type {@code com.hibob.anyim.netty.protobuf.Body}
@@ -846,20 +846,20 @@ private static final long serialVersionUID = 0L;
    * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |     O      |       todo        |         todo        |
    * | 11 | sessionId    |   -  |    -      |  -  |     -     |     -    |        -       |    M     |     M      |       todo        |         todo        |
    * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+------------+-------------------+---------------------+
-   * NO       filed      STATUS_SYNC
-   * +----+--------------+--------------+
-   * | 1  | fromId       |       M      |
-   * | 2  | fromClient   |       M      |
-   * | 3  | toId         |       -      |
-   * | 4  | toClient     |       -      |
-   * | 5  | groupId      |       -      |
-   * | 6  | msgId        |       -      |
-   * | 7  | seq(todo)    |       -      |
-   * | 8  | ack(todo)    |       -      |
-   * | 9  | content      |       M      |
-   * | 10 | tempMsgId    |       -      |
-   * | 11 | sessionId    |       O      |
-   * +----+--------------+---------------+
+   * NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC
+   * +----+--------------+------------+------------+------------+
+   * | 1  | fromId       |      M     |      M     |      M     |
+   * | 2  | fromClient   |      M     |      M     |      M     |
+   * | 3  | toId         |      -     |      -     |      -     |
+   * | 4  | toClient     |      -     |      -     |      -     |
+   * | 5  | groupId      |      -     |      -     |      -     |
+   * | 6  | msgId        |      -     |      -     |      -     |
+   * | 7  | seq(todo)    |      -     |      -     |      -     |
+   * | 8  | ack(todo)    |      -     |      -     |      -     |
+   * | 9  | content      |      M     |      M     |      M     |
+   * | 10 | tempMsgId    |      -     |      -     |      -     |
+   * | 11 | sessionId    |      -     |      -     |      -     |
+   * +----+--------------+------------+------------+------------+
    * </pre>
    *
    * Protobuf type {@code com.hibob.anyim.netty.protobuf.Body}

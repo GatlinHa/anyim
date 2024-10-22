@@ -91,20 +91,28 @@ public enum MsgType
   STATUS_RES(9),
   /**
    * <pre>
+   * 端侧的连接状态同步给云端（比如在线，离开）
+   * </pre>
+   *
+   * <code>STATUS_SYNC = 10;</code>
+   */
+  STATUS_SYNC(10),
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
-   * <code>CLOSE_BY_READ_IDLE = 10;</code>
+   * <code>CLOSE_BY_READ_IDLE = 50;</code>
    */
-  CLOSE_BY_READ_IDLE(10),
+  CLOSE_BY_READ_IDLE(50),
   /**
    * <pre>
    * magic不对关闭
    * </pre>
    *
-   * <code>CLOSE_BY_ERROR_MAGIC = 11;</code>
+   * <code>CLOSE_BY_ERROR_MAGIC = 51;</code>
    */
-  CLOSE_BY_ERROR_MAGIC(11),
+  CLOSE_BY_ERROR_MAGIC(51),
   /**
    * <code>DEFAULT = 99;</code>
    */
@@ -203,20 +211,28 @@ public enum MsgType
   public static final int STATUS_RES_VALUE = 9;
   /**
    * <pre>
+   * 端侧的连接状态同步给云端（比如在线，离开）
+   * </pre>
+   *
+   * <code>STATUS_SYNC = 10;</code>
+   */
+  public static final int STATUS_SYNC_VALUE = 10;
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
-   * <code>CLOSE_BY_READ_IDLE = 10;</code>
+   * <code>CLOSE_BY_READ_IDLE = 50;</code>
    */
-  public static final int CLOSE_BY_READ_IDLE_VALUE = 10;
+  public static final int CLOSE_BY_READ_IDLE_VALUE = 50;
   /**
    * <pre>
    * magic不对关闭
    * </pre>
    *
-   * <code>CLOSE_BY_ERROR_MAGIC = 11;</code>
+   * <code>CLOSE_BY_ERROR_MAGIC = 51;</code>
    */
-  public static final int CLOSE_BY_ERROR_MAGIC_VALUE = 11;
+  public static final int CLOSE_BY_ERROR_MAGIC_VALUE = 51;
   /**
    * <code>DEFAULT = 99;</code>
    */
@@ -257,8 +273,9 @@ public enum MsgType
       case 7: return SENDER_SYNC;
       case 8: return STATUS_REQ;
       case 9: return STATUS_RES;
-      case 10: return CLOSE_BY_READ_IDLE;
-      case 11: return CLOSE_BY_ERROR_MAGIC;
+      case 10: return STATUS_SYNC;
+      case 50: return CLOSE_BY_READ_IDLE;
+      case 51: return CLOSE_BY_ERROR_MAGIC;
       case 99: return DEFAULT;
       default: return null;
     }
