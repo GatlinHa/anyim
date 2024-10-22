@@ -8,9 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * GroupChatRead的消息Body：fromId, fromClient, groupId, content（content存放的是已读的原MsgId）
- */
 @Component
 public class GroupChatReadProcessor extends MsgProcessor{
 

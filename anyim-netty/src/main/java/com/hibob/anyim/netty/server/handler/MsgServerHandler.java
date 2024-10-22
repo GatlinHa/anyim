@@ -2,6 +2,8 @@ package com.hibob.anyim.netty.server.handler;
 
 import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
+import com.hibob.anyim.common.enums.ConnectStatus;
+import com.hibob.anyim.common.rpc.client.RpcClient;
 import com.hibob.anyim.netty.protobuf.*;
 import com.hibob.anyim.netty.server.processor.MsgProcessor;
 import com.hibob.anyim.netty.server.processor.ProcessorFactory;
@@ -75,6 +77,10 @@ public class MsgServerHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        String uniqueId = (String) ctx.channel().attr(AttributeKey.valueOf(Const.UNIQUE_ID)).get();
+        String account = uniqueId.split(SPLIT_V)[0];
+        RpcClient rpcClient = SpringContextUtil.getBean("rpcClient");
+        rpcClient.getUserRpcService().updateUserStatus(account, uniqueId, ConnectStatus.OFFLINE);
         clearCache(ctx);
         super.channelInactive(ctx);
     }

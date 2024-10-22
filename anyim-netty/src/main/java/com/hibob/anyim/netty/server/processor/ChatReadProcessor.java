@@ -6,9 +6,6 @@ import org.springframework.stereotype.Component;
 
 import static com.hibob.anyim.common.utils.CommonUtil.combineId;
 
-/**
- * ChatRead的消息Body：fromId, fromClient, toId, content（content存放的是已读的原MsgId）
- */
 @Component
 public class ChatReadProcessor extends MsgProcessor{
 

@@ -19,6 +19,8 @@ public class ProcessorFactory {
                 return SpringContextUtil.getBean(GroupChatReadProcessor.class);
             case GROUP_CHAT:
                 return SpringContextUtil.getBean(GroupChatProcessor.class);
+            case STATUS_REQ:
+                return SpringContextUtil.getBean(StatusReqProcessor.class);
             default:
                 return null;
         }

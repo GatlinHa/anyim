@@ -125,4 +125,10 @@ public class UserRpcServiceImpl implements UserRpcService {
             return userStatusMapper.update(updateWrapper) > 0;
         }
     }
+
+    @Override
+    public Map<String, Integer> queryUserStatus(List<String> accountList) {
+        log.info("UserRpcServiceImpl::queryUserStatus start......");
+        return userStatusMapper.queryStatusByAccountList(accountList);
+    }
 }

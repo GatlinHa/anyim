@@ -14,4 +14,6 @@ public interface UserRpcService {
 
     boolean updateUserStatus(String account, String uniqueId, ConnectStatus status);
 
+    Map<String, Integer> queryUserStatus(List<String> accountList);
+
 }

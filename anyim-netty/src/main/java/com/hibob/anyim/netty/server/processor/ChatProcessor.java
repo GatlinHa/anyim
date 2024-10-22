@@ -6,9 +6,6 @@ import org.springframework.stereotype.Component;
 
 import static com.hibob.anyim.common.utils.CommonUtil.combineId;
 
-/**
- * Chat的消息Body：fromId, fromClient, toId, content, tempMsgId
- */
 @Component
 public class ChatProcessor extends MsgProcessor{
 

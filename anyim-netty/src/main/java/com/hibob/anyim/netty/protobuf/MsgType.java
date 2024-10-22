@@ -75,6 +75,22 @@ public enum MsgType
   SENDER_SYNC(7),
   /**
    * <pre>
+   * 连接状态查询请求
+   * </pre>
+   *
+   * <code>STATUS_REQ = 8;</code>
+   */
+  STATUS_REQ(8),
+  /**
+   * <pre>
+   * 连接状态响应
+   * </pre>
+   *
+   * <code>STATUS_RES = 9;</code>
+   */
+  STATUS_RES(9),
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -171,6 +187,22 @@ public enum MsgType
   public static final int SENDER_SYNC_VALUE = 7;
   /**
    * <pre>
+   * 连接状态查询请求
+   * </pre>
+   *
+   * <code>STATUS_REQ = 8;</code>
+   */
+  public static final int STATUS_REQ_VALUE = 8;
+  /**
+   * <pre>
+   * 连接状态响应
+   * </pre>
+   *
+   * <code>STATUS_RES = 9;</code>
+   */
+  public static final int STATUS_RES_VALUE = 9;
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -223,6 +255,8 @@ public enum MsgType
       case 5: return GROUP_CHAT_READ;
       case 6: return DELIVERED;
       case 7: return SENDER_SYNC;
+      case 8: return STATUS_REQ;
+      case 9: return STATUS_RES;
       case 10: return CLOSE_BY_READ_IDLE;
       case 11: return CLOSE_BY_ERROR_MAGIC;
       case 99: return DEFAULT;

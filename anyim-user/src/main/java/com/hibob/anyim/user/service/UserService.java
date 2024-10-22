@@ -243,9 +243,11 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             return ResultUtil.error(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // 查询用户连接状态，如果查不到，这里默认为online
+        // 查询用户连接状态，既然触发了这个查询，说明用户至少是在线（不可能是离线或离开）
         UserStatus userStatus = userStatusMapper.queryStatus(account);
-        user.setStatus(userStatus == null ? ConnectStatus.ONLINE.getValue() : userStatus.getStatus());
+        int status = userStatus == null || userStatus.getStatus() < ConnectStatus.ONLINE.getValue()
+                ? ConnectStatus.ONLINE.getValue() : userStatus.getStatus();
+        user.setStatus(status);
         // 把User对象转成返回对象
         UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
         if (vo == null) {

@@ -21,7 +21,6 @@ public interface UserStatusMapper extends BaseMapper<UserStatus> {
             " <foreach item='account' index='index' collection='accounts' open='(' separator=',' close=')'>" +
             "   #{account} " +
             " </foreach> " +
-            " GROUP BY account " +
             "</script>")
     Map<String, Integer> queryStatusByAccountList(List<String> accounts);
 
