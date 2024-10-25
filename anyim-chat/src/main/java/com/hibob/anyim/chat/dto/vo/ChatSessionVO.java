@@ -50,6 +50,9 @@ public class ChatSessionVO {
     @ApiModelProperty(value = "草稿")
     private String draft;
 
+    @ApiModelProperty(value = "备注")
+    private String mark;
+
     @ApiModelProperty(value = "对方详情")
     private Map<String, Object> ObjectInfo;
 }

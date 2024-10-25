@@ -168,6 +168,7 @@ public class ChatService {
             vo.setTop(item.isTop());
             vo.setMuted(item.isMuted());
             vo.setDraft(item.getDraft());
+            vo.setMark(item.getMark());
             loadLastMsg(item.getSessionId(), account, item.getReadMsgId(), vo);
             voMap.put(item.getSessionId(), vo);
         }
@@ -201,7 +202,8 @@ public class ChatService {
         Boolean top = dto.getTop();
         Boolean muted = dto.getMuted();
         String draft = dto.getDraft(); // 注意，当前端设置draft=""的意思是清空草稿
-        if (top == null && muted == null && draft == null) {
+        String mark = dto.getMark();
+        if (top == null && muted == null && draft == null && mark == null) {
             return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_UPDATE_SESSION);
         }
 
@@ -211,6 +213,7 @@ public class ChatService {
         if (top != null) updateWrapper.set(Session::isTop, top);
         if (muted != null) updateWrapper.set(Session::isMuted, muted);
         if (draft != null) updateWrapper.set(Session::getDraft, draft);
+        if (mark != null) updateWrapper.set(Session::getMark, mark);
         sessionMapper.update(updateWrapper);
 
         return ResultUtil.success();
@@ -287,6 +290,7 @@ public class ChatService {
         vo.setTop(session.isTop());
         vo.setMuted(session.isMuted());
         vo.setDraft(session.getDraft());
+        vo.setMark(session.getMark());
         Map<String, Object> objectInfo = null;
         if (session.getSessionType() == 2) {  // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
             objectInfo = rpcClient.getUserRpcService().queryUserInfo(session.getRemoteId());

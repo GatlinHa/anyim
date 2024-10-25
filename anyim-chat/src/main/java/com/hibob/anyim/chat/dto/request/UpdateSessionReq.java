@@ -23,4 +23,7 @@ public class UpdateSessionReq extends BaseRequest {
 
     @ApiModelProperty(value = "草稿")
     private String draft;
+
+    @ApiModelProperty(value = "备注")
+    private String mark;
 }

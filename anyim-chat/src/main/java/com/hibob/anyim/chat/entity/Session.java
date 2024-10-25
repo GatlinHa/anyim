@@ -41,6 +41,9 @@ public class Session {
     @TableField(value = "draft")
     private String draft;
 
+    @TableField(value = "mark")
+    private String mark;
+
     @TableField(value = "del_flag")
     private String delFlag;
 

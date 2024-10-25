@@ -19,6 +19,7 @@ CREATE TABLE `anyim_chat_session`
     `top` BOOLEAN DEFAULT FALSE COMMENT '会话是否置顶，默认false',
     `muted` BOOLEAN DEFAULT FALSE COMMENT '会话是否静音（免打扰），默认false',
     `draft` VARCHAR(3000) DEFAULT '' COMMENT '草稿',
+    `mark` VARCHAR(255) DEFAULT '' COMMENT '备注',
     `del_flag` BOOLEAN DEFAULT FALSE COMMENT '软删除的标记',
     PRIMARY KEY(`account`, `session_id`)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户的会话信息表';
