@@ -62,14 +62,8 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
         String tokenSecret = isRefreshToken ? jwtProperties.getRefreshTokenSecret() : jwtProperties.getAccessTokenSecret();
         if (!JwtUtil.checkToken(token, tokenSecret)) {
-            if (isRefreshToken) {
-                log.error("The refresh token has expired,url:{}", exchange.getRequest().getURI());
-                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            }
-            else {
-                log.error("The access token has expired,url:{}", exchange.getRequest().getURI());
-                exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN); // access过期返回状态码403，方便前端识别
-            }
+            log.error("The token has expired, isRefreshToken: {}, url:{}", isRefreshToken, exchange.getRequest().getURI());
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
 
@@ -79,14 +73,8 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         String key = isRefreshToken ? RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId : RedisKey.USER_ACTIVE_TOKEN + uniqueId;
         JSONObject value = JSON.parseObject((String) redisTemplate.opsForValue().get(key));
         if (!redisTemplate.hasKey(key) || !value.getString("token").equals(token)) {
-            if (isRefreshToken) {
-                log.error("The refresh token has been deleted, url:{}", exchange.getRequest().getURI());
-                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            }
-            else {
-                log.error("The access token has been deleted, url:{}", exchange.getRequest().getURI());
-                exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN); //等同于access token过期处理
-            }
+            log.error("The token has been deleted, isRefreshToken: {}, url:{}", isRefreshToken, exchange.getRequest().getURI());
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
         String singSecret = (String) value.get("secret");
