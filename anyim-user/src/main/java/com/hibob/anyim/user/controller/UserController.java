@@ -5,8 +5,6 @@ import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.user.dto.request.*;
 import com.hibob.anyim.user.service.UserService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -117,5 +115,31 @@ public class UserController {
         return userService.findByNick(dto);
     }
 
+    @ApiOperation(value = "创建分组", notes = "创建分组")
+    @CommonHeader
+    @PostMapping("/createPartition")
+    public ResponseEntity<IMHttpResponse> createPartition(@Valid @RequestBody PartitionCreateReq dto) {
+        return userService.createPartition(dto);
+    }
 
+    @ApiOperation(value = "查询分组", notes = "查询分组")
+    @CommonHeader
+    @PostMapping("/queryPartition")
+    public ResponseEntity<IMHttpResponse> queryPartition(@Valid @RequestBody PartitionQueryReq dto) {
+        return userService.queryPartition(dto);
+    }
+
+    @ApiOperation(value = "删除分组", notes = "删除分组")
+    @CommonHeader
+    @PostMapping("/delPartition")
+    public ResponseEntity<IMHttpResponse> delPartition(@Valid @RequestBody PartitionDelReq dto) {
+        return userService.delPartition(dto);
+    }
+
+    @ApiOperation(value = "修改分组名字", notes = "修改分组名字")
+    @CommonHeader
+    @PostMapping("/updatePartition")
+    public ResponseEntity<IMHttpResponse> updatePartition(@Valid @RequestBody PartitionUpdateReq dto) {
+        return userService.updatePartition(dto);
+    }
 }

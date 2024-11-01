@@ -51,3 +51,8 @@ minio:
   file:
     max-limit: 200 #单位M
   ttl: 365 #单位天
+
+#自定义配置
+custom:
+  snow-flake:
+    worker-datacenter-config: ${worker-datacenter-config}

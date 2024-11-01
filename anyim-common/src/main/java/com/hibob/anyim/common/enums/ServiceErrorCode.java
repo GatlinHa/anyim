@@ -33,6 +33,10 @@ public enum ServiceErrorCode {
 
     ERROR_FILE_UPLOAD_ERROR(Const.SERVICE_CODE_USER + 14, "文件上传失败"),
 
+    ERROR_CREATE_PARTITION(Const.SERVICE_CODE_USER + 15, "创建分组失败"),
+
+    ERROR_PARTITION_NO_EXIST(Const.SERVICE_CODE_USER + 16, "没有该分组"),
+
     ERROR_SERVICE_EXCEPTION(Const.SERVICE_CODE_USER + 50, "服务器内部异常"),
 
     ERROR_CHAT_REFMSGID_EXCEPTION(Const.SERVICE_CODE_CHAT + 1, "ref msgId异常"),
