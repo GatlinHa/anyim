@@ -26,4 +26,7 @@ public class UpdateSessionReq extends BaseRequest {
 
     @ApiModelProperty(value = "备注")
     private String mark;
+
+    @ApiModelProperty(value = "分组id")
+    private Integer partitionId;
 }

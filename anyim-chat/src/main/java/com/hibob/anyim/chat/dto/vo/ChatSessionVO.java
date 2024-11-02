@@ -53,6 +53,9 @@ public class ChatSessionVO {
     @ApiModelProperty(value = "备注")
     private String mark;
 
+    @ApiModelProperty(value = "分组id")
+    private int partitionId;
+
     @ApiModelProperty(value = "对方详情")
     private Map<String, Object> ObjectInfo;
 }

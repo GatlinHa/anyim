@@ -169,6 +169,7 @@ public class ChatService {
             vo.setMuted(item.isMuted());
             vo.setDraft(item.getDraft());
             vo.setMark(item.getMark());
+            vo.setPartitionId(item.getPartitionId());
             loadLastMsg(item.getSessionId(), account, item.getReadMsgId(), vo);
             voMap.put(item.getSessionId(), vo);
         }
@@ -203,7 +204,8 @@ public class ChatService {
         Boolean muted = dto.getMuted();
         String draft = dto.getDraft(); // 注意，当前端设置draft=""的意思是清空草稿
         String mark = dto.getMark();
-        if (top == null && muted == null && draft == null && mark == null) {
+        Integer partitionId = dto.getPartitionId();
+        if (top == null && muted == null && draft == null && mark == null && partitionId == null) {
             return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_UPDATE_SESSION);
         }
 
@@ -214,6 +216,7 @@ public class ChatService {
         if (muted != null) updateWrapper.set(Session::isMuted, muted);
         if (draft != null) updateWrapper.set(Session::getDraft, draft);
         if (mark != null) updateWrapper.set(Session::getMark, mark);
+        if (partitionId != null) updateWrapper.set(Session::getPartitionId, partitionId.intValue());
         sessionMapper.update(updateWrapper);
 
         return ResultUtil.success();
@@ -291,6 +294,7 @@ public class ChatService {
         vo.setMuted(session.isMuted());
         vo.setDraft(session.getDraft());
         vo.setMark(session.getMark());
+        vo.setPartitionId(session.getPartitionId());
         Map<String, Object> objectInfo = null;
         if (session.getSessionType() == 2) {  // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
             objectInfo = rpcClient.getUserRpcService().queryUserInfo(session.getRemoteId());

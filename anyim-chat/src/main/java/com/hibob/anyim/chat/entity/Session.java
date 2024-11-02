@@ -44,6 +44,9 @@ public class Session {
     @TableField(value = "mark")
     private String mark;
 
+    @TableField(value = "partition_id")
+    private int partitionId;
+
     @TableField(value = "del_flag")
     private String delFlag;
 
