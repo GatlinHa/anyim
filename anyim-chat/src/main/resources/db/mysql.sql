@@ -24,3 +24,14 @@ CREATE TABLE `anyim_chat_session`
     `del_flag` BOOLEAN DEFAULT FALSE COMMENT '软删除的标记',
     PRIMARY KEY(`account`, `session_id`)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户的会话信息表';
+
+DROP TABLE `anyim_chat_partition`;
+CREATE TABLE `anyim_chat_partition`
+(
+    `account` VARCHAR(255) NOT NULL COMMENT '账号，联合主键',
+    `partition_id` INT NOT NULL COMMENT '分组id，联合主键',
+    `partition_name` VARCHAR(255) NOT NULL COMMENT '分组名称', -- TODO 名字也不能重复
+    `partition_type` TINYINT(1) NOT NULL COMMENT '分组类型，0联系人，1群组',
+    `update_time`  DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
+    PRIMARY KEY(`account`, `partition_id`)
+) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户给会话分组的表';

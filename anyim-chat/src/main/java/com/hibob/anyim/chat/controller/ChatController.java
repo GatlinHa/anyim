@@ -71,4 +71,33 @@ public class ChatController {
     public ResponseEntity<IMHttpResponse> deleteSession(@Valid @RequestBody DeleteSessionReq dto) {
         return chatService.deleteSession(dto);
     }
+
+
+    @ApiOperation(value = "创建分组", notes = "创建分组")
+    @CommonHeader
+    @PostMapping("/createPartition")
+    public ResponseEntity<IMHttpResponse> createPartition(@Valid @RequestBody PartitionCreateReq dto) {
+        return chatService.createPartition(dto);
+    }
+
+    @ApiOperation(value = "查询分组", notes = "查询分组")
+    @CommonHeader
+    @PostMapping("/queryPartition")
+    public ResponseEntity<IMHttpResponse> queryPartition(@Valid @RequestBody PartitionQueryReq dto) {
+        return chatService.queryPartition(dto);
+    }
+
+    @ApiOperation(value = "删除分组", notes = "删除分组")
+    @CommonHeader
+    @PostMapping("/delPartition")
+    public ResponseEntity<IMHttpResponse> delPartition(@Valid @RequestBody PartitionDelReq dto) {
+        return chatService.delPartition(dto);
+    }
+
+    @ApiOperation(value = "修改分组名字", notes = "修改分组名字")
+    @CommonHeader
+    @PostMapping("/updatePartition")
+    public ResponseEntity<IMHttpResponse> updatePartition(@Valid @RequestBody PartitionUpdateReq dto) {
+        return chatService.updatePartition(dto);
+    }
 }

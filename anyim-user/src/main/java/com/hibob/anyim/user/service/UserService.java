@@ -10,7 +10,6 @@ import com.hibob.anyim.common.enums.ConnectStatus;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.common.utils.*;
 import com.hibob.anyim.user.dto.request.*;
-import com.hibob.anyim.user.dto.vo.PartitionVO;
 import com.hibob.anyim.user.dto.vo.TokensVO;
 import com.hibob.anyim.user.dto.vo.UserVO;
 import com.hibob.anyim.user.entity.*;
@@ -43,7 +42,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     private final ClientMapper clientMapper;
     private final LoginMapper loginMapper;
     private final UserStatusMapper userStatusMapper;
-    private final PartitionMapper partitionMapper;
     private SnowflakeId snowflakeId = null;
 
     public ResponseEntity<IMHttpResponse> validateAccount(ValidateAccountReq dto) {
@@ -332,83 +330,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success(voList);
     }
 
-    public ResponseEntity<IMHttpResponse> createPartition(PartitionCreateReq dto) {
-        log.info("UserService::createPartition");
-        String account = ReqSession.getSession().getAccount();
-        String partitionName = dto.getPartitionName();
-        int partitionType = dto.getPartitionType();
-
-        LambdaQueryWrapper<Partition> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(Partition::getAccount, account);
-        queryWrapper.orderByDesc(Partition::getPartitionId);
-        queryWrapper.last("limit 1");
-        Partition partitionLast = partitionMapper.selectOne(queryWrapper);
-        int newId = 0;
-        if (partitionLast != null) {
-            newId = partitionLast.getPartitionId() + 1;
-        }
-
-        Partition partition = new Partition();
-        partition.setAccount(account);
-        partition.setPartitionId(newId);
-        partition.setPartitionName(partitionName);
-        partition.setPartitionType(partitionType);
-        int insert = partitionMapper.insert(partition);
-        if (insert < 1) {
-            log.error("createPartition error");
-            return ResultUtil.error(ServiceErrorCode.ERROR_CREATE_PARTITION);
-        }
-
-        PartitionVO vo = BeanUtil.copyProperties(partition, PartitionVO.class);
-        return ResultUtil.success(vo);
-    }
-
-    public ResponseEntity<IMHttpResponse> queryPartition(PartitionQueryReq dto) {
-        log.info("UserService::queryPartition");
-        String account = ReqSession.getSession().getAccount();
-        LambdaQueryWrapper<Partition> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(Partition::getAccount, account);
-        List<Partition> partitions = partitionMapper.selectList(queryWrapper);
-        List<PartitionVO> voList = new ArrayList<>();
-        partitions.forEach(item -> {
-            PartitionVO vo = BeanUtil.copyProperties(item, PartitionVO.class);
-            voList.add(vo);
-        });
-
-        return ResultUtil.success(voList);
-    }
-
-    public ResponseEntity<IMHttpResponse> delPartition(PartitionDelReq dto) {
-        String account = ReqSession.getSession().getAccount();
-        int partitionId = dto.getPartitionId();
-        LambdaUpdateWrapper<Partition> updateWrapper = Wrappers.lambdaUpdate();
-        updateWrapper.eq(Partition::getAccount, account);
-        updateWrapper.eq(Partition::getPartitionId, partitionId);
-        int delete = partitionMapper.delete(updateWrapper);
-        if (delete < 1) {
-            log.error("delPartition error");
-            return ResultUtil.error(ServiceErrorCode.ERROR_PARTITION_NO_EXIST);
-        }
-
-        return ResultUtil.success();
-    }
-
-    public ResponseEntity<IMHttpResponse> updatePartition(PartitionUpdateReq dto) {
-        String account = ReqSession.getSession().getAccount();
-        int partitionId = dto.getPartitionId();
-        String newPartitionName = dto.getNewPartitionName();
-        LambdaUpdateWrapper<Partition> updateWrapper = Wrappers.lambdaUpdate();
-        updateWrapper.eq(Partition::getAccount, account);
-        updateWrapper.eq(Partition::getPartitionId, partitionId);
-        updateWrapper.set(Partition::getPartitionName, newPartitionName);
-        int update = partitionMapper.update(updateWrapper);
-        if (update < 1) {
-            log.error("updatePartition error");
-            return ResultUtil.error(ServiceErrorCode.ERROR_PARTITION_NO_EXIST);
-        }
-
-        return ResultUtil.success();
-    }
 
     private User getOneByAccount(String account) {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();

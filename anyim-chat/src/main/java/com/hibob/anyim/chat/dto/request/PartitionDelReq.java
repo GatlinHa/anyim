@@ -1,4 +1,4 @@
-package com.hibob.anyim.user.dto.request;
+package com.hibob.anyim.chat.dto.request;
 
 import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;

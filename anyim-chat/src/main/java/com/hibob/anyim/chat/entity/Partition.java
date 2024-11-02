@@ -1,4 +1,4 @@
-package com.hibob.anyim.user.entity;
+package com.hibob.anyim.chat.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("anyim_user_partition")
+@TableName("anyim_chat_partition")
 public class Partition extends Model<Partition> {
 
     private static final long serialVersionUID = 1L;

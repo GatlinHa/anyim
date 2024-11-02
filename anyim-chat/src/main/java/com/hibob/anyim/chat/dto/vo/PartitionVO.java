@@ -1,4 +1,4 @@
-package com.hibob.anyim.user.dto.vo;
+package com.hibob.anyim.chat.dto.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

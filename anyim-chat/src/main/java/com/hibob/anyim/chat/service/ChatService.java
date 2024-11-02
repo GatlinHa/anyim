@@ -8,8 +8,11 @@ import com.hibob.anyim.chat.dto.request.*;
 
 import com.hibob.anyim.chat.dto.vo.ChatMsgVO;
 import com.hibob.anyim.chat.dto.vo.ChatSessionVO;
+import com.hibob.anyim.chat.dto.vo.PartitionVO;
 import com.hibob.anyim.chat.entity.MsgDb;
+import com.hibob.anyim.chat.entity.Partition;
 import com.hibob.anyim.chat.entity.Session;
+import com.hibob.anyim.chat.mapper.PartitionMapper;
 import com.hibob.anyim.chat.mapper.SessionMapper;
 import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
@@ -30,6 +33,7 @@ import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,6 +47,7 @@ public class ChatService {
     private int msgTtlInRedis;
 
     private final SessionMapper sessionMapper;
+    private final PartitionMapper partitionMapper;
     private final RedisTemplate<String, Object> redisTemplate;
     private final MongoTemplate mongoTemplate;
     private final RpcClient rpcClient;
@@ -279,6 +284,92 @@ public class ChatService {
         else {
             return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_DELETE_SESSION);
         }
+    }
+
+
+    public ResponseEntity<IMHttpResponse> createPartition(PartitionCreateReq dto) {
+        log.info("UserService::createPartition");
+        String account = ReqSession.getSession().getAccount();
+        String partitionName = dto.getPartitionName();
+        int partitionType = dto.getPartitionType();
+
+        LambdaQueryWrapper<Partition> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Partition::getAccount, account);
+        queryWrapper.orderByDesc(Partition::getPartitionId);
+        queryWrapper.last("limit 1");
+        Partition partitionLast = partitionMapper.selectOne(queryWrapper);
+        int newId = 1; //0表示没有分组，1是第1个分组ID
+        if (partitionLast != null) {
+            newId = partitionLast.getPartitionId() + 1;
+        }
+
+        Partition partition = new Partition();
+        partition.setAccount(account);
+        partition.setPartitionId(newId);
+        partition.setPartitionName(partitionName);
+        partition.setPartitionType(partitionType);
+        int insert = partitionMapper.insert(partition);
+        if (insert < 1) {
+            log.error("createPartition error");
+            return ResultUtil.error(ServiceErrorCode.ERROR_CREATE_PARTITION);
+        }
+
+        PartitionVO vo = BeanUtil.copyProperties(partition, PartitionVO.class);
+        return ResultUtil.success(vo);
+    }
+
+    public ResponseEntity<IMHttpResponse> queryPartition(PartitionQueryReq dto) {
+        log.info("UserService::queryPartition");
+        String account = ReqSession.getSession().getAccount();
+        LambdaQueryWrapper<Partition> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Partition::getAccount, account);
+        List<Partition> partitions = partitionMapper.selectList(queryWrapper);
+        List<PartitionVO> voList = new ArrayList<>();
+        partitions.forEach(item -> {
+            PartitionVO vo = BeanUtil.copyProperties(item, PartitionVO.class);
+            voList.add(vo);
+        });
+
+        return ResultUtil.success(voList);
+    }
+
+    @Transactional
+    public ResponseEntity<IMHttpResponse> delPartition(PartitionDelReq dto) {
+        String account = ReqSession.getSession().getAccount();
+        int partitionId = dto.getPartitionId();
+        LambdaUpdateWrapper<Partition> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(Partition::getAccount, account);
+        updateWrapper.eq(Partition::getPartitionId, partitionId);
+        int delete = partitionMapper.delete(updateWrapper);
+        if (delete < 1) {
+            log.error("delPartition error");
+            return ResultUtil.error(ServiceErrorCode.ERROR_PARTITION_NO_EXIST);
+        }
+
+        // 还要把属于这个分区的session表中的partitionId置为默认0的状态
+        LambdaUpdateWrapper<Session> updateSessionWrapper = Wrappers.lambdaUpdate();
+        updateSessionWrapper.eq(Session::getAccount, account);
+        updateSessionWrapper.eq(Session::getPartitionId, partitionId);
+        updateSessionWrapper.set(Session::getPartitionId, 0);
+        sessionMapper.update(updateSessionWrapper);
+        return ResultUtil.success();
+    }
+
+    public ResponseEntity<IMHttpResponse> updatePartition(PartitionUpdateReq dto) {
+        String account = ReqSession.getSession().getAccount();
+        int partitionId = dto.getPartitionId();
+        String newPartitionName = dto.getNewPartitionName();
+        LambdaUpdateWrapper<Partition> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(Partition::getAccount, account);
+        updateWrapper.eq(Partition::getPartitionId, partitionId);
+        updateWrapper.set(Partition::getPartitionName, newPartitionName);
+        int update = partitionMapper.update(updateWrapper);
+        if (update < 1) {
+            log.error("updatePartition error");
+            return ResultUtil.error(ServiceErrorCode.ERROR_PARTITION_NO_EXIST);
+        }
+
+        return ResultUtil.success();
     }
 
     private ChatSessionVO querySession(String account, String sessionId) {
