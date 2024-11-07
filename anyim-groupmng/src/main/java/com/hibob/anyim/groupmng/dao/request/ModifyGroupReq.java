@@ -12,8 +12,8 @@ import javax.validation.constraints.*;
 public class ModifyGroupReq extends BaseRequest {
 
     @ApiModelProperty(value = "群组id")
-    @NotNull
-    private long groupId;
+    @NotEmpty
+    private String groupId;
 
     @ApiModelProperty(value = "可选参数，群组名称")
     @Size(max = 255, message = "群组名称长度不能大于255字符")

@@ -11,7 +11,7 @@ public class GroupInfo {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "group_id")
-    private Long groupId;
+    private String groupId;
 
     @TableField(value = "group_type")
     private Integer groupType;
@@ -27,4 +27,10 @@ public class GroupInfo {
 
     @TableField(value = "avatar_thumb")
     private String avatarThumb;
+
+    @TableField(value = "history_browse")
+    private boolean historyBrowse;
+
+    @TableField(value = "muted")
+    private boolean muted;
 }

@@ -13,6 +13,6 @@ public class DelGroupReq extends BaseRequest {
 
     @ApiModelProperty(value = "群组id")
     @NotNull
-    private long groupId;
+    private String groupId;
 
 }

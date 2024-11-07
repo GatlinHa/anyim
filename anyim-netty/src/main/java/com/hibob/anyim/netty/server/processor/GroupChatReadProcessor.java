@@ -18,8 +18,8 @@ public class GroupChatReadProcessor extends MsgProcessor{
     @Override
     public void process(ChannelHandlerContext ctx, Msg msg)  throws Exception{
         String fromId = msg.getBody().getFromId();
-        long groupId = msg.getBody().getGroupId();
-        String sessionId = String.valueOf(groupId);
+        String groupId = msg.getBody().getGroupId();
+        String sessionId = groupId;
         List<String> members = rpcClient.getGroupMngRpcService().queryGroupMembers(groupId);
         Long msgId = computeMsgId(ctx, sessionId); // 生成msgId
         syncOtherClients(msg, sessionId, msgId); // 扩散给自己的其他客户端

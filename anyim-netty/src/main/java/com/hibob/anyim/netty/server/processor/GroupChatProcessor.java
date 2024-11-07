@@ -18,9 +18,9 @@ public class GroupChatProcessor extends MsgProcessor{
 
     @Override
     public void process(ChannelHandlerContext ctx, Msg msg)  throws Exception{
-        long groupId = msg.getBody().getGroupId();
+        String groupId = msg.getBody().getGroupId();
         List<String> members = rpcClient.getGroupMngRpcService().queryGroupMembers(groupId);
-        String sessionId = String.valueOf(groupId);
+        String sessionId = groupId;
         Long msgId = computeMsgId(ctx, sessionId); // 生成msgId
         saveMsg(msg, msgId); //消息入库，当前采用服务方异步入库，因此不支持等待回调结果。
         sendDeliveredMsg(ctx, msg, sessionId, msgId); //回复已送达

@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
 public class QueryGroupInfoReq extends BaseRequest {
 
     @ApiModelProperty(value = "群组id")
-    @NotNull
-    private long groupId;
+    @NotEmpty
+    private String groupId;
 
 }

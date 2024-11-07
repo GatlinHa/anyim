@@ -27,7 +27,7 @@ public class GroupMngRpcServiceImpl implements GroupMngRpcService {
     private final GroupMemberMapper groupMemberMapper;
 
     @Override
-    public Map<String, Object> queryGroupInfo(long groupId) {
+    public Map<String, Object> queryGroupInfo(String groupId) {
         log.info("GroupMngRpcServiceImpl::queryGroupInfo start......");
         LambdaQueryWrapper<GroupInfo> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(GroupInfo::getGroupId, groupId);
@@ -43,12 +43,12 @@ public class GroupMngRpcServiceImpl implements GroupMngRpcService {
     }
 
     @Override
-    public Map<Long, Map<String, Object>> queryGroupInfoBatch(List<Long> groupIdList) {
+    public Map<String, Map<String, Object>> queryGroupInfoBatch(List<String> groupIdList) {
         log.info("GroupMngRpcServiceImpl::queryGroupInfoBatch start......");
         LambdaQueryWrapper<GroupInfo> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.in(GroupInfo::getGroupId, groupIdList.toArray());
         List<GroupInfo> groups = groupInfoMapper.selectList(queryWrapper);
-        Map<Long, Map<String, Object>> result = new HashMap<>();
+        Map<String, Map<String, Object>> result = new HashMap<>();
         try {
             for (GroupInfo item : groups) {
                 result.put(item.getGroupId(), BeanUtil.objectToMap(item));
@@ -60,12 +60,12 @@ public class GroupMngRpcServiceImpl implements GroupMngRpcService {
     }
 
     @Override
-    public List<String> queryGroupMembers(long groupId) {
+    public List<String> queryGroupMembers(String groupId) {
         return queryGroupMembers(groupId, null);
     }
 
     @Override
-    public List<String> queryGroupMembers(long groupId, String account) {
+    public List<String> queryGroupMembers(String groupId, String account) {
         LambdaQueryWrapper<GroupMember> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.select(GroupMember::getMemberAccount);
         queryWrapper.eq(GroupMember::getGroupId, groupId);
@@ -80,7 +80,7 @@ public class GroupMngRpcServiceImpl implements GroupMngRpcService {
     }
 
     @Override
-    public boolean isMemberInGroup(long groupId, String account) {
+    public boolean isMemberInGroup(String groupId, String account) {
         LambdaQueryWrapper<GroupMember> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(GroupMember::getGroupId, groupId);
         queryWrapper.eq(GroupMember::getMemberAccount, account);

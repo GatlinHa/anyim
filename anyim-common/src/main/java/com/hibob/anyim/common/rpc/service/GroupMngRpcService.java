@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 public interface GroupMngRpcService {
-    Map<String, Object> queryGroupInfo(long groupId);
+    Map<String, Object> queryGroupInfo(String groupId);
 
-    Map<Long, Map<String, Object>> queryGroupInfoBatch(List<Long> groupIdList);
+    Map<String, Map<String, Object>> queryGroupInfoBatch(List<String> groupIdList);
 
     /**
      * 查询所有群成员
      * @param groupId
      * @return
      */
-    List<String> queryGroupMembers(long groupId);
+    List<String> queryGroupMembers(String groupId);
 
     /**
      * 查询群成员，刨除自己
@@ -21,7 +21,7 @@ public interface GroupMngRpcService {
      * @param account
      * @return
      */
-    List<String> queryGroupMembers(long groupId, String account);
+    List<String> queryGroupMembers(String groupId, String account);
 
-    boolean isMemberInGroup(long groupId, String account);
+    boolean isMemberInGroup(String groupId, String account);
 }

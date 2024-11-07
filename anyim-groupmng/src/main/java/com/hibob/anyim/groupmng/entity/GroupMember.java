@@ -10,7 +10,7 @@ public class GroupMember {
     private static final long serialVersionUID = 1L;
 
     @TableField(value = "group_id")
-    private Long groupId;
+    private String groupId;
 
     @TableField(value = "member_account")
     private String memberAccount;
@@ -18,9 +18,9 @@ public class GroupMember {
     @TableField(value = "member_nick_name")
     private String memberNickName;
 
-    @TableField(value = "member_avatar_thumb")
-    private String memberAvatarThumb;
-
     @TableField(value = "member_role")
     private int memberRole;
+
+    @TableField(value = "muted")
+    private boolean muted;
 }

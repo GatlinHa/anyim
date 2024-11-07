@@ -39,12 +39,16 @@ public class GroupMngService {
     @Transactional
     public ResponseEntity<IMHttpResponse> createGroup(CreateGroupReq dto) {
         log.info("GroupMngService::createGroup");
-        long groupId = generateGroupId();
+        ReqSession reqSession = ReqSession.getSession();
+        String account = reqSession.getAccount();
+        String groupId = String.valueOf(generateGroupId());
         int groupType = dto.getGroupType();
-        String groupName = dto.getGroupName();
-        String announcement = dto.getAnnouncement();
-        String avatar = dto.getAvatar();
-        String avatarThumb = avatar; //TODO 生成头像缩略图
+        String groupName = ""; //创建时，不带群组名
+        String announcement = ""; //创建时，不带公告
+        String avatar = ""; //创建时，不带群头像
+        String avatarThumb = ""; //创建时，不带群头像缩略图
+        boolean historyBrowse = false; //创建时，默认新成员不能查看历史消息
+        boolean muted = false; //创建时，默认非全场静音
 
         GroupInfo groupInfo = new GroupInfo();
         groupInfo.setGroupId(groupId);
@@ -53,21 +57,28 @@ public class GroupMngService {
         groupInfo.setAnnouncement(announcement);
         groupInfo.setAvatar(avatar);
         groupInfo.setAvatarThumb(avatarThumb);
+        groupInfo.setHistoryBrowse(historyBrowse);
+        groupInfo.setMuted(muted);
 
         List<GroupMember> members = new ArrayList<>();
-        for (Map<String, Object> map : dto.getMembers()) {
-            String memberAccount = (String)map.get("memberAccount");
-            Map<String, Object> user = rpcClient.getUserRpcService().queryUserInfo(memberAccount);
-            if (user != null) {
-                GroupMember member = new GroupMember();
-                member.setGroupId(groupId);
-                member.setMemberAccount(memberAccount);
-                member.setMemberNickName((String) user.get("nickName"));
-                member.setMemberAvatarThumb((String) user.get("avatarThumb"));
-                member.setMemberRole((Integer) map.get("memberRole"));
-                members.add(member);
+        List<String> accounts = dto.getAccounts();
+        accounts.add(account);
+        Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(accounts);
+        for (Map.Entry entry: usersMap.entrySet()) {
+            Map value = (Map) entry.getValue();
+            GroupMember member = new GroupMember();
+            member.setGroupId(groupId);
+            member.setMemberAccount((String) value.get("account"));
+            member.setMemberNickName((String) value.get("nickName"));
+            if (account.equals(value.get("account"))) {
+                member.setMemberRole(2);
             }
+            else {
+                member.setMemberRole(0);
+            }
+            members.add(member);
         }
+
         if (members.size() < 3) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_ENOUGH_MEMBER);
         }
@@ -104,7 +115,7 @@ public class GroupMngService {
 
     public ResponseEntity<IMHttpResponse> queryGroupInfo(QueryGroupInfoReq dto) {
         log.info("GroupMngService::queryGroupInfo");
-        long groupId = dto.getGroupId();
+        String groupId = dto.getGroupId();
         String account = ReqSession.getSession().getAccount();
 
         // 校验这个用户是否在这个群里
@@ -156,7 +167,7 @@ public class GroupMngService {
     @Transactional
     public ResponseEntity<IMHttpResponse> delGroup(DelGroupReq dto) {
         log.info("GroupMngService::delGroup");
-        long groupId = dto.getGroupId();
+        String groupId = dto.getGroupId();
         String account = ReqSession.getSession().getAccount();
 
         // 校验这个用户是是不是这个群组的owner
@@ -184,7 +195,7 @@ public class GroupMngService {
 
     public ResponseEntity<IMHttpResponse> changeMembers(ChangeMembersReq dto) {
         log.info("GroupMngService::changeMembers");
-        long groupId = dto.getGroupId();
+        String groupId = dto.getGroupId();
         List<GroupMember> addMembers = new ArrayList<>();
 
         for (Map<String, Object> map : dto.getAddMembers()) {
@@ -192,10 +203,9 @@ public class GroupMngService {
             Map<String, Object> user = rpcClient.getUserRpcService().queryUserInfo(memberAccount);
             if (user != null) {
                 GroupMember member = new GroupMember();
-                member.setGroupId(groupId);
+                member.setGroupId(String.valueOf(groupId));
                 member.setMemberAccount(memberAccount);
                 member.setMemberNickName((String) user.get("nickName"));
-                member.setMemberAvatarThumb((String) user.get("avatarThumb"));
                 member.setMemberRole((Integer) map.get("memberRole"));
                 addMembers.add(member);
             }
@@ -218,7 +228,7 @@ public class GroupMngService {
 
     public ResponseEntity<IMHttpResponse> changeRole(ChangeRoleReq dto) {
         log.info("GroupMngService::changeRole");
-        long groupId = dto.getGroupId();
+        String groupId = dto.getGroupId();
         String memberAccount = dto.getMemberAccount();
         int memberRole = dto.getMemberRole();
 
@@ -237,7 +247,7 @@ public class GroupMngService {
     public ResponseEntity<IMHttpResponse> ownerTransfer(OwnerTransferReq dto) {
         log.info("GroupMngService::changeRole");
         String localAccount = ReqSession.getSession().getAccount();
-        long groupId = dto.getGroupId();
+        String groupId = dto.getGroupId();
         String account = dto.getAccount();
 
         // 校验这个用户是是不是这个群组的owner

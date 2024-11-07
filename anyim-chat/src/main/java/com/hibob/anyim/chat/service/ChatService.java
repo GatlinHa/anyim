@@ -155,7 +155,7 @@ public class ChatService {
         List<Session> sessionList = sessionMapper.selectSessionList(account);
         Map<String, ChatSessionVO> voMap = new HashMap<>();
         List<String> toAccountList = new ArrayList<>();
-        List<Long> groupIdList = new ArrayList<>();
+        List<String> groupIdList = new ArrayList<>();
         for (Session item : sessionList) {
             ChatSessionVO vo = new ChatSessionVO();
             vo.setSessionId(item.getSessionId());
@@ -165,7 +165,7 @@ public class ChatService {
                 toAccountList.add(item.getRemoteId());
             }
             else if(item.getSessionType() == 3) { // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
-                groupIdList.add(Long.valueOf(item.getRemoteId()));
+                groupIdList.add(item.getRemoteId());
             }
             vo.setReadMsgId(item.getReadMsgId());
             vo.setReadTime(item.getReadTime());
@@ -180,7 +180,7 @@ public class ChatService {
         }
 
         Map<String, Map<String, Object>> usersMap = null;
-        Map<Long, Map<String, Object>> groupInfoMap = null;
+        Map<String, Map<String, Object>> groupInfoMap = null;
         if (toAccountList.isEmpty() && groupIdList.isEmpty()) {
             return ResultUtil.success(voMap);
         } else if (!toAccountList.isEmpty()) {
@@ -391,7 +391,7 @@ public class ChatService {
             objectInfo = rpcClient.getUserRpcService().queryUserInfo(session.getRemoteId());
         }
         else if(session.getSessionType() == 3) { // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
-            objectInfo = rpcClient.getGroupMngRpcService().queryGroupInfo(Long.parseLong(session.getRemoteId()));
+            objectInfo = rpcClient.getGroupMngRpcService().queryGroupInfo(session.getRemoteId());
         }
         vo.setObjectInfo(objectInfo);
         loadLastMsg(session.getSessionId(), account, session.getReadMsgId(), vo);

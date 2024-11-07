@@ -63,6 +63,7 @@ private static final long serialVersionUID = 0L;
     fromClient_ = "";
     toId_ = "";
     toClient_ = "";
+    groupId_ = "";
     content_ = "";
     tempMsgId_ = "";
     sessionId_ = "";
@@ -271,9 +272,10 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int GROUPID_FIELD_NUMBER = 5;
-  private long groupId_ = 0L;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object groupId_ = "";
   /**
-   * <code>optional int64 groupId = 5;</code>
+   * <code>optional string groupId = 5;</code>
    * @return Whether the groupId field is set.
    */
   @java.lang.Override
@@ -281,12 +283,39 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000010) != 0);
   }
   /**
-   * <code>optional int64 groupId = 5;</code>
+   * <code>optional string groupId = 5;</code>
    * @return The groupId.
    */
   @java.lang.Override
-  public long getGroupId() {
-    return groupId_;
+  public java.lang.String getGroupId() {
+    java.lang.Object ref = groupId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      groupId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>optional string groupId = 5;</code>
+   * @return The bytes for groupId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getGroupIdBytes() {
+    java.lang.Object ref = groupId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      groupId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   public static final int MSGID_FIELD_NUMBER = 6;
@@ -538,7 +567,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessage.writeString(output, 4, toClient_);
     }
     if (((bitField0_ & 0x00000010) != 0)) {
-      output.writeInt64(5, groupId_);
+      com.google.protobuf.GeneratedMessage.writeString(output, 5, groupId_);
     }
     if (((bitField0_ & 0x00000020) != 0)) {
       output.writeInt64(6, msgId_);
@@ -580,8 +609,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.GeneratedMessage.computeStringSize(4, toClient_);
     }
     if (((bitField0_ & 0x00000010) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(5, groupId_);
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(5, groupId_);
     }
     if (((bitField0_ & 0x00000020) != 0)) {
       size += com.google.protobuf.CodedOutputStream
@@ -641,8 +669,8 @@ private static final long serialVersionUID = 0L;
     }
     if (hasGroupId() != other.hasGroupId()) return false;
     if (hasGroupId()) {
-      if (getGroupId()
-          != other.getGroupId()) return false;
+      if (!getGroupId()
+          .equals(other.getGroupId())) return false;
     }
     if (hasMsgId() != other.hasMsgId()) return false;
     if (hasMsgId()) {
@@ -703,8 +731,7 @@ private static final long serialVersionUID = 0L;
     }
     if (hasGroupId()) {
       hash = (37 * hash) + GROUPID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getGroupId());
+      hash = (53 * hash) + getGroupId().hashCode();
     }
     if (hasMsgId()) {
       hash = (37 * hash) + MSGID_FIELD_NUMBER;
@@ -899,7 +926,7 @@ private static final long serialVersionUID = 0L;
       fromClient_ = "";
       toId_ = "";
       toClient_ = "";
-      groupId_ = 0L;
+      groupId_ = "";
       msgId_ = 0L;
       seq_ = 0;
       ack_ = 0;
@@ -1020,7 +1047,9 @@ private static final long serialVersionUID = 0L;
         onChanged();
       }
       if (other.hasGroupId()) {
-        setGroupId(other.getGroupId());
+        groupId_ = other.groupId_;
+        bitField0_ |= 0x00000010;
+        onChanged();
       }
       if (other.hasMsgId()) {
         setMsgId(other.getMsgId());
@@ -1092,11 +1121,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
-            case 40: {
-              groupId_ = input.readInt64();
+            case 42: {
+              groupId_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000010;
               break;
-            } // case 40
+            } // case 42
             case 48: {
               msgId_ = input.readInt64();
               bitField0_ |= 0x00000020;
@@ -1460,42 +1489,81 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private long groupId_ ;
+    private java.lang.Object groupId_ = "";
     /**
-     * <code>optional int64 groupId = 5;</code>
+     * <code>optional string groupId = 5;</code>
      * @return Whether the groupId field is set.
      */
-    @java.lang.Override
     public boolean hasGroupId() {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <code>optional int64 groupId = 5;</code>
+     * <code>optional string groupId = 5;</code>
      * @return The groupId.
      */
-    @java.lang.Override
-    public long getGroupId() {
-      return groupId_;
+    public java.lang.String getGroupId() {
+      java.lang.Object ref = groupId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        groupId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
     }
     /**
-     * <code>optional int64 groupId = 5;</code>
+     * <code>optional string groupId = 5;</code>
+     * @return The bytes for groupId.
+     */
+    public com.google.protobuf.ByteString
+        getGroupIdBytes() {
+      java.lang.Object ref = groupId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        groupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>optional string groupId = 5;</code>
      * @param value The groupId to set.
      * @return This builder for chaining.
      */
-    public Builder setGroupId(long value) {
-
+    public Builder setGroupId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
       groupId_ = value;
       bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
     /**
-     * <code>optional int64 groupId = 5;</code>
+     * <code>optional string groupId = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearGroupId() {
+      groupId_ = getDefaultInstance().getGroupId();
       bitField0_ = (bitField0_ & ~0x00000010);
-      groupId_ = 0L;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string groupId = 5;</code>
+     * @param value The bytes for groupId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setGroupIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      groupId_ = value;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }

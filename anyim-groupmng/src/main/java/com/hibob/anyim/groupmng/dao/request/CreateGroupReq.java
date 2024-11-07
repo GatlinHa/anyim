@@ -19,21 +19,8 @@ public class CreateGroupReq extends BaseRequest {
     @Min(value = 0, message = "群组类型不能小于0")
     private int groupType;
 
-    @ApiModelProperty(value = "群组名称")
-    @NotEmpty
-    @Size(max = 255, message = "群组名称长度不能大于255字符")
-    private String groupName;
-
-    @ApiModelProperty(value = "可选参数，群组公告")
-    @Size(max = 1024, message = "群组公告长度不能大于1024字符")
-    private String announcement;
-
-    @ApiModelProperty(value = "可选参数，群组头像")
-    @Size(max = 255, message = "群组头像长度不能大于255字符")
-    private String avatar;
-
-    @ApiModelProperty(value = "群组成员：memberAccount, memberRole")
+    @ApiModelProperty(value = "群组成员：account")
     @NotNull
-    @Size(min = 3, message = "群组成员不能少于三人")
-    private List<Map<String, Object>> members;
+    @Size(min = 2, message = "除了创建者，群组成员不能少于2人")
+    private List<String> accounts;
 }

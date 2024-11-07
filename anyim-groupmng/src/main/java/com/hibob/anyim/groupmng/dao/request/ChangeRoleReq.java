@@ -13,8 +13,8 @@ import javax.validation.constraints.NotNull;
 public class ChangeRoleReq extends BaseRequest {
 
     @ApiModelProperty(value = "群组id")
-    @NotNull
-    private long groupId;
+    @NotEmpty
+    private String groupId;
 
     @ApiModelProperty(value = "待修改的成员")
     @NotEmpty

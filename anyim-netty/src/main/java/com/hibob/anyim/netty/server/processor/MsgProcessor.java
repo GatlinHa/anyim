@@ -94,7 +94,7 @@ public abstract class MsgProcessor {
             sessionId = combineId(sorted[0], sorted[1]);
         }
         else if (msg.getHeader().getMsgType() == MsgType.GROUP_CHAT) {
-            remoteId = String.valueOf(msg.getBody().getGroupId());
+            remoteId = msg.getBody().getGroupId();
             sessionId = remoteId;
         }
 

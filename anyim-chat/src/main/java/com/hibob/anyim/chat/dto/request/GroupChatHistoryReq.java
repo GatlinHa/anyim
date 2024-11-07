@@ -13,7 +13,7 @@ public class GroupChatHistoryReq extends BaseRequest {
 
     @NotNull
     @ApiModelProperty(value = "群id")
-    private long groupId;
+    private String groupId;
 
     @NotNull
     @ApiModelProperty(value = "查询开始时间，UTC毫秒")

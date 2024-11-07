@@ -73,7 +73,7 @@ message Body {
   optional string fromClient = 2;
   optional string toId = 3;
   optional string toClient = 4;
-  optional int64 groupId = 5;
+  optional string groupId = 5;
   optional int64 msgId = 6;
   optional int32 seq = 7;
   optional int32 ack = 8;

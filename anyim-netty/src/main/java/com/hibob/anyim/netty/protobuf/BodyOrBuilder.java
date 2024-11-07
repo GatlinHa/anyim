@@ -77,15 +77,21 @@ public interface BodyOrBuilder extends
       getToClientBytes();
 
   /**
-   * <code>optional int64 groupId = 5;</code>
+   * <code>optional string groupId = 5;</code>
    * @return Whether the groupId field is set.
    */
   boolean hasGroupId();
   /**
-   * <code>optional int64 groupId = 5;</code>
+   * <code>optional string groupId = 5;</code>
    * @return The groupId.
    */
-  long getGroupId();
+  java.lang.String getGroupId();
+  /**
+   * <code>optional string groupId = 5;</code>
+   * @return The bytes for groupId.
+   */
+  com.google.protobuf.ByteString
+      getGroupIdBytes();
 
   /**
    * <code>optional int64 msgId = 6;</code>

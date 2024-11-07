@@ -14,8 +14,8 @@ import java.util.Map;
 public class ChangeMembersReq extends BaseRequest {
 
     @ApiModelProperty(value = "群组id")
-    @NotNull
-    private long groupId;
+    @NotEmpty
+    private String groupId;
 
     @ApiModelProperty(value = "增加的群组成员：memberAccount, memberRole")
     @NotNull

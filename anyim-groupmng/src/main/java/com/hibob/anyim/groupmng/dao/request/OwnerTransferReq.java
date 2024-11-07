@@ -13,8 +13,8 @@ import javax.validation.constraints.NotNull;
 public class OwnerTransferReq extends BaseRequest {
 
     @ApiModelProperty(value = "群组id")
-    @NotNull
-    private long groupId;
+    @NotEmpty
+    private String groupId;
 
     @ApiModelProperty(value = "新群主账号")
     @NotEmpty

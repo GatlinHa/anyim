@@ -13,7 +13,7 @@ public class PullGroupChatMsgReq extends BaseRequest {
 
     @NotNull
     @ApiModelProperty(value = "群id")
-    private long groupId;
+    private String groupId;
 
     @NotNull
     @Max(value = 100, message = "页大小不能大于100")

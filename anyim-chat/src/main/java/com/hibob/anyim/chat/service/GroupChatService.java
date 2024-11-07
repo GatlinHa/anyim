@@ -97,13 +97,13 @@ public class GroupChatService {
     }
 
     public ResponseEntity<IMHttpResponse> history(GroupChatHistoryReq dto) {
-        long groupId = dto.getGroupId();
+        String groupId = dto.getGroupId();
         String account = ReqSession.getSession().getAccount();
         if (!rpcClient.getGroupMngRpcService().isMemberInGroup(groupId, account)) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP);
         }
 
-        String sessionId = String.valueOf(groupId);
+        String sessionId = groupId;
         Date startTime = new Date(dto.getStartTime());
         Date endTime = new Date(dto.getEndTime());
         int pageSize = dto.getPageSize();
