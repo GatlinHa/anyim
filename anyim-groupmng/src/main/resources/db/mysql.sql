@@ -9,7 +9,9 @@ CREATE TABLE `anyim_group_info`(
     `avatar_thumb` VARCHAR(255) DEFAULT '' COMMENT '群组头像缩略图',
     `history_browse` BOOLEAN DEFAULT FALSE COMMENT '是否新成员可查看历史消息',
     `muted` BOOLEAN DEFAULT FALSE COMMENT '是否全员禁言',
-    PRIMARY KEY (group_id)
+    `creator` VARCHAR(255) NOT NULL COMMENT '创建者账号',
+    PRIMARY KEY (group_id),
+    INDEX `idx_creator`(creator)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '群组信息表';
 
 DROP TABLE `anyim_group_member`;

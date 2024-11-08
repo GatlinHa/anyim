@@ -33,4 +33,7 @@ public class GroupInfo {
 
     @TableField(value = "muted")
     private boolean muted;
+
+    @TableField(value = "creator")
+    private String creator;
 }

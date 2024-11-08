@@ -43,12 +43,13 @@ public class GroupMngService {
         String account = reqSession.getAccount();
         String groupId = String.valueOf(generateGroupId());
         int groupType = dto.getGroupType();
-        String groupName = ""; //创建时，不带群组名
+        String groupName = dto.getGroupName();
         String announcement = ""; //创建时，不带公告
         String avatar = ""; //创建时，不带群头像
         String avatarThumb = ""; //创建时，不带群头像缩略图
         boolean historyBrowse = false; //创建时，默认新成员不能查看历史消息
         boolean muted = false; //创建时，默认非全场静音
+        String creator = account;
 
         GroupInfo groupInfo = new GroupInfo();
         groupInfo.setGroupId(groupId);
@@ -59,6 +60,7 @@ public class GroupMngService {
         groupInfo.setAvatarThumb(avatarThumb);
         groupInfo.setHistoryBrowse(historyBrowse);
         groupInfo.setMuted(muted);
+        groupInfo.setCreator(creator);
 
         List<GroupMember> members = new ArrayList<>();
         List<String> accounts = dto.getAccounts();
@@ -95,11 +97,14 @@ public class GroupMngService {
     public ResponseEntity<IMHttpResponse> queryGroupList(QueryGroupListReq dto) {
         log.info("GroupMngService::queryGroupList");
         String account = ReqSession.getSession().getAccount();
+        List<Integer> roleList = dto.getRoleList();
 
         LambdaQueryWrapper<GroupMember> groupMemberWrapper = new LambdaQueryWrapper<>();
         groupMemberWrapper.select(GroupMember::getGroupId);
         groupMemberWrapper.eq(GroupMember::getMemberAccount, account);
-        groupMemberWrapper.groupBy(GroupMember::getGroupId);
+        if (roleList != null && !roleList.isEmpty()) {
+            groupMemberWrapper.in(GroupMember::getMemberRole, roleList);
+        }
         List<GroupMember> groupIds = groupMemberMapper.selectList(groupMemberWrapper);
 
         if (groupIds.isEmpty()) {
@@ -136,6 +141,14 @@ public class GroupMngService {
         vo.setGroupInfo(groupInfo);
         vo.setMembers(members);
         return ResultUtil.success(vo);
+    }
+
+    public ResponseEntity<IMHttpResponse> searchGroupByMember(SearchGroupByMemberReq dto) {
+        log.info("GroupMngService::searchGroupByMember");
+        String account = ReqSession.getSession().getAccount();
+        String searchKey = dto.getSearchKey();
+        List<GroupMember> members = groupMemberMapper.selectGroupByMember(account, searchKey);
+        return ResultUtil.success(members);
     }
 
     public ResponseEntity<IMHttpResponse> modifyGroup(ModifyGroupReq dto) {

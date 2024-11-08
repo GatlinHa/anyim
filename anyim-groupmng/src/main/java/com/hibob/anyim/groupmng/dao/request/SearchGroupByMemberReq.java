@@ -8,14 +8,11 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-@ApiModel("群主转让请求的参数")
-public class OwnerTransferReq extends BaseRequest {
+@ApiModel("根据成员群昵称或账号搜索群id")
+public class SearchGroupByMemberReq extends BaseRequest {
 
-    @ApiModelProperty(value = "群组id")
+    @ApiModelProperty(value = "搜索关键词")
     @NotEmpty
-    private String groupId;
+    private String searchKey;
 
-    @ApiModelProperty(value = "新群主账号")
-    @NotEmpty
-    private String account;
 }

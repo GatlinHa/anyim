@@ -57,6 +57,16 @@ public class GroupMngController {
     }
 
     /**
+     * 根据成员群昵称或账号搜索群id
+     */
+    @ApiOperation(value = "根据成员群昵称或账号搜索群id", notes = "根据成员群昵称或账号搜索群id")
+    @CommonHeader
+    @PostMapping("/searchGroupByMember")
+    public ResponseEntity<IMHttpResponse> searchGroupByMember(@Valid @RequestBody SearchGroupByMemberReq dto) {
+        return groupMngService.searchGroupByMember(dto);
+    }
+
+    /**
      * 修改群信息
      */
     @ApiOperation(value = "修改群组信息", notes = "修改群组信息")

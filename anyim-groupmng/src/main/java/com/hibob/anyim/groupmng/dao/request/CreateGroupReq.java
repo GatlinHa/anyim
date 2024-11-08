@@ -13,6 +13,11 @@ import java.util.Map;
 @ApiModel("创建群组请求的参数")
 public class CreateGroupReq extends BaseRequest {
 
+    @ApiModelProperty(value = "群组名称")
+    @NotEmpty(message = "群组名称不能为空")
+    @Size(max = 50, message = "群组名称不能大于50字符")
+    private String groupName;
+
     @ApiModelProperty(value = "群组类型")
     @NotNull
     @Max(value = 10, message = "群组类型不能大于10")
