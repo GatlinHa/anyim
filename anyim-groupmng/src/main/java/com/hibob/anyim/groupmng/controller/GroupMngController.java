@@ -55,16 +55,6 @@ public class GroupMngController {
     }
 
     /**
-     * 查询群成员
-     */
-    @ApiOperation(value = "查询群成员", notes = "查询群成员")
-    @CommonHeader
-    @PostMapping("/queryGroupMembers")
-    public ResponseEntity<IMHttpResponse> queryGroupMembers(@Valid @RequestBody QueryGroupMembersReq dto) {
-        return groupMngService.queryGroupMembers(dto);
-    }
-
-    /**
      * 根据成员群昵称或账号搜索群id
      */
     @ApiOperation(value = "根据成员群昵称或账号搜索群id", notes = "根据成员群昵称或账号搜索群id")

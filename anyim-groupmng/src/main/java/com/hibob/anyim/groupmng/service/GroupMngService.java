@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -67,15 +68,11 @@ public class GroupMngService {
         List<GroupMember> members = new ArrayList<>();
         List<String> accounts = dto.getAccounts();
         accounts.add(account);
-        Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(accounts);
-        for (Map.Entry entry: usersMap.entrySet()) {
-            Map value = (Map) entry.getValue();
+        for (String item: accounts) {
             GroupMember member = new GroupMember();
             member.setGroupId(groupId);
-            member.setAccount((String) value.get("account"));
-            member.setNickName((String) value.get("nickName"));
-            member.setAvatarThumb((String) value.get("avatarThumb"));
-            if (account.equals(value.get("account"))) {
+            member.setAccount(item);
+            if (account.equals(item)) {
                 member.setRole(2);
             }
             else {
@@ -93,7 +90,6 @@ public class GroupMngService {
 
         GroupVO vo = new GroupVO();
         vo.setGroupInfo(groupInfo);
-        vo.setMembers(members);
         return ResultUtil.success(vo);
     }
 
@@ -139,32 +135,16 @@ public class GroupMngService {
         queryWrapper.clear();
         queryWrapper.eq(GroupMember::getGroupId, groupId);
         List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
+        List<String> accounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
+        Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(accounts);
+        for (GroupMember member : members) {
+            usersMap.get(member.getAccount()).put("role", member.getRole());
+            usersMap.get(member.getAccount()).put("muted", member.isMuted());
+        }
 
         GroupVO vo = new GroupVO();
         vo.setGroupInfo(groupInfo);
-        vo.setMembers(members);
-        return ResultUtil.success(vo);
-    }
-
-    public ResponseEntity<IMHttpResponse> queryGroupMembers(QueryGroupMembersReq dto) {
-        log.info("GroupMngService::queryGroupMembers");
-        String groupId = dto.getGroupId();
-        String account = ReqSession.getSession().getAccount();
-
-        // 校验这个用户是否在这个群里
-        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getAccount, account);
-        Long count = groupMemberMapper.selectCount(queryWrapper);
-        if (count == 0) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
-        }
-
-        queryWrapper.clear();
-        queryWrapper.eq(GroupMember::getGroupId, groupId);
-        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
-
-        GroupVO vo = new GroupVO();
-        vo.setMembers(members);
+        vo.setMembers(usersMap);
         return ResultUtil.success(vo);
     }
 
@@ -246,26 +226,27 @@ public class GroupMngService {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
-        for (Map<String, Object> map : dto.getMembers()) {
-            String account = (String)map.get("account");
-            Map<String, Object> user = rpcClient.getUserRpcService().queryUserInfo(account);
-            if (user != null) {
-                GroupMember member = new GroupMember();
-                member.setGroupId(String.valueOf(groupId));
-                member.setAccount(account);
-                member.setNickName((String) user.get("nickName"));
-                member.setAvatarThumb((String) user.get("avatarThumb"));
-                member.setRole((Integer) map.get("role"));
-                addMembers.add(member);
-            }
+        for (String item : dto.getAccounts()) {
+            GroupMember member = new GroupMember();
+            member.setGroupId(String.valueOf(groupId));
+            member.setAccount(item);
+            member.setRole(0);
+            addMembers.add(member);
         }
         groupMemberMapper.insertBatchSomeColumn(addMembers);
 
         queryWrapper.clear();
         queryWrapper.eq(GroupMember::getGroupId, groupId);
         List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
+        List<String> accounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
+        Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(accounts);
+        for (GroupMember member : members) {
+            usersMap.get(member.getAccount()).put("role", member.getRole());
+            usersMap.get(member.getAccount()).put("muted", member.isMuted());
+        }
+
         GroupVO vo = new GroupVO();
-        vo.setMembers(members);
+        vo.setMembers(usersMap);
         return ResultUtil.success(vo);
     }
 
@@ -291,8 +272,15 @@ public class GroupMngService {
         queryWrapper.clear();
         queryWrapper.eq(GroupMember::getGroupId, groupId);
         List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
+        List<String> accounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
+        Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(accounts);
+        for (GroupMember member : members) {
+            usersMap.get(member.getAccount()).put("role", member.getRole());
+            usersMap.get(member.getAccount()).put("muted", member.isMuted());
+        }
+
         GroupVO vo = new GroupVO();
-        vo.setMembers(members);
+        vo.setMembers(usersMap);
         return ResultUtil.success(vo);
     }
 
