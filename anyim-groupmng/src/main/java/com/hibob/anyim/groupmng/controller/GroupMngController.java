@@ -5,8 +5,6 @@ import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.groupmng.dao.request.*;
 import com.hibob.anyim.groupmng.service.GroupMngService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +55,16 @@ public class GroupMngController {
     }
 
     /**
+     * 查询群成员
+     */
+    @ApiOperation(value = "查询群成员", notes = "查询群成员")
+    @CommonHeader
+    @PostMapping("/queryGroupMembers")
+    public ResponseEntity<IMHttpResponse> queryGroupMembers(@Valid @RequestBody QueryGroupMembersReq dto) {
+        return groupMngService.queryGroupMembers(dto);
+    }
+
+    /**
      * 根据成员群昵称或账号搜索群id
      */
     @ApiOperation(value = "根据成员群昵称或账号搜索群id", notes = "根据成员群昵称或账号搜索群id")
@@ -89,11 +97,21 @@ public class GroupMngController {
     /**
      * 群组加/减人
      */
-    @ApiOperation(value = "群组加/减人", notes = "群组加/减人")
+    @ApiOperation(value = "群组加人", notes = "群组加人")
     @CommonHeader
-    @PostMapping("/changeMembers")
-    public ResponseEntity<IMHttpResponse> changeMembers(@Valid @RequestBody ChangeMembersReq dto) {
-        return groupMngService.changeMembers(dto);
+    @PostMapping("/addMembers")
+    public ResponseEntity<IMHttpResponse> addMembers(@Valid @RequestBody AddMembersReq dto) {
+        return groupMngService.addMembers(dto);
+    }
+
+    /**
+     * 群组减人
+     */
+    @ApiOperation(value = "群组减人", notes = "群组减人")
+    @CommonHeader
+    @PostMapping("/delMembers")
+    public ResponseEntity<IMHttpResponse> delMembers(@Valid @RequestBody DelMembersReq dto) {
+        return groupMngService.delMembers(dto);
     }
 
     /**

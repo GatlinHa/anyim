@@ -7,20 +7,17 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
-@ApiModel("修改成员角色请求的参数")
-public class ChangeRoleReq extends BaseRequest {
+@ApiModel("群组减人请求的参数")
+public class DelMembersReq extends BaseRequest {
 
     @ApiModelProperty(value = "群组id")
     @NotEmpty
     private String groupId;
 
-    @ApiModelProperty(value = "待修改的成员")
-    @NotEmpty
-    private String account;
-
-    @ApiModelProperty(value = "角色")
+    @ApiModelProperty(value = "减少的群组成员：account数组")
     @NotNull
-    private int role;
+    private List<String> accounts;
 }

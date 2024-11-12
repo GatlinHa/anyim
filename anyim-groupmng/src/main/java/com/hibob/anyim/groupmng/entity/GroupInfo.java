@@ -31,8 +31,11 @@ public class GroupInfo {
     @TableField(value = "history_browse")
     private boolean historyBrowse;
 
-    @TableField(value = "muted")
-    private boolean muted;
+    @TableField(value = "all_muted")
+    private boolean allMuted;
+
+    @TableField(value = "all_invite")
+    private boolean allInvite;
 
     @TableField(value = "creator")
     private String creator;

@@ -67,14 +67,14 @@ public class GroupMngRpcServiceImpl implements GroupMngRpcService {
     @Override
     public List<String> queryGroupMembers(String groupId, String account) {
         LambdaQueryWrapper<GroupMember> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.select(GroupMember::getMemberAccount);
+        queryWrapper.select(GroupMember::getAccount);
         queryWrapper.eq(GroupMember::getGroupId, groupId);
         if (StringUtils.hasLength(account)) {
-            queryWrapper.ne(GroupMember::getMemberAccount, account);
+            queryWrapper.ne(GroupMember::getAccount, account);
         }
         List<String> accounts = new ArrayList<>();
         groupMemberMapper.selectList(queryWrapper).forEach(x -> {
-            accounts.add(x.getMemberAccount());
+            accounts.add(x.getAccount());
         });
         return accounts;
     }
@@ -83,7 +83,7 @@ public class GroupMngRpcServiceImpl implements GroupMngRpcService {
     public boolean isMemberInGroup(String groupId, String account) {
         LambdaQueryWrapper<GroupMember> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(GroupMember::getGroupId, groupId);
-        queryWrapper.eq(GroupMember::getMemberAccount, account);
+        queryWrapper.eq(GroupMember::getAccount, account);
         Long count = groupMemberMapper.selectCount(queryWrapper);
         return count > 0 ? true : false;
     }

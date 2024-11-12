@@ -48,7 +48,8 @@ public class GroupMngService {
         String avatar = ""; //创建时，不带群头像
         String avatarThumb = ""; //创建时，不带群头像缩略图
         boolean historyBrowse = false; //创建时，默认新成员不能查看历史消息
-        boolean muted = false; //创建时，默认非全场静音
+        boolean allMuted = false; //创建时，默认非全场静音
+        boolean allInvite = true; //创建时，默认全员可以邀请新成员
         String creator = account;
 
         GroupInfo groupInfo = new GroupInfo();
@@ -59,7 +60,8 @@ public class GroupMngService {
         groupInfo.setAvatar(avatar);
         groupInfo.setAvatarThumb(avatarThumb);
         groupInfo.setHistoryBrowse(historyBrowse);
-        groupInfo.setMuted(muted);
+        groupInfo.setAllMuted(allMuted);
+        groupInfo.setAllInvite(allInvite);
         groupInfo.setCreator(creator);
 
         List<GroupMember> members = new ArrayList<>();
@@ -70,13 +72,14 @@ public class GroupMngService {
             Map value = (Map) entry.getValue();
             GroupMember member = new GroupMember();
             member.setGroupId(groupId);
-            member.setMemberAccount((String) value.get("account"));
-            member.setMemberNickName((String) value.get("nickName"));
+            member.setAccount((String) value.get("account"));
+            member.setNickName((String) value.get("nickName"));
+            member.setAvatarThumb((String) value.get("avatarThumb"));
             if (account.equals(value.get("account"))) {
-                member.setMemberRole(2);
+                member.setRole(2);
             }
             else {
-                member.setMemberRole(0);
+                member.setRole(0);
             }
             members.add(member);
         }
@@ -101,9 +104,9 @@ public class GroupMngService {
 
         LambdaQueryWrapper<GroupMember> groupMemberWrapper = new LambdaQueryWrapper<>();
         groupMemberWrapper.select(GroupMember::getGroupId);
-        groupMemberWrapper.eq(GroupMember::getMemberAccount, account);
+        groupMemberWrapper.eq(GroupMember::getAccount, account);
         if (roleList != null && !roleList.isEmpty()) {
-            groupMemberWrapper.in(GroupMember::getMemberRole, roleList);
+            groupMemberWrapper.in(GroupMember::getRole, roleList);
         }
         List<GroupMember> groupIds = groupMemberMapper.selectList(groupMemberWrapper);
 
@@ -125,10 +128,10 @@ public class GroupMngService {
 
         // 校验这个用户是否在这个群里
         LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getMemberAccount, account);
+        queryWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getAccount, account);
         Long count = groupMemberMapper.selectCount(queryWrapper);
         if (count == 0) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP);
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
         GroupInfo groupInfo = groupInfoMapper.selectById(groupId);
@@ -139,6 +142,28 @@ public class GroupMngService {
 
         GroupVO vo = new GroupVO();
         vo.setGroupInfo(groupInfo);
+        vo.setMembers(members);
+        return ResultUtil.success(vo);
+    }
+
+    public ResponseEntity<IMHttpResponse> queryGroupMembers(QueryGroupMembersReq dto) {
+        log.info("GroupMngService::queryGroupMembers");
+        String groupId = dto.getGroupId();
+        String account = ReqSession.getSession().getAccount();
+
+        // 校验这个用户是否在这个群里
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getAccount, account);
+        Long count = groupMemberMapper.selectCount(queryWrapper);
+        if (count == 0) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
+        }
+
+        queryWrapper.clear();
+        queryWrapper.eq(GroupMember::getGroupId, groupId);
+        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
+
+        GroupVO vo = new GroupVO();
         vo.setMembers(members);
         return ResultUtil.success(vo);
     }
@@ -186,8 +211,8 @@ public class GroupMngService {
         // 校验这个用户是是不是这个群组的owner
         LambdaQueryWrapper<GroupMember> groupMemberWrapper = new LambdaQueryWrapper<>();
         groupMemberWrapper.eq(GroupMember::getGroupId, groupId)
-                .eq(GroupMember::getMemberAccount, account)
-                .eq(GroupMember::getMemberRole, 3);
+                .eq(GroupMember::getAccount, account)
+                .eq(GroupMember::getRole, 3);
         Long count = groupMemberMapper.selectCount(groupMemberWrapper);
         if (count == 0) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_DEL_GROUP_USER_INVALID);
@@ -206,51 +231,83 @@ public class GroupMngService {
         return ResultUtil.success();
     }
 
-    public ResponseEntity<IMHttpResponse> changeMembers(ChangeMembersReq dto) {
-        log.info("GroupMngService::changeMembers");
+    public ResponseEntity<IMHttpResponse> addMembers(AddMembersReq dto) {
+        log.info("GroupMngService::addMembers");
         String groupId = dto.getGroupId();
         List<GroupMember> addMembers = new ArrayList<>();
 
-        for (Map<String, Object> map : dto.getAddMembers()) {
-            String memberAccount = (String)map.get("memberAccount");
-            Map<String, Object> user = rpcClient.getUserRpcService().queryUserInfo(memberAccount);
+        // 校验这个用户是否有操作权限
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getAccount, ReqSession.getSession().getAccount())
+                .in(GroupMember::getRole, new Integer[] {1, 2});
+        Long count = groupMemberMapper.selectCount(queryWrapper);
+        if (count == 0) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
+        }
+
+        for (Map<String, Object> map : dto.getMembers()) {
+            String account = (String)map.get("account");
+            Map<String, Object> user = rpcClient.getUserRpcService().queryUserInfo(account);
             if (user != null) {
                 GroupMember member = new GroupMember();
                 member.setGroupId(String.valueOf(groupId));
-                member.setMemberAccount(memberAccount);
-                member.setMemberNickName((String) user.get("nickName"));
-                member.setMemberRole((Integer) map.get("memberRole"));
+                member.setAccount(account);
+                member.setNickName((String) user.get("nickName"));
+                member.setAvatarThumb((String) user.get("avatarThumb"));
+                member.setRole((Integer) map.get("role"));
                 addMembers.add(member);
             }
         }
+        groupMemberMapper.insertBatchSomeColumn(addMembers);
 
-        if (!addMembers.isEmpty()) {
-            groupMemberMapper.insertBatchSomeColumn(addMembers);
+        queryWrapper.clear();
+        queryWrapper.eq(GroupMember::getGroupId, groupId);
+        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
+        GroupVO vo = new GroupVO();
+        vo.setMembers(members);
+        return ResultUtil.success(vo);
+    }
+
+    public ResponseEntity<IMHttpResponse> delMembers(DelMembersReq dto) {
+        log.info("GroupMngService::delMembers");
+        String groupId = dto.getGroupId();
+        // 校验这个用户是否有操作权限
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getAccount, ReqSession.getSession().getAccount())
+                .in(GroupMember::getRole, new Integer[] {1, 2});
+        Long count = groupMemberMapper.selectCount(queryWrapper);
+        if (count == 0) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
-        if (!dto.getDelMembers().isEmpty()) {
-            LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(GroupMember::getGroupId, groupId);
-            queryWrapper.ne(GroupMember::getMemberRole, 3); // 群主不能直接删除
-            queryWrapper.in(GroupMember::getMemberAccount, dto.getDelMembers().stream().map(map -> map.get("memberAccount")).toArray());
-            groupMemberMapper.delete(queryWrapper);
-        }
+        queryWrapper.clear();
+        queryWrapper.eq(GroupMember::getGroupId, groupId);
+        queryWrapper.ne(GroupMember::getRole, 3); // 群主不能直接删除
+        queryWrapper.in(GroupMember::getAccount, dto.getAccounts());
+        groupMemberMapper.delete(queryWrapper);
 
-        return ResultUtil.success();
+        queryWrapper.clear();
+        queryWrapper.eq(GroupMember::getGroupId, groupId);
+        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
+        GroupVO vo = new GroupVO();
+        vo.setMembers(members);
+        return ResultUtil.success(vo);
     }
 
     public ResponseEntity<IMHttpResponse> changeRole(ChangeRoleReq dto) {
         log.info("GroupMngService::changeRole");
         String groupId = dto.getGroupId();
-        String memberAccount = dto.getMemberAccount();
-        int memberRole = dto.getMemberRole();
+        String memberAccount = dto.getAccount();
+        int memberRole = dto.getRole();
 
         LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getMemberAccount, memberAccount);
-        updateWrapper.set(GroupMember::getMemberRole, memberRole);
+        updateWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getAccount, memberAccount);
+        updateWrapper.set(GroupMember::getRole, memberRole);
         int update = groupMemberMapper.update(updateWrapper);
         if (update == 0) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP);
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
         return ResultUtil.success();
@@ -266,8 +323,8 @@ public class GroupMngService {
         // 校验这个用户是是不是这个群组的owner
         LambdaQueryWrapper<GroupMember> groupMemberWrapper = new LambdaQueryWrapper<>();
         groupMemberWrapper.eq(GroupMember::getGroupId, groupId)
-                .eq(GroupMember::getMemberAccount, localAccount)
-                .eq(GroupMember::getMemberRole, 3);
+                .eq(GroupMember::getAccount, localAccount)
+                .eq(GroupMember::getRole, 3);
         Long count = groupMemberMapper.selectCount(groupMemberWrapper);
         if (count == 0) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_OWNER);
@@ -276,8 +333,8 @@ public class GroupMngService {
         // 校验新群主候选人是否在这个群组中
         groupMemberWrapper.clear();
         groupMemberWrapper.eq(GroupMember::getGroupId, groupId)
-                .eq(GroupMember::getMemberAccount, account)
-                .ne(GroupMember::getMemberRole, 3);
+                .eq(GroupMember::getAccount, account)
+                .ne(GroupMember::getRole, 3);
         count = groupMemberMapper.selectCount(groupMemberWrapper);
         if (count == 0) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NEW_OWNER_NOT_IN_GROUP);
@@ -285,13 +342,13 @@ public class GroupMngService {
 
         LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(GroupMember::getGroupId, groupId)
-                .eq(GroupMember::getMemberAccount, localAccount)
-                .set(GroupMember::getMemberRole, 2); // 降级为超级管理员
+                .eq(GroupMember::getAccount, localAccount)
+                .set(GroupMember::getRole, 2); // 降级为超级管理员
         if (groupMemberMapper.update(updateWrapper) > 0) {
             updateWrapper.clear();
             updateWrapper.eq(GroupMember::getGroupId, groupId)
-                    .eq(GroupMember::getMemberAccount, account)
-                    .set(GroupMember::getMemberRole, 3); // 升级为群主
+                    .eq(GroupMember::getAccount, account)
+                    .set(GroupMember::getRole, 3); // 升级为群主
             int update = groupMemberMapper.update(updateWrapper);
             if (update == 0) {
                 // 更新失败，需要根据事务回滚

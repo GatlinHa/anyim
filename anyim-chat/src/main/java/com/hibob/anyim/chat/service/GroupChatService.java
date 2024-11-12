@@ -47,7 +47,7 @@ public class GroupChatService {
 //        long groupId = dto.getGroupId();
 //        String account = ReqSession.getSession().getAccount();
 //        if (!rpcClient.getGroupMngRpcService().isMemberInGroup(groupId, account)) {
-//            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP);
+//            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
 //        }
 //
 //        String sessionId = String.valueOf(groupId);
@@ -100,7 +100,7 @@ public class GroupChatService {
         String groupId = dto.getGroupId();
         String account = ReqSession.getSession().getAccount();
         if (!rpcClient.getGroupMngRpcService().isMemberInGroup(groupId, account)) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP);
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
         String sessionId = groupId;

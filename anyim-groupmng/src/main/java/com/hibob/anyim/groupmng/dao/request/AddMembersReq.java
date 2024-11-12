@@ -10,18 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@ApiModel("群组加/减人请求的参数")
-public class ChangeMembersReq extends BaseRequest {
+@ApiModel("群组加人请求的参数")
+public class AddMembersReq extends BaseRequest {
 
     @ApiModelProperty(value = "群组id")
     @NotEmpty
     private String groupId;
 
-    @ApiModelProperty(value = "增加的群组成员：memberAccount, memberRole")
+    @ApiModelProperty(value = "增加的群组成员：account, nickName, avatarThumb, role")
     @NotNull
-    private List<Map<String, Object>> addMembers;
-
-    @ApiModelProperty(value = "减少的群组成员：memberAccount, memberRole")
-    @NotNull
-    private List<Map<String, Object>> delMembers;
+    private List<Map<String, Object>> members;
 }

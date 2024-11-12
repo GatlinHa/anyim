@@ -12,14 +12,17 @@ public class GroupMember {
     @TableField(value = "group_id")
     private String groupId;
 
-    @TableField(value = "member_account")
-    private String memberAccount;
+    @TableField(value = "account")
+    private String account;
 
-    @TableField(value = "member_nick_name")
-    private String memberNickName;
+    @TableField(value = "nick_name")
+    private String nickName;
 
-    @TableField(value = "member_role")
-    private int memberRole;
+    @TableField(value = "avatar_thumb")
+    private String avatarThumb;
+
+    @TableField(value = "role")
+    private int role;
 
     @TableField(value = "muted")
     private boolean muted;
