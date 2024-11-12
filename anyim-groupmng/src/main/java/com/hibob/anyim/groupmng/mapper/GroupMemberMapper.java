@@ -12,8 +12,8 @@ public interface GroupMemberMapper extends BaseMapper<GroupMember> {
     int insertBatchSomeColumn(Collection<GroupMember> entityList);
 
     @Select("select * from anyim_group_member " +
-            " where group_id in (SELECT group_id FROM anyim_group_member WHERE member_account = #{account}) " +
-            " and (member_account = #{searchKey} or member_nick_name like CONCAT('%', #{searchKey}, '%'))")
+            " where group_id in (SELECT group_id FROM anyim_group_member WHERE account = #{account}) " +
+            " and (account = #{searchKey} or nick_name like CONCAT('%', #{searchKey}, '%'))")
     List<GroupMember> selectGroupByMember(String account, String searchKey);
 
 }
