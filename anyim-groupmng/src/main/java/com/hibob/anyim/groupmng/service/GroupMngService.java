@@ -37,6 +37,11 @@ public class GroupMngService {
     private final RpcClient rpcClient;
     private SnowflakeId snowflakeId = null;
 
+    /**
+     * 创建群组
+     * @param dto 群组名称, 群组类型, 群组成员的账号数组
+     * @return 群组信息, 不返回成员基本信息
+     */
     @Transactional
     public ResponseEntity<IMHttpResponse> createGroup(CreateGroupReq dto) {
         log.info("GroupMngService::createGroup");
@@ -64,6 +69,7 @@ public class GroupMngService {
         groupInfo.setAllMuted(allMuted);
         groupInfo.setAllInvite(allInvite);
         groupInfo.setCreator(creator);
+        groupInfo.setMyRole(2); //不是数据库字段,加了注解不会插入进去
 
         List<GroupMember> members = new ArrayList<>();
         List<String> accounts = dto.getAccounts();
@@ -93,46 +99,33 @@ public class GroupMngService {
         return ResultUtil.success(vo);
     }
 
+    /**
+     * 查询某个用户下的所有群组列表
+     * @param dto 当前用户账号
+     * @return 群组信息列表, 外加当前用户在这个群的role, 不返回成员信息
+     */
     public ResponseEntity<IMHttpResponse> queryGroupList(QueryGroupListReq dto) {
         log.info("GroupMngService::queryGroupList");
         String account = ReqSession.getSession().getAccount();
-        List<Integer> roleList = dto.getRoleList();
-
-        LambdaQueryWrapper<GroupMember> groupMemberWrapper = new LambdaQueryWrapper<>();
-        groupMemberWrapper.select(GroupMember::getGroupId);
-        groupMemberWrapper.eq(GroupMember::getAccount, account);
-        if (roleList != null && !roleList.isEmpty()) {
-            groupMemberWrapper.in(GroupMember::getRole, roleList);
-        }
-        List<GroupMember> groupIds = groupMemberMapper.selectList(groupMemberWrapper);
-
-        if (groupIds.isEmpty()) {
-            return ResultUtil.success();
-        }
-
-        LambdaQueryWrapper<GroupInfo> groupInfoWrapper = new LambdaQueryWrapper<>();
-        groupInfoWrapper.in(GroupInfo::getGroupId, groupIds.stream().map(member -> member.getGroupId()).toArray());
-        List<GroupInfo> groupInfos = groupInfoMapper.selectList(groupInfoWrapper);
-
+        List<GroupInfo> groupInfos = groupInfoMapper.selectGroupInfo(account);
         return ResultUtil.success(groupInfos);
     }
 
+    /**
+     * 查询某个groupId的所有信息:群基本信息 + (成员在群信息 + 成员基本信息)
+     * @param dto 当前用户账号, 目标群组id
+     * @return 群基本信息 + (成员在群信息 + 成员基本信息)
+     */
     public ResponseEntity<IMHttpResponse> queryGroupInfo(QueryGroupInfoReq dto) {
         log.info("GroupMngService::queryGroupInfo");
         String groupId = dto.getGroupId();
         String account = ReqSession.getSession().getAccount();
-
-        // 校验这个用户是否在这个群里
-        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getAccount, account);
-        Long count = groupMemberMapper.selectCount(queryWrapper);
-        if (count == 0) {
+        GroupInfo groupInfo = groupInfoMapper.selectGroupInfoOne(account, groupId);
+        if (groupInfo == null) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
-        GroupInfo groupInfo = groupInfoMapper.selectById(groupId);
-
-        queryWrapper.clear();
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupMember::getGroupId, groupId);
         List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
         List<String> accounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
@@ -148,6 +141,11 @@ public class GroupMngService {
         return ResultUtil.success(vo);
     }
 
+    /**
+     * 按关键字检索某个用户的所有群组下有没有叫xxx(或者账号是xxx)的人
+     * @param dto 当前用户账号, 检索关键字
+     * @return 检索结果: anyim_group_member表记录
+     */
     public ResponseEntity<IMHttpResponse> searchGroupByMember(SearchGroupByMemberReq dto) {
         log.info("GroupMngService::searchGroupByMember");
         String account = ReqSession.getSession().getAccount();
@@ -156,14 +154,22 @@ public class GroupMngService {
         return ResultUtil.success(members);
     }
 
+    /**
+     * 修改群组信息
+     * @param dto 参数可以包括: 群组名称, 群组公告, 群组头像(及缩略图)等, 只需要包含其中一项即可
+     * @return 成功或失败, 不返回数据
+     */
     public ResponseEntity<IMHttpResponse> modifyGroup(ModifyGroupReq dto) {
+        // TODO 这里要做个判断,确认用户有修改的权限(管理员及以上的角色)
         log.info("GroupMngService::modifyGroup");
         String announcement = dto.getAnnouncement();
         String groupName = dto.getGroupName();
         String avatar = dto.getAvatar();
+        String avatarThumb = dto.getAvatarThumb();
         if (!StringUtils.hasLength(announcement)
                 && !StringUtils.hasLength(groupName)
-                && !StringUtils.hasLength(avatar)) {
+                && !StringUtils.hasLength(avatar)
+                && !StringUtils.hasLength(avatarThumb)) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_EMPTY_PARAM);
         }
 
@@ -178,10 +184,19 @@ public class GroupMngService {
         if (StringUtils.hasLength(avatar)) {
             updateWrapper.set(GroupInfo::getAvatar, avatar);
         }
+        if (StringUtils.hasLength(avatarThumb)) {
+            updateWrapper.set(GroupInfo::getAvatarThumb, avatarThumb);
+        }
         groupInfoMapper.update(updateWrapper);
+
         return ResultUtil.success();
     }
 
+    /**
+     * 删除群组
+     * @param dto 目标群组id
+     * @return 成功或失败, 不返回数据
+     */
     @Transactional
     public ResponseEntity<IMHttpResponse> delGroup(DelGroupReq dto) {
         log.info("GroupMngService::delGroup");
@@ -206,11 +221,16 @@ public class GroupMngService {
         groupInfoWrapper.eq(GroupInfo::getGroupId, groupId);
         groupInfoMapper.delete(groupInfoWrapper);
 
-        // 这里不删除群组的聊天记录，等待自然老化
+        // 这里不删除群组的聊天记录，让其自然老化
 
         return ResultUtil.success();
     }
 
+    /**
+     * 添加成员
+     * @param dto 目标群组id, 待添加的成员账号数组
+     * @return 成功或失败, 最新的(成员在群信息 + 成员基本信息)
+     */
     public ResponseEntity<IMHttpResponse> addMembers(AddMembersReq dto) {
         log.info("GroupMngService::addMembers");
         String groupId = dto.getGroupId();
@@ -250,6 +270,11 @@ public class GroupMngService {
         return ResultUtil.success(vo);
     }
 
+    /**
+     * 移除成员
+     * @param dto 目标群组id, 待移除的成员账号数组
+     * @return 成功或失败, 最新的(成员在群信息 + 成员基本信息)
+     */
     public ResponseEntity<IMHttpResponse> delMembers(DelMembersReq dto) {
         log.info("GroupMngService::delMembers");
         String groupId = dto.getGroupId();
@@ -284,6 +309,11 @@ public class GroupMngService {
         return ResultUtil.success(vo);
     }
 
+    /**
+     * 修改成员的角色
+     * @param dto 目标群组id, 目标成员账号
+     * @return 成功或失败, 不返回数据
+     */
     public ResponseEntity<IMHttpResponse> changeRole(ChangeRoleReq dto) {
         log.info("GroupMngService::changeRole");
         String groupId = dto.getGroupId();
@@ -301,6 +331,11 @@ public class GroupMngService {
         return ResultUtil.success();
     }
 
+    /**
+     * 转移群主
+     * @param dto 目标群组id, 目标成员账号
+     * @return 成功或失败, 不返回数据
+     */
     @Transactional
     public ResponseEntity<IMHttpResponse> ownerTransfer(OwnerTransferReq dto) {
         log.info("GroupMngService::changeRole");

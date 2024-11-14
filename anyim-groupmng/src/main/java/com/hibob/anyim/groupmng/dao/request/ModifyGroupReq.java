@@ -24,7 +24,11 @@ public class ModifyGroupReq extends BaseRequest {
     private String announcement;
 
     @ApiModelProperty(value = "可选参数，群组头像")
-    @Size(max = 255, message = "群组头像长度不能大于255字符")
+    @Size(max = 1024, message = "群组头像长度不能大于1024字符")
     private String avatar;
+
+    @ApiModelProperty(value = "可选参数，群组头像缩略图")
+    @Size(max = 1024, message = "群组头像缩略图长度不能大于1024字符")
+    private String avatarThumb;
 
 }

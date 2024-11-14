@@ -11,7 +11,5 @@ import java.util.List;
 @Data
 @ApiModel("查询群组信息请求的参数")
 public class QueryGroupListReq extends BaseRequest {
-
-    @ApiModelProperty(value = "查询角色")
-    private List<Integer> roleList;
+    
 }

@@ -39,4 +39,7 @@ public class GroupInfo {
 
     @TableField(value = "creator")
     private String creator;
+
+    @TableField(value = "my_role", exist = false)
+    private int myRole;
 }
