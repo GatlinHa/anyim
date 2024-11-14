@@ -19,6 +19,7 @@ DROP TABLE `anyim_group_member`;
 CREATE TABLE `anyim_group_member`(
     `group_id` VARCHAR(255) NOT NULL COMMENT '群组ID，雪花算法生成',
     `account` VARCHAR(255) NOT NULL COMMENT '成员账号',
+    `nick_name` VARCHAR(255) NOT NULL COMMENT '群内昵称',
     `role` TINYINT(1) DEFAULT 0 COMMENT '成员角色：0普通成员，1管理员，2群主',
     `muted` BOOLEAN DEFAULT FALSE COMMENT '是否被禁言',
     PRIMARY KEY (group_id, account)

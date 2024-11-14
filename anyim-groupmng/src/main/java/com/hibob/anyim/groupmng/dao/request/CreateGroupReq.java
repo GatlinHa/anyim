@@ -24,8 +24,8 @@ public class CreateGroupReq extends BaseRequest {
     @Min(value = 0, message = "群组类型不能小于0")
     private int groupType;
 
-    @ApiModelProperty(value = "群组成员：account")
+    @ApiModelProperty(value = "群组成员：account, nickName")
     @NotNull
     @Size(min = 2, message = "除了创建者，群组成员不能少于2人")
-    private List<String> accounts;
+    private List<Map<String, Object>> members;
 }

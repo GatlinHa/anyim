@@ -69,30 +69,30 @@ public class GroupMngService {
         groupInfo.setAllMuted(allMuted);
         groupInfo.setAllInvite(allInvite);
         groupInfo.setCreator(creator);
-        groupInfo.setMyRole(2); //不是数据库字段,加了注解不会插入进去
+        groupInfo.setMyRole(2); //不是数据库字段,加了注解不会插入进去,这里是为了返回结果
 
-        List<GroupMember> members = new ArrayList<>();
-        List<String> accounts = dto.getAccounts();
-        accounts.add(account);
-        for (String item: accounts) {
+        List<GroupMember> insertMembers = new ArrayList<>();
+        List<Map<String, Object>> members = dto.getMembers();
+        if (members.size() < 3) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_ENOUGH_MEMBER);
+        }
+
+        for (Map<String, Object> item: members) {
             GroupMember member = new GroupMember();
             member.setGroupId(groupId);
-            member.setAccount(item);
-            if (account.equals(item)) {
+            member.setAccount(item.get("account").toString());
+            member.setNickName(item.get("nickName").toString());
+            if (account.equals(item.get("account"))) {
                 member.setRole(2);
             }
             else {
                 member.setRole(0);
             }
-            members.add(member);
-        }
-
-        if (members.size() < 3) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_ENOUGH_MEMBER);
+            insertMembers.add(member);
         }
 
         groupInfoMapper.insert(groupInfo);
-        groupMemberMapper.insertBatchSomeColumn(members);
+        groupMemberMapper.insertBatchSomeColumn(insertMembers);
 
         GroupVO vo = new GroupVO();
         vo.setGroupInfo(groupInfo);

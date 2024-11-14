@@ -15,6 +15,9 @@ public class GroupMember {
     @TableField(value = "account")
     private String account;
 
+    @TableField(value = "nick_name")
+    private String nickName;
+
     @TableField(value = "role")
     private int role;
 
