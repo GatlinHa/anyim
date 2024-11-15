@@ -69,9 +69,9 @@ public class GroupMngController {
      */
     @ApiOperation(value = "修改群组信息", notes = "修改群组信息")
     @CommonHeader
-    @PostMapping("/modifyGroup")
-    public ResponseEntity<IMHttpResponse> modifyGroup(@Valid @RequestBody ModifyGroupReq dto) {
-        return groupMngService.modifyGroup(dto);
+    @PostMapping("/updateGroupInfo")
+    public ResponseEntity<IMHttpResponse> updateGroupInfo(@Valid @RequestBody UpdateGroupInfoReq dto) {
+        return groupMngService.updateGroupInfo(dto);
     }
 
     /**

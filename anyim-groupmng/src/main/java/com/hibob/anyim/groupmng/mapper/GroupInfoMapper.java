@@ -11,7 +11,7 @@ public interface GroupInfoMapper extends BaseMapper<GroupInfo> {
     @Select("SELECT t1.*, t2.role as my_role FROM anyim_group_info t1 " +
             " INNER JOIN anyim_group_member t2 " +
             " ON t1.group_id = t2.group_id AND t2.account = #{account}")
-    List<GroupInfo> selectGroupInfo(String account);
+    List<GroupInfo> selectGroupList(String account);
 
     @Select("SELECT t1.*, t2.role as my_role FROM anyim_group_info t1 " +
             " INNER JOIN anyim_group_member t2 " +
