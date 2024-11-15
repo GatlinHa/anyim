@@ -236,26 +236,34 @@ public class GroupMngService {
         String groupId = dto.getGroupId();
         List<GroupMember> addMembers = new ArrayList<>();
 
-        // 校验这个用户是否有操作权限
-        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupMember::getGroupId, groupId)
-                .eq(GroupMember::getAccount, ReqSession.getSession().getAccount())
-                .in(GroupMember::getRole, new Integer[] {1, 2});
-        Long count = groupMemberMapper.selectCount(queryWrapper);
-        if (count == 0) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
+        // 操作权限校验(满足其一即可):
+        // 1. 看这个群是否有全员可邀请新人的设置;
+        LambdaQueryWrapper<GroupInfo> queryWrapperGroupInfo = new LambdaQueryWrapper<>();
+        queryWrapperGroupInfo.eq(GroupInfo::getGroupId, groupId);
+        GroupInfo groupInfo = groupInfoMapper.selectById(groupId);
+        if (!groupInfo.isAllInvite()) {
+            // 2.看当前用户在这个群中是否是管理员
+            LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(GroupMember::getGroupId, groupId)
+                    .eq(GroupMember::getAccount, ReqSession.getSession().getAccount())
+                    .in(GroupMember::getRole, new Integer[] {1, 2});
+            Long count = groupMemberMapper.selectCount(queryWrapper);
+            if (count == 0) {
+                return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
+            }
         }
 
-        for (String item : dto.getAccounts()) {
-            GroupMember member = new GroupMember();
-            member.setGroupId(String.valueOf(groupId));
-            member.setAccount(item);
-            member.setRole(0);
-            addMembers.add(member);
+        for (Map member : dto.getMembers()) {
+            GroupMember insertMember = new GroupMember();
+            insertMember.setGroupId(String.valueOf(groupId));
+            insertMember.setAccount(member.get("account").toString());
+            insertMember.setNickName(member.get("nickName").toString());
+            insertMember.setRole(0);
+            addMembers.add(insertMember);
         }
         groupMemberMapper.insertBatchSomeColumn(addMembers);
 
-        queryWrapper.clear();
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupMember::getGroupId, groupId);
         List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
         List<String> accounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
