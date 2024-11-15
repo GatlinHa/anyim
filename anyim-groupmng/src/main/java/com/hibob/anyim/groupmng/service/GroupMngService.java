@@ -166,7 +166,7 @@ public class GroupMngService {
         log.info("GroupMngService::updateGroupInfo");
         String groupId = dto.getGroupId();
         String account = ReqSession.getSession().getAccount();
-        if (!operationPermissionCheck(account, groupId, "updateGroupInfo")) {
+        if (!operationPermissionCheck(groupId, account, "updateGroupInfo")) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
@@ -211,7 +211,7 @@ public class GroupMngService {
         String groupId = dto.getGroupId();
         String account = ReqSession.getSession().getAccount();
 
-        if (!operationPermissionCheck(account, groupId, "delGroup")) {
+        if (!operationPermissionCheck(groupId, account, "delGroup")) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
