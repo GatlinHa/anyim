@@ -115,6 +115,16 @@ public class GroupMngController {
     }
 
     /**
+     * 修改自己的群昵称
+     */
+    @ApiOperation(value = "修改自己的群昵称）", notes = "修改自己的群昵称")
+    @CommonHeader
+    @PostMapping("/updateGroupNickName")
+    public ResponseEntity<IMHttpResponse> updateGroupNickName(@Valid @RequestBody UpdateGroupNickNameReq dto) {
+        return groupMngService.updateGroupNickName(dto);
+    }
+
+    /**
      * 群主转让
      */
     @ApiOperation(value = "群主转让", notes = "群主转让")

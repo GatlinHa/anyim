@@ -134,6 +134,7 @@ public class GroupMngService {
         // 3.查询成员基本信息
         Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(accounts);
         for (GroupMember member : members) {
+            usersMap.get(member.getAccount()).put("nickName", member.getNickName()); //群昵称不用user表中的
             usersMap.get(member.getAccount()).put("role", member.getRole());
             usersMap.get(member.getAccount()).put("muted", member.isMuted());
         }
@@ -328,13 +329,33 @@ public class GroupMngService {
     }
 
     /**
+     * 修改自己的群昵称
+     * @param dto 目标群组id, 群昵称
+     * @return 成功或失败, 不返回数据
+     */
+    public ResponseEntity<IMHttpResponse> updateGroupNickName(UpdateGroupNickNameReq dto) {
+        log.info("GroupMngService::updateGroupNickName");
+        String groupId = dto.getGroupId();
+        String account = ReqSession.getSession().getAccount();
+        LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getAccount, account);
+        updateWrapper.set(GroupMember::getNickName, dto.getNickName());
+        int update = groupMemberMapper.update(updateWrapper);
+        if (update == 0) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
+        }
+
+        return ResultUtil.success();
+    }
+
+    /**
      * 转移群主
      * @param dto 目标群组id, 目标成员账号
      * @return 成功或失败, 不返回数据
      */
     @Transactional
     public ResponseEntity<IMHttpResponse> ownerTransfer(OwnerTransferReq dto) {
-        log.info("GroupMngService::changeRole");
+        log.info("GroupMngService::ownerTransfer");
         String myAccount = ReqSession.getSession().getAccount();
         String groupId = dto.getGroupId();
         if (!operationPermissionCheck(groupId, myAccount, "ownerTransfer")) {
