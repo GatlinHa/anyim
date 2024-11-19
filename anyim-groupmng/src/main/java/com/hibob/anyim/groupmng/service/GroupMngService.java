@@ -174,7 +174,7 @@ public class GroupMngService {
         String groupName = dto.getGroupName();
         String avatar = dto.getAvatar();
         String avatarThumb = dto.getAvatarThumb();
-        if (!StringUtils.hasLength(announcement)
+        if (announcement == null // 注意: ""空串是有效值, 表示没有公告
                 && !StringUtils.hasLength(groupName)
                 && !StringUtils.hasLength(avatar)
                 && !StringUtils.hasLength(avatarThumb)) {
@@ -183,7 +183,7 @@ public class GroupMngService {
 
         LambdaUpdateWrapper<GroupInfo> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(GroupInfo::getGroupId, groupId);
-        if (StringUtils.hasLength(announcement)) {
+        if (announcement != null) {
             updateWrapper.set(GroupInfo::getAnnouncement, announcement);
         }
         if (StringUtils.hasLength(groupName)) {
