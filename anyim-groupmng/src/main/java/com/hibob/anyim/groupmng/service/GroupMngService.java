@@ -175,10 +175,16 @@ public class GroupMngService {
         String groupName = dto.getGroupName();
         String avatar = dto.getAvatar();
         String avatarThumb = dto.getAvatarThumb();
+        Boolean historyBrowse = dto.getHistoryBrowse();
+        Boolean allMuted = dto.getAllMuted();
+        Boolean allInvite = dto.getAllInvite();
         if (announcement == null // 注意: ""空串是有效值, 表示没有公告
                 && !StringUtils.hasLength(groupName)
                 && !StringUtils.hasLength(avatar)
-                && !StringUtils.hasLength(avatarThumb)) {
+                && !StringUtils.hasLength(avatarThumb)
+                && historyBrowse == null
+                && allMuted == null
+                && allInvite == null) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_EMPTY_PARAM);
         }
 
@@ -195,6 +201,15 @@ public class GroupMngService {
         }
         if (StringUtils.hasLength(avatarThumb)) {
             updateWrapper.set(GroupInfo::getAvatarThumb, avatarThumb);
+        }
+        if (historyBrowse != null) {
+            updateWrapper.set(GroupInfo::isHistoryBrowse, historyBrowse);
+        }
+        if (allMuted != null) {
+            updateWrapper.set(GroupInfo::isAllMuted, allMuted);
+        }
+        if (allInvite != null) {
+            updateWrapper.set(GroupInfo::isAllInvite, allInvite);
         }
         groupInfoMapper.update(updateWrapper);
 

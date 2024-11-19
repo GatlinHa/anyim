@@ -31,4 +31,13 @@ public class UpdateGroupInfoReq extends BaseRequest {
     @Size(max = 1024, message = "群组头像缩略图长度不能大于1024字符")
     private String avatarThumb;
 
+    @ApiModelProperty(value = "可选参数，是否新成员可查看历史消息")
+    private Boolean historyBrowse;
+
+    @ApiModelProperty(value = "可选参数，是否全员禁言")
+    private Boolean allMuted;
+
+    @ApiModelProperty(value = "可选参数，是否入群验证")
+    private Boolean allInvite;
+
 }
