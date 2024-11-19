@@ -342,7 +342,7 @@ public class GroupMngService {
         updateWrapper.set(GroupMember::getNickName, dto.getNickName());
         int update = groupMemberMapper.update(updateWrapper);
         if (update == 0) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_HAS_NO_THIS_MEMBER);
         }
 
         return ResultUtil.success();
@@ -378,6 +378,28 @@ public class GroupMngService {
         if (groupMemberMapper.update(updateWrapper) == 0) {
              // 抛出异常，让事务回滚
             throw new ServiceException(ServiceErrorCode.ERROR_GROUP_MNG_OWNER_TRANSFER);
+        }
+
+        return ResultUtil.success();
+    }
+
+    /**
+     * 退出群组
+     * @param dto 目标群组id
+     * @return 成功或失败, 不返回数据
+     */
+    @Transactional
+    public ResponseEntity<IMHttpResponse> leaveGroup(LeaveGroupReq dto) {
+        log.info("GroupMngService::leaveGroup");
+        String account = ReqSession.getSession().getAccount();
+        String groupId = dto.getGroupId();
+        LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getAccount, account)
+                .ne(GroupMember::getRole, 2); //群主不能退群,要先转移出去
+        int delete = groupMemberMapper.delete(updateWrapper);
+        if (delete == 0) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_HAS_NO_THIS_MEMBER);
         }
 
         return ResultUtil.success();

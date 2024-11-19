@@ -134,4 +134,14 @@ public class GroupMngController {
         return groupMngService.ownerTransfer(dto);
     }
 
+    /**
+     * 退出群组
+     */
+    @ApiOperation(value = "退出群组", notes = "退出群组")
+    @CommonHeader
+    @PostMapping("/leaveGroup")
+    public ResponseEntity<IMHttpResponse> leaveGroup(@Valid @RequestBody LeaveGroupReq dto) {
+        return groupMngService.leaveGroup(dto);
+    }
+
 }
