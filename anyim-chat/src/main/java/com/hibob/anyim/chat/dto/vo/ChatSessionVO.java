@@ -44,8 +44,8 @@ public class ChatSessionVO {
     @ApiModelProperty(value = "会话是否置顶")
     private boolean top;
 
-    @ApiModelProperty(value = "会话是否静音（免打扰）")
-    private boolean muted;
+    @ApiModelProperty(value = "会话是免打扰")
+    private boolean dnd;
 
     @ApiModelProperty(value = "草稿")
     private String draft;

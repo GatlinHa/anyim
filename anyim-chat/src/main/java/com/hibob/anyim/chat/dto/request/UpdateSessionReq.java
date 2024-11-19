@@ -18,8 +18,8 @@ public class UpdateSessionReq extends BaseRequest {
     @ApiModelProperty(value = "是否置顶")
     private Boolean top;
 
-    @ApiModelProperty(value = "是否静音")
-    private Boolean muted;
+    @ApiModelProperty(value = "是否免打扰")
+    private Boolean dnd;
 
     @ApiModelProperty(value = "草稿")
     private String draft;

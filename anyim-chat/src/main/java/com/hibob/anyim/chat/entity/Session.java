@@ -35,8 +35,8 @@ public class Session {
     @TableField(value = "top")
     private boolean top;
 
-    @TableField(value = "muted")
-    private boolean muted;
+    @TableField(value = "dnd")
+    private boolean dnd;
 
     @TableField(value = "draft")
     private String draft;

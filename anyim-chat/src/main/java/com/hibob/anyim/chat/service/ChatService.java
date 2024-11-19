@@ -171,7 +171,7 @@ public class ChatService {
             vo.setReadTime(item.getReadTime());
             vo.setRemoteRead(item.getRemoteRead());
             vo.setTop(item.isTop());
-            vo.setMuted(item.isMuted());
+            vo.setDnd(item.isDnd());
             vo.setDraft(item.getDraft());
             vo.setMark(item.getMark());
             vo.setPartitionId(item.getPartitionId());
@@ -206,11 +206,11 @@ public class ChatService {
         String account = reqSession.getAccount();
         String sessionId = dto.getSessionId();
         Boolean top = dto.getTop();
-        Boolean muted = dto.getMuted();
+        Boolean dnd = dto.getDnd();
         String draft = dto.getDraft(); // 注意，当前端设置draft=""的意思是清空草稿
         String mark = dto.getMark();
         Integer partitionId = dto.getPartitionId();
-        if (top == null && muted == null && draft == null && mark == null && partitionId == null) {
+        if (top == null && dnd == null && draft == null && mark == null && partitionId == null) {
             return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_UPDATE_SESSION);
         }
 
@@ -218,7 +218,7 @@ public class ChatService {
         updateWrapper.eq(Session::getAccount, account)
                 .eq(Session::getSessionId, sessionId);
         if (top != null) updateWrapper.set(Session::isTop, top);
-        if (muted != null) updateWrapper.set(Session::isMuted, muted);
+        if (dnd != null) updateWrapper.set(Session::isDnd, dnd);
         if (draft != null) updateWrapper.set(Session::getDraft, draft);
         if (mark != null) updateWrapper.set(Session::getMark, mark);
         if (partitionId != null) updateWrapper.set(Session::getPartitionId, partitionId.intValue());
@@ -382,7 +382,7 @@ public class ChatService {
         vo.setRemoteRead(session.getRemoteRead());
         vo.setReadTime(session.getReadTime());
         vo.setTop(session.isTop());
-        vo.setMuted(session.isMuted());
+        vo.setDnd(session.isDnd());
         vo.setDraft(session.getDraft());
         vo.setMark(session.getMark());
         vo.setPartitionId(session.getPartitionId());
