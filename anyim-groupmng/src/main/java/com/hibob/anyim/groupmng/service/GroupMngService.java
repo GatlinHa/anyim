@@ -222,12 +222,12 @@ public class GroupMngService {
      * @return 成功或失败, 不返回数据
      */
     @Transactional
-    public ResponseEntity<IMHttpResponse> delGroup(DelGroupReq dto) {
-        log.info("GroupMngService::delGroup");
+    public ResponseEntity<IMHttpResponse> dropGroup(DropGroupReq dto) {
+        log.info("GroupMngService::dropGroup");
         String groupId = dto.getGroupId();
         String account = ReqSession.getSession().getAccount();
 
-        if (!operationPermissionCheck(groupId, account, "delGroup")) {
+        if (!operationPermissionCheck(groupId, account, "dropGroup")) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
@@ -429,7 +429,7 @@ public class GroupMngService {
             case "delMembers":
                 queryWrapperGroupMember.gt(GroupMember::getRole, 0); // 管理员权限
                 return groupMemberMapper.selectCount(queryWrapperGroupMember) > 0;
-            case "delGroup":
+            case "dropGroup":
             case "changeRole":
             case "ownerTransfer":
                 queryWrapperGroupMember.eq(GroupMember::getRole, 2); //群主权限

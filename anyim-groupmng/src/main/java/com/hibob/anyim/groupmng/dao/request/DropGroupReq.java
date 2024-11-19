@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @ApiModel("解散群组请求的参数")
-public class DelGroupReq extends BaseRequest {
+public class DropGroupReq extends BaseRequest {
 
     @ApiModelProperty(value = "群组id")
     @NotNull

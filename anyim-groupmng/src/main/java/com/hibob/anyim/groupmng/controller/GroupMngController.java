@@ -79,9 +79,9 @@ public class GroupMngController {
      */
     @ApiOperation(value = "解散群组", notes = "解散群组")
     @CommonHeader
-    @PostMapping("/delGroup")
-    public ResponseEntity<IMHttpResponse> delGroup(@Valid @RequestBody DelGroupReq dto) {
-        return groupMngService.delGroup(dto);
+    @PostMapping("/dropGroup")
+    public ResponseEntity<IMHttpResponse> dropGroup(@Valid @RequestBody DropGroupReq dto) {
+        return groupMngService.dropGroup(dto);
     }
 
     /**
