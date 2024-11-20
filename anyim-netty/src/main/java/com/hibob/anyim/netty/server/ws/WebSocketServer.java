@@ -5,7 +5,7 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.hibob.anyim.common.utils.CommonUtil;
-import com.hibob.anyim.netty.protobuf.Msg;
+import com.hibob.anyim.common.protobuf.Msg;
 import com.hibob.anyim.netty.server.handler.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -29,7 +29,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
-import java.net.InetAddress;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;

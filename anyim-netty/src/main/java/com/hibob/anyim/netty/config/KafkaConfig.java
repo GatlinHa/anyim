@@ -1,6 +1,6 @@
 package com.hibob.anyim.netty.config;
 
-import com.hibob.anyim.netty.protobuf.Msg;
+import com.hibob.anyim.common.protobuf.Msg;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;

@@ -1,6 +1,6 @@
 package com.hibob.anyim.netty.server.processor;
 
-import com.hibob.anyim.netty.protobuf.MsgType;
+import com.hibob.anyim.common.protobuf.MsgType;
 import com.hibob.anyim.netty.utils.SpringContextUtil;
 
 public class ProcessorFactory {

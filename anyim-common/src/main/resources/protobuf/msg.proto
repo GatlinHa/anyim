@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package com.hibob.anyim.netty.protobuf;
+package com.hibob.anyim.common.protobuf;
 
 option java_multiple_files = true;
-option java_package = "com.hibob.anyim.netty.protobuf";
+option java_package = "com.hibob.anyim.common.protobuf";
 
 message Msg {
   Header header = 1;

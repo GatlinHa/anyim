@@ -2,10 +2,10 @@
 // source: msg.proto
 
 // Protobuf Java Version: 4.26.1
-package com.hibob.anyim.netty.protobuf;
+package com.hibob.anyim.common.protobuf;
 
 public interface HeaderOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:com.hibob.anyim.netty.protobuf.Header)
+    // @@protoc_insertion_point(interface_extends:com.hibob.anyim.common.protobuf.Header)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -21,15 +21,15 @@ public interface HeaderOrBuilder extends
   int getVersion();
 
   /**
-   * <code>.com.hibob.anyim.netty.protobuf.MsgType msgType = 3;</code>
+   * <code>.com.hibob.anyim.common.protobuf.MsgType msgType = 3;</code>
    * @return The enum numeric value on the wire for msgType.
    */
   int getMsgTypeValue();
   /**
-   * <code>.com.hibob.anyim.netty.protobuf.MsgType msgType = 3;</code>
+   * <code>.com.hibob.anyim.common.protobuf.MsgType msgType = 3;</code>
    * @return The msgType.
    */
-  com.hibob.anyim.netty.protobuf.MsgType getMsgType();
+  com.hibob.anyim.common.protobuf.MsgType getMsgType();
 
   /**
    * <code>bool isExtension = 4;</code>

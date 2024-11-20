@@ -1,9 +1,9 @@
 package com.hibob.anyim.netty.server.processor;
 
 import com.hibob.anyim.common.constants.Const;
-import com.hibob.anyim.netty.protobuf.Header;
-import com.hibob.anyim.netty.protobuf.Msg;
-import com.hibob.anyim.netty.protobuf.MsgType;
+import com.hibob.anyim.common.protobuf.Header;
+import com.hibob.anyim.common.protobuf.Msg;
+import com.hibob.anyim.common.protobuf.MsgType;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.stereotype.Component;
 

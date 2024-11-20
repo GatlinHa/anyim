@@ -3,7 +3,7 @@ package com.hibob.anyim.netty.server.processor;
 import com.hibob.anyim.common.enums.ConnectStatus;
 import com.hibob.anyim.common.rpc.client.RpcClient;
 import com.hibob.anyim.common.utils.CommonUtil;
-import com.hibob.anyim.netty.protobuf.Msg;
+import com.hibob.anyim.common.protobuf.Msg;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

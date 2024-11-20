@@ -1,7 +1,7 @@
 package com.hibob.anyim.netty.mq.kafka;
 
 import com.hibob.anyim.netty.config.NacosConfig;
-import com.hibob.anyim.netty.protobuf.Msg;
+import com.hibob.anyim.common.protobuf.Msg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;

@@ -2,10 +2,10 @@
 // source: msg.proto
 
 // Protobuf Java Version: 4.26.1
-package com.hibob.anyim.netty.protobuf;
+package com.hibob.anyim.common.protobuf;
 
 /**
- * Protobuf enum {@code com.hibob.anyim.netty.protobuf.MsgType}
+ * Protobuf enum {@code com.hibob.anyim.common.protobuf.MsgType}
  */
 public enum MsgType
     implements com.google.protobuf.ProtocolMessageEnum {
@@ -307,7 +307,7 @@ public enum MsgType
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return com.hibob.anyim.netty.protobuf.MsgOuterClass.getDescriptor().getEnumTypes().get(0);
+    return com.hibob.anyim.common.protobuf.MsgOuterClass.getDescriptor().getEnumTypes().get(0);
   }
 
   private static final MsgType[] VALUES = values();
@@ -330,6 +330,6 @@ public enum MsgType
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:com.hibob.anyim.netty.protobuf.MsgType)
+  // @@protoc_insertion_point(enum_scope:com.hibob.anyim.common.protobuf.MsgType)
 }
 

@@ -1,7 +1,7 @@
 package com.hibob.anyim.netty.mq.kafka;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.hibob.anyim.netty.protobuf.Msg;
+import com.hibob.anyim.common.protobuf.Msg;
 import org.apache.kafka.common.serialization.Deserializer;
 
 public class DeserializerMsg implements Deserializer<Msg> {

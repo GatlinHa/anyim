@@ -1,6 +1,6 @@
 package com.hibob.anyim.netty.server.processor;
 
-import com.hibob.anyim.netty.protobuf.Msg;
+import com.hibob.anyim.common.protobuf.Msg;
 import com.hibob.anyim.common.rpc.client.RpcClient;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;

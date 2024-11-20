@@ -18,6 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java-jwt.version>3.11.0</java-jwt.version>
         <org.apache.dubbo-version>3.0.9</org.apache.dubbo-version>
+        <protobuf-java.version>4.26.1</protobuf-java.version>
     </properties>
 
     <dependencies>
@@ -40,6 +41,12 @@
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
             <version>${org.apache.dubbo-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>${protobuf-java.version}</version>
         </dependency>
     </dependencies>
 

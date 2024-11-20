@@ -2,10 +2,10 @@
 // source: msg.proto
 
 // Protobuf Java Version: 4.26.1
-package com.hibob.anyim.netty.protobuf;
+package com.hibob.anyim.common.protobuf;
 
 public interface BodyOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:com.hibob.anyim.netty.protobuf.Body)
+    // @@protoc_insertion_point(interface_extends:com.hibob.anyim.common.protobuf.Body)
     com.google.protobuf.MessageOrBuilder {
 
   /**
