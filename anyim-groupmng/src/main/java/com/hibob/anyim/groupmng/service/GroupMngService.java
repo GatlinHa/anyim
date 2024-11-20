@@ -136,7 +136,7 @@ public class GroupMngService {
         for (GroupMember member : members) {
             usersMap.get(member.getAccount()).put("nickName", member.getNickName()); //群昵称不用user表中的
             usersMap.get(member.getAccount()).put("role", member.getRole());
-            usersMap.get(member.getAccount()).put("muted", member.isMuted());
+            usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
         }
 
         GroupVO vo = new GroupVO();
@@ -274,8 +274,9 @@ public class GroupMngService {
         List<String> accounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
         Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(accounts);
         for (GroupMember member : members) {
+            usersMap.get(member.getAccount()).put("nickName", member.getNickName()); //群昵称不用user表中的
             usersMap.get(member.getAccount()).put("role", member.getRole());
-            usersMap.get(member.getAccount()).put("muted", member.isMuted());
+            usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
         }
 
         GroupVO vo = new GroupVO();
@@ -308,8 +309,9 @@ public class GroupMngService {
         List<String> accounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
         Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(accounts);
         for (GroupMember member : members) {
+            usersMap.get(member.getAccount()).put("nickName", member.getNickName()); //群昵称不用user表中的
             usersMap.get(member.getAccount()).put("role", member.getRole());
-            usersMap.get(member.getAccount()).put("muted", member.isMuted());
+            usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
         }
 
         GroupVO vo = new GroupVO();
@@ -355,6 +357,32 @@ public class GroupMngService {
         LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getAccount, account);
         updateWrapper.set(GroupMember::getNickName, dto.getNickName());
+        int update = groupMemberMapper.update(updateWrapper);
+        if (update == 0) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_HAS_NO_THIS_MEMBER);
+        }
+
+        return ResultUtil.success();
+    }
+
+    /**
+     * 设置或取消成员禁言
+     * @param dto 目标群组id, 操作对象的账号, 禁言模式
+     * @return 成功或失败, 不返回数据
+     */
+    public ResponseEntity<IMHttpResponse> updateMute(UpdateMuteReq dto) {
+        log.info("GroupMngService::updateMute");
+        String groupId = dto.getGroupId();
+        String myAccount = ReqSession.getSession().getAccount();
+        if (!operationPermissionCheck(groupId, myAccount, "updateMute")) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
+        }
+
+        String account = dto.getAccount();
+        int mutedMode = dto.getMutedMode();
+        LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getAccount, account);
+        updateWrapper.set(GroupMember::getMutedMode, mutedMode);
         int update = groupMemberMapper.update(updateWrapper);
         if (update == 0) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_HAS_NO_THIS_MEMBER);
@@ -426,6 +454,7 @@ public class GroupMngService {
         queryWrapperGroupMember.eq(GroupMember::getAccount, account);
         switch (checkType) {
             case "updateGroupInfo":
+            case "updateMute":
             case "delMembers":
                 queryWrapperGroupMember.gt(GroupMember::getRole, 0); // 管理员权限
                 return groupMemberMapper.selectCount(queryWrapperGroupMember) > 0;

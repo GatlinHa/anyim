@@ -21,6 +21,6 @@ public class GroupMember {
     @TableField(value = "role")
     private int role;
 
-    @TableField(value = "muted")
-    private boolean muted;
+    @TableField(value = "muted_mode")
+    private int mutedMode;
 }

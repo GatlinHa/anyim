@@ -125,6 +125,16 @@ public class GroupMngController {
     }
 
     /**
+     * 设置或取消成员禁言
+     */
+    @ApiOperation(value = "设置或取消成员禁言）", notes = "设置或取消成员禁言")
+    @CommonHeader
+    @PostMapping("/updateMute")
+    public ResponseEntity<IMHttpResponse> updateMute(@Valid @RequestBody UpdateMuteReq dto) {
+        return groupMngService.updateMute(dto);
+    }
+
+    /**
      * 群主转让
      */
     @ApiOperation(value = "群主转让", notes = "群主转让")
