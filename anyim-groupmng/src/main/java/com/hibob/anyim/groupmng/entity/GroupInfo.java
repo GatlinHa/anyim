@@ -34,8 +34,8 @@ public class GroupInfo {
     @TableField(value = "all_muted")
     private boolean allMuted;
 
-    @TableField(value = "all_invite")
-    private boolean allInvite;
+    @TableField(value = "join_group_approval")
+    private boolean joinGroupApproval;
 
     @TableField(value = "creator")
     private String creator;

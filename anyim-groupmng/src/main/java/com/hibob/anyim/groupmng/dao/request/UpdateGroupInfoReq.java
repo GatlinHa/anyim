@@ -38,6 +38,6 @@ public class UpdateGroupInfoReq extends BaseRequest {
     private Boolean allMuted;
 
     @ApiModelProperty(value = "可选参数，是否入群验证")
-    private Boolean allInvite;
+    private Boolean joinGroupApproval;
 
 }

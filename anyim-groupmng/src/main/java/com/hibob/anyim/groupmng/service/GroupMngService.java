@@ -55,7 +55,7 @@ public class GroupMngService {
         String avatarThumb = ""; //创建时，不带群头像缩略图
         boolean historyBrowse = false; //创建时，默认新成员不能查看历史消息
         boolean allMuted = false; //创建时，默认非全场静音
-        boolean allInvite = true; //创建时，默认全员可以邀请新成员
+        boolean joinGroupApproval = false; //创建时，默认全员可以邀请新成员
         String creator = account;
 
         GroupInfo groupInfo = new GroupInfo();
@@ -67,7 +67,7 @@ public class GroupMngService {
         groupInfo.setAvatarThumb(avatarThumb);
         groupInfo.setHistoryBrowse(historyBrowse);
         groupInfo.setAllMuted(allMuted);
-        groupInfo.setAllInvite(allInvite);
+        groupInfo.setJoinGroupApproval(joinGroupApproval);
         groupInfo.setCreator(creator);
         groupInfo.setMyRole(2); //不是数据库字段,加了注解不会插入进去,这里是为了返回结果
 
@@ -177,14 +177,14 @@ public class GroupMngService {
         String avatarThumb = dto.getAvatarThumb();
         Boolean historyBrowse = dto.getHistoryBrowse();
         Boolean allMuted = dto.getAllMuted();
-        Boolean allInvite = dto.getAllInvite();
+        Boolean joinGroupApproval = dto.getJoinGroupApproval();
         if (announcement == null // 注意: ""空串是有效值, 表示没有公告
                 && !StringUtils.hasLength(groupName)
                 && !StringUtils.hasLength(avatar)
                 && !StringUtils.hasLength(avatarThumb)
                 && historyBrowse == null
                 && allMuted == null
-                && allInvite == null) {
+                && joinGroupApproval == null) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_EMPTY_PARAM);
         }
 
@@ -208,8 +208,8 @@ public class GroupMngService {
         if (allMuted != null) {
             updateWrapper.set(GroupInfo::isAllMuted, allMuted);
         }
-        if (allInvite != null) {
-            updateWrapper.set(GroupInfo::isAllInvite, allInvite);
+        if (joinGroupApproval != null) {
+            updateWrapper.set(GroupInfo::isJoinGroupApproval, joinGroupApproval);
         }
         groupInfoMapper.update(updateWrapper);
 
@@ -468,7 +468,7 @@ public class GroupMngService {
                 LambdaQueryWrapper<GroupInfo> queryWrapperGroupInfo = new LambdaQueryWrapper<>();
                 queryWrapperGroupInfo.eq(GroupInfo::getGroupId, groupId);
                 GroupInfo groupInfo = groupInfoMapper.selectById(groupId);
-                if (!groupInfo.isAllInvite()) {
+                if (!groupInfo.isJoinGroupApproval()) {
                     queryWrapperGroupMember.in(GroupMember::getRole, new Integer[] {1, 2});
                     if (groupMemberMapper.selectCount(queryWrapperGroupMember) == 0) {
                         return false;

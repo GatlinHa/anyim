@@ -9,7 +9,7 @@ CREATE TABLE `anyim_group_info`(
     `avatar_thumb` VARCHAR(1024) DEFAULT '' COMMENT '群组头像缩略图',
     `history_browse` BOOLEAN DEFAULT FALSE COMMENT '是否新成员可查看历史消息',
     `all_muted` BOOLEAN DEFAULT FALSE COMMENT '是否全员禁言,默认false',
-    `all_invite` BOOLEAN DEFAULT TRUE COMMENT '是否允许全员邀请,默认true',
+    `join_group_approval` BOOLEAN DEFAULT FALSE COMMENT '是否入群验证,默认false',
     `creator` VARCHAR(255) NOT NULL COMMENT '创建者账号',
     PRIMARY KEY (group_id),
     INDEX `idx_creator`(creator)
