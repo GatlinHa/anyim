@@ -150,6 +150,14 @@ public class ChatRpcServiceImpl implements ChatRpcService {
             session.setSessionId((String) map.get("sessionId"));
             session.setRemoteId((String) map.get("remoteId"));
             session.setSessionType((int) map.get("sessionType"));
+            session.setReadMsgId(0);
+            session.setReadTime(null);
+            session.setTop(false);
+            session.setDnd(false);
+            session.setDraft("");
+            session.setMark("");
+            session.setPartitionId(0);
+            session.setDelFlag(false);
             insertSessions.add(session);
         }
         return sessionMapper.insertBatchSomeColumn(insertSessions) > 0;
