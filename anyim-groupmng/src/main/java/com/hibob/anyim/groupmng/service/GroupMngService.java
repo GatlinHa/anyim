@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.hibob.anyim.common.enums.ServiceErrorCode;
 import com.hibob.anyim.common.exception.ServiceException;
 import com.hibob.anyim.common.model.IMHttpResponse;
+import com.hibob.anyim.common.protobuf.MsgType;
 import com.hibob.anyim.common.rpc.client.RpcClient;
 import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.utils.ResultUtil;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -93,6 +95,18 @@ public class GroupMngService {
 
         groupInfoMapper.insert(groupInfo);
         groupMemberMapper.insertBatchSomeColumn(insertMembers);
+
+        // 群组创建成功后, 为所有成员创建session, 向所有成员发送创建新群的系统消息
+        List<Map<String, Object>> insertSessionList = new ArrayList<>();
+        for (Map<String, Object> item: members) {
+            Map<String, Object> sessionMap = new HashMap<>();
+            sessionMap.put("account", item.get("account"));
+            sessionMap.put("sessionId", groupId);
+            sessionMap.put("remoteId", groupId);
+            sessionMap.put("sessionType", MsgType.GROUP_CHAT.getNumber());
+            insertSessionList.add(sessionMap);
+        }
+        rpcClient.getChatRpcService().createGroupSession(insertSessionList);
 
         GroupVO vo = new GroupVO();
         vo.setGroupInfo(groupInfo);

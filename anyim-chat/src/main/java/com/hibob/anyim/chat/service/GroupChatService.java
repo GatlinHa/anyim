@@ -72,7 +72,7 @@ public class GroupChatService {
 //                // 查询缓存或者数据库，获取每个msgId对应的msg内容
 //                List<Object> result = redisTemplate.executePipelined((RedisConnection connection) -> {
 //                    for (Object msgId : msgIds) {
-//                        String key2 = RedisKey.CHAT_SESSION_MSG_ID_MSG + sessionId + Const.SPLIT_C + msgId;
+//                        String key2 = RedisKey.CHAT_SESSION_MSG + sessionId + Const.SPLIT_C + msgId;
 //                        connection.get(key2.getBytes());
 //                    }
 //                    return null;

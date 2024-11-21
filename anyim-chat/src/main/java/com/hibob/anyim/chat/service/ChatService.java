@@ -18,6 +18,7 @@ import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
 import com.hibob.anyim.common.enums.ServiceErrorCode;
 import com.hibob.anyim.common.model.IMHttpResponse;
+import com.hibob.anyim.common.protobuf.MsgType;
 import com.hibob.anyim.common.rpc.client.RpcClient;
 import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.utils.BeanUtil;
@@ -110,7 +111,7 @@ public class ChatService {
             // 获取每个msgId对应的msg内容
             List<Object> resultRedis = redisTemplate.executePipelined((RedisConnection connection) -> {
                 for (Object msgId : msgIdInRedis) {
-                    String key2 = RedisKey.CHAT_SESSION_MSG_ID_MSG + sessionId + Const.SPLIT_C + msgId;
+                    String key2 = RedisKey.CHAT_SESSION_MSG + sessionId + Const.SPLIT_C + msgId;
                     connection.get(key2.getBytes());
                 }
                 return null;
@@ -152,52 +153,8 @@ public class ChatService {
     public ResponseEntity<IMHttpResponse> sessionList(ChatSessionListReq dto) {
         ReqSession reqSession = ReqSession.getSession();
         String account = reqSession.getAccount();
-        List<Session> sessionList = sessionMapper.selectSessionList(account);
-        Map<String, ChatSessionVO> voMap = new HashMap<>();
-        List<String> toAccountList = new ArrayList<>();
-        List<String> groupIdList = new ArrayList<>();
-        for (Session item : sessionList) {
-            ChatSessionVO vo = new ChatSessionVO();
-            vo.setSessionId(item.getSessionId());
-            vo.setSessionType(item.getSessionType());
-            vo.setRemoteId(item.getRemoteId());
-            if (item.getSessionType() == 2) {  // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
-                toAccountList.add(item.getRemoteId());
-            }
-            else if(item.getSessionType() == 3) { // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
-                groupIdList.add(item.getRemoteId());
-            }
-            vo.setReadMsgId(item.getReadMsgId());
-            vo.setReadTime(item.getReadTime());
-            vo.setRemoteRead(item.getRemoteRead());
-            vo.setTop(item.isTop());
-            vo.setDnd(item.isDnd());
-            vo.setDraft(item.getDraft());
-            vo.setMark(item.getMark());
-            vo.setPartitionId(item.getPartitionId());
-            loadLastMsg(item.getSessionId(), account, item.getReadMsgId(), vo);
-            voMap.put(item.getSessionId(), vo);
-        }
-
-        Map<String, Map<String, Object>> usersMap = null;
-        Map<String, Map<String, Object>> groupInfoMap = null;
-        if (toAccountList.isEmpty() && groupIdList.isEmpty()) {
-            return ResultUtil.success(voMap);
-        } else if (!toAccountList.isEmpty()) {
-            usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(toAccountList);
-        } else {
-            groupInfoMap = rpcClient.getGroupMngRpcService().queryGroupInfoBatch(groupIdList);
-        }
-
-        for (ChatSessionVO vo : voMap.values()) {
-            if (vo.getSessionType() == 2) { // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
-                vo.setObjectInfo(usersMap.get(vo.getRemoteId()));
-            }
-            else if(vo.getSessionType() == 3) { // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
-                vo.setObjectInfo(groupInfoMap.get(Long.valueOf(vo.getRemoteId())));
-            }
-        }
-
+        Map<String, ChatSessionVO> voMap = getChatSessionVo(account);
+        voMap.putAll(getGroupChatSessionVo(account));
         return ResultUtil.success(voMap);
     }
 
@@ -372,6 +329,76 @@ public class ChatService {
         return ResultUtil.success();
     }
 
+
+    private Map<String, ChatSessionVO> getChatSessionVo(String account) {
+        List<Session> sessionListChat = sessionMapper.selectSessionListForChat(account);
+        Map<String, ChatSessionVO> voMap = new HashMap<>();
+        if (sessionListChat == null || sessionListChat.size() == 0) {
+            return  voMap;
+        }
+
+        List<String> toAccountList = new ArrayList<>();
+        for (Session item : sessionListChat) {
+            ChatSessionVO vo = new ChatSessionVO();
+            vo.setSessionId(item.getSessionId());
+            vo.setSessionType(item.getSessionType());
+            vo.setRemoteId(item.getRemoteId());
+            vo.setReadMsgId(item.getReadMsgId());
+            vo.setReadTime(item.getReadTime());
+            vo.setRemoteRead(item.getRemoteRead());
+            vo.setTop(item.isTop());
+            vo.setDnd(item.isDnd());
+            vo.setDraft(item.getDraft());
+            vo.setMark(item.getMark());
+            vo.setPartitionId(item.getPartitionId());
+            loadLastMsg(item.getSessionId(), account, item.getReadMsgId(), vo);
+            voMap.put(item.getSessionId(), vo);
+            toAccountList.add(item.getRemoteId());
+        }
+        Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(toAccountList);
+        for (ChatSessionVO vo : voMap.values()) {
+            vo.setObjectInfo(usersMap.get(vo.getRemoteId()));
+        }
+        return voMap;
+    }
+
+
+    private Map<String, ChatSessionVO> getGroupChatSessionVo(String account) {
+        LambdaQueryWrapper<Session> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Session::getAccount, account);
+        queryWrapper.eq(Session::getDelFlag, false);
+        queryWrapper.eq(Session::getSessionType, MsgType.GROUP_CHAT.getNumber());
+        List<Session> sessionListGroupChat = sessionMapper.selectList(queryWrapper);
+        Map<String, ChatSessionVO> voMap = new HashMap<>();
+        if (sessionListGroupChat == null || sessionListGroupChat.size() == 0) {
+            return  voMap;
+        }
+
+        List<String> groupIdList = new ArrayList<>();
+        for (Session item : sessionListGroupChat) {
+            ChatSessionVO vo = new ChatSessionVO();
+            vo.setSessionId(item.getSessionId());
+            vo.setSessionType(item.getSessionType());
+            vo.setRemoteId(item.getRemoteId());
+            vo.setReadMsgId(item.getReadMsgId());
+            vo.setReadTime(item.getReadTime());
+            vo.setTop(item.isTop());
+            vo.setDnd(item.isDnd());
+            vo.setDraft(item.getDraft());
+            vo.setMark(item.getMark());
+            vo.setPartitionId(item.getPartitionId());
+            loadLastMsg(item.getSessionId(), account, item.getReadMsgId(), vo);
+            voMap.put(item.getSessionId(), vo);
+            groupIdList.add(item.getRemoteId());
+        }
+        Map<String, Map<String, Object>> groupInfoMap = rpcClient.getGroupMngRpcService().queryGroupInfoBatch(groupIdList);
+        for (ChatSessionVO vo : voMap.values()) {
+            vo.setObjectInfo(groupInfoMap.get(vo.getRemoteId()));
+        }
+
+        return  voMap;
+    }
+
     private ChatSessionVO querySession(String account, String sessionId) {
         Session session = sessionMapper.selectSession(account, sessionId);
         ChatSessionVO vo = new ChatSessionVO();
@@ -387,10 +414,10 @@ public class ChatService {
         vo.setMark(session.getMark());
         vo.setPartitionId(session.getPartitionId());
         Map<String, Object> objectInfo = null;
-        if (session.getSessionType() == 2) {  // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
+        if (session.getSessionType() == MsgType.CHAT.getNumber()) {
             objectInfo = rpcClient.getUserRpcService().queryUserInfo(session.getRemoteId());
         }
-        else if(session.getSessionType() == 3) { // TODO 要用MsgType里面的枚举，protobuf包要挪到common里面去
+        else if(session.getSessionType() == MsgType.GROUP_CHAT.getNumber()) {
             objectInfo = rpcClient.getGroupMngRpcService().queryGroupInfo(session.getRemoteId());
         }
         vo.setObjectInfo(objectInfo);
@@ -464,7 +491,7 @@ public class ChatService {
         Date currentTime = new Date();
         MsgDb msg = null;
         if (currentTime.getTime() - time < msgTtlInRedis * 1000L) {
-            Object obj = redisTemplate.opsForValue().get(RedisKey.CHAT_SESSION_MSG_ID_MSG + sessionId + Const.SPLIT_C + msgId);
+            Object obj = redisTemplate.opsForValue().get(RedisKey.CHAT_SESSION_MSG + sessionId + Const.SPLIT_C + msgId);
             if (obj != null) {
                 msg = JSON.parseObject((String) obj, MsgDb.class);
             }

@@ -1,5 +1,6 @@
 package com.hibob.anyim.common.rpc.service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -23,5 +24,7 @@ public interface ChatRpcService {
     boolean saveMsg(Map<String, Object> msg);
 
     boolean updateReadMsgId(Map<String, Object> map);
+
+    boolean createGroupSession(List<Map<String, Object>> sessionList);
 
 }

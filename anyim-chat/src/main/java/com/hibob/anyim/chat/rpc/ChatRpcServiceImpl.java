@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -107,7 +108,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
             // 超出限制，删除10%的数据
             redisTemplate.opsForZSet().removeRangeByScore(key1, 0, msgCapacityInRedis / 10);
         }
-        String key2 = RedisKey.CHAT_SESSION_MSG_ID_MSG + sessionId + Const.SPLIT_C + msgId;
+        String key2 = RedisKey.CHAT_SESSION_MSG + sessionId + Const.SPLIT_C + msgId;
         redisTemplate.opsForValue().set(key2, JSON.toJSONString(value), Duration.ofSeconds(msgTtlInRedis));
     }
 
@@ -140,4 +141,17 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         return sessionMapper.update(updateWrapper) > 0;
     }
 
+    @Override
+    public boolean createGroupSession(List<Map<String, Object>> sessionList) {
+        List<Session> insertSessions = new ArrayList<>();
+        for (Map<String, Object> map : sessionList) {
+            Session session = new Session();
+            session.setAccount((String) map.get("account"));
+            session.setSessionId((String) map.get("sessionId"));
+            session.setRemoteId((String) map.get("remoteId"));
+            session.setSessionType((int) map.get("sessionType"));
+            insertSessions.add(session);
+        }
+        return sessionMapper.insertBatchSomeColumn(insertSessions) > 0;
+    }
 }
