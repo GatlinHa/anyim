@@ -67,12 +67,12 @@ public enum MsgType
   DELIVERED(6),
   /**
    * <pre>
-   * 发送端多设备之间同步的消息
+   * 原type废弃了,这个坑位保留
    * </pre>
    *
-   * <code>SENDER_SYNC = 7;</code>
+   * <code>RESERVE = 7;</code>
    */
-  SENDER_SYNC(7),
+  RESERVE(7),
   /**
    * <pre>
    * 连接状态查询请求
@@ -187,12 +187,12 @@ public enum MsgType
   public static final int DELIVERED_VALUE = 6;
   /**
    * <pre>
-   * 发送端多设备之间同步的消息
+   * 原type废弃了,这个坑位保留
    * </pre>
    *
-   * <code>SENDER_SYNC = 7;</code>
+   * <code>RESERVE = 7;</code>
    */
-  public static final int SENDER_SYNC_VALUE = 7;
+  public static final int RESERVE_VALUE = 7;
   /**
    * <pre>
    * 连接状态查询请求
@@ -270,7 +270,7 @@ public enum MsgType
       case 4: return CHAT_READ;
       case 5: return GROUP_CHAT_READ;
       case 6: return DELIVERED;
-      case 7: return SENDER_SYNC;
+      case 7: return RESERVE;
       case 8: return STATUS_REQ;
       case 9: return STATUS_RES;
       case 10: return STATUS_SYNC;

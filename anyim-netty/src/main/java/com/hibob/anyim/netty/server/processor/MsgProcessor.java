@@ -115,10 +115,9 @@ public abstract class MsgProcessor {
      * 回复已送达
      * @param ctx
      * @param msg
-     * @param sessionId
      * @param msgId
      */
-    void sendDeliveredMsg(ChannelHandlerContext ctx, Msg msg, String sessionId, Long msgId) {
+    void sendDeliveredMsg(ChannelHandlerContext ctx, Msg msg, Long msgId) {
         Header header = Header.newBuilder()
                 .setMagic(Const.MAGIC)
                 .setVersion(0)
@@ -126,7 +125,7 @@ public abstract class MsgProcessor {
                 .setIsExtension(false)
                 .build();
         Body body = Body.newBuilder()
-                .setSessionId(sessionId)
+                .setSessionId(msg.getBody().getSessionId())
                 .setTempMsgId(msg.getBody().getTempMsgId())
                 .setMsgId(msgId)
                 .build();
@@ -152,7 +151,7 @@ public abstract class MsgProcessor {
      * @param msg
      * @throws NacosException
      */
-    void syncOtherClients(Msg msg, String sessionId, Long msgId) throws NacosException {
+    void syncOtherClients(Msg msg, Long msgId) throws NacosException {
         String fromId = msg.getBody().getFromId();
         String fromClient = msg.getBody().getFromClient();
         Set<Object> fromOnlineClients = queryOnlineClient(fromId);
@@ -160,11 +159,10 @@ public abstract class MsgProcessor {
         for (Object fromUniqueId : fromOnlineClients) {
             Msg msgOut = Msg.newBuilder(msg)
                     .setHeader(msg.getHeader().toBuilder()
-                            .setMsgType(MsgType.SENDER_SYNC).build())
+                            .build())
                     .setBody(msg.getBody().toBuilder() //修改发给本账号其它client的toId和toClient
                             .setToId(fromId)
                             .setToClient(((String) fromUniqueId).split(SPLIT_V)[1])
-                            .setSessionId(sessionId)
                             .setMsgId(msgId)
                             .build())
                     .build();

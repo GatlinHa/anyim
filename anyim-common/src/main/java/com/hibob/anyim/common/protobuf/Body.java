@@ -8,20 +8,20 @@ package com.hibob.anyim.common.protobuf;
  * <pre>
  * *
  * 每种消息需要携带的字段规定：M必须，o非必须，-不带
- * NO       filed      HELLO  HEART_BEAT  CHAT  GROUP_CHAT  CHAT_READ  GROUP_CHAT_READ  DELIVERED  SENDER_SYNC  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
- * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+------------+-------------------+---------------------+
- * | 1  | fromId       |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
- * | 2  | fromClient   |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
- * | 3  | toId         |   -  |    -      |  M  |     O     |     M    |        O       |    -     |     M      |       todo        |         todo        |
- * | 4  | toClient     |   -  |    -      |  O  |     O     |     O    |        O       |    -     |     M      |       todo        |         todo        |
- * | 5  | groupId      |   -  |    -      |  -  |     M     |     -    |        M       |    -     |     O      |       todo        |         todo        |
- * | 6  | msgId        |   -  |    -      |  O  |     O     |     O    |        O       |    M     |     M      |       todo        |         todo        |
- * | 7  | seq(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |     -      |       todo        |         todo        |
- * | 8  | ack(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |     -      |       todo        |         todo        |
- * | 9  | content      |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
- * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |     O      |       todo        |         todo        |
- * | 11 | sessionId    |   -  |    -      |  -  |     -     |     -    |        -       |    M     |     M      |       todo        |         todo        |
- * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+------------+-------------------+---------------------+
+ * NO       filed      HELLO  HEART_BEAT  CHAT  GROUP_CHAT  CHAT_READ  GROUP_CHAT_READ  DELIVERED  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
+ * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
+ * | 1  | fromId       |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
+ * | 2  | fromClient   |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
+ * | 3  | toId         |   -  |    -      |  M  |     O     |     M    |        O       |    -     |       todo        |         todo        |
+ * | 4  | toClient     |   -  |    -      |  O  |     O     |     O    |        O       |    -     |       todo        |         todo        |
+ * | 5  | groupId      |   -  |    -      |  -  |     M     |     -    |        M       |    -     |       todo        |         todo        |
+ * | 6  | msgId        |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
+ * | 7  | seq(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |       todo        |         todo        |
+ * | 8  | ack(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |       todo        |         todo        |
+ * | 9  | content      |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
+ * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
+ * | 11 | sessionId    |   -  |    -      |  M  |     M     |     M    |        M       |    M     |       todo        |         todo        |
+ * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
  * NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC
  * +----+--------------+------------+------------+------------+
  * | 1  | fromId       |      M     |      M     |      M     |
@@ -859,20 +859,20 @@ private static final long serialVersionUID = 0L;
    * <pre>
    * *
    * 每种消息需要携带的字段规定：M必须，o非必须，-不带
-   * NO       filed      HELLO  HEART_BEAT  CHAT  GROUP_CHAT  CHAT_READ  GROUP_CHAT_READ  DELIVERED  SENDER_SYNC  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
-   * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+------------+-------------------+---------------------+
-   * | 1  | fromId       |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
-   * | 2  | fromClient   |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
-   * | 3  | toId         |   -  |    -      |  M  |     O     |     M    |        O       |    -     |     M      |       todo        |         todo        |
-   * | 4  | toClient     |   -  |    -      |  O  |     O     |     O    |        O       |    -     |     M      |       todo        |         todo        |
-   * | 5  | groupId      |   -  |    -      |  -  |     M     |     -    |        M       |    -     |     O      |       todo        |         todo        |
-   * | 6  | msgId        |   -  |    -      |  O  |     O     |     O    |        O       |    M     |     M      |       todo        |         todo        |
-   * | 7  | seq(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |     -      |       todo        |         todo        |
-   * | 8  | ack(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |     -      |       todo        |         todo        |
-   * | 9  | content      |   -  |    -      |  M  |     M     |     M    |        M       |    -     |     M      |       todo        |         todo        |
-   * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |     O      |       todo        |         todo        |
-   * | 11 | sessionId    |   -  |    -      |  -  |     -     |     -    |        -       |    M     |     M      |       todo        |         todo        |
-   * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+------------+-------------------+---------------------+
+   * NO       filed      HELLO  HEART_BEAT  CHAT  GROUP_CHAT  CHAT_READ  GROUP_CHAT_READ  DELIVERED  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
+   * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
+   * | 1  | fromId       |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
+   * | 2  | fromClient   |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
+   * | 3  | toId         |   -  |    -      |  M  |     O     |     M    |        O       |    -     |       todo        |         todo        |
+   * | 4  | toClient     |   -  |    -      |  O  |     O     |     O    |        O       |    -     |       todo        |         todo        |
+   * | 5  | groupId      |   -  |    -      |  -  |     M     |     -    |        M       |    -     |       todo        |         todo        |
+   * | 6  | msgId        |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
+   * | 7  | seq(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |       todo        |         todo        |
+   * | 8  | ack(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |       todo        |         todo        |
+   * | 9  | content      |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
+   * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
+   * | 11 | sessionId    |   -  |    -      |  M  |     M     |     M    |        M       |    M     |       todo        |         todo        |
+   * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
    * NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC
    * +----+--------------+------------+------------+------------+
    * | 1  | fromId       |      M     |      M     |      M     |
