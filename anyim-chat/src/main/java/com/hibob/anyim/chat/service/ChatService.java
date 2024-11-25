@@ -481,6 +481,7 @@ public class ChatService {
         if (objects.size() == 0) {
             vo.setLastMsgId(0);
             vo.setLastMsgContent(null);
+            vo.setLastMsgAccount(null);
             vo.setLastMsgTime(null);
             vo.setUnreadCount(0);
             return;
@@ -505,6 +506,7 @@ public class ChatService {
         if (msg != null) {
             vo.setLastMsgId(msgId);
             vo.setLastMsgContent(msg.getContent());
+            vo.setLastMsgAccount(msg.getFromId());
             vo.setLastMsgTime(msg.getMsgTime());
             vo.setUnreadCount(unReadCount);
         }

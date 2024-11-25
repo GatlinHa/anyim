@@ -35,6 +35,9 @@ public class ChatSessionVO {
     @ApiModelProperty(value = "最后一条消息内容")
     private String lastMsgContent;
 
+    @ApiModelProperty(value = "最后一条消息的发送者id")
+    private String lastMsgAccount;
+
     @ApiModelProperty(value = "最后一条消息的时间")
     private Date lastMsgTime;
 
