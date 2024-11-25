@@ -55,13 +55,23 @@ public class GroupMngController {
     }
 
     /**
-     * 根据成员群昵称或账号搜索群id
+     * 在用户的所有群组中：1精确匹配groupId，2模糊匹配groupName，查出groupInfo
      */
     @ApiOperation(value = "根据成员群昵称或账号搜索群id", notes = "根据成员群昵称或账号搜索群id")
     @CommonHeader
-    @PostMapping("/searchGroupByMember")
-    public ResponseEntity<IMHttpResponse> searchGroupByMember(@Valid @RequestBody SearchGroupByMemberReq dto) {
-        return groupMngService.searchGroupByMember(dto);
+    @PostMapping("/searchGroupInfo")
+    public ResponseEntity<IMHttpResponse> searchGroupInfo(@Valid @RequestBody SearchGroupInfoReq dto) {
+        return groupMngService.searchGroupInfo(dto);
+    }
+
+    /**
+     * 在用户的所有群组中：1精确匹配account，2模糊匹配nickName，查出member列表
+     */
+    @ApiOperation(value = "根据成员群昵称或账号搜索群id", notes = "根据成员群昵称或账号搜索群id")
+    @CommonHeader
+    @PostMapping("/searchGroupMember")
+    public ResponseEntity<IMHttpResponse> searchGroupMember(@Valid @RequestBody SearchGroupMemberReq dto) {
+        return groupMngService.searchGroupMember(dto);
     }
 
     /**

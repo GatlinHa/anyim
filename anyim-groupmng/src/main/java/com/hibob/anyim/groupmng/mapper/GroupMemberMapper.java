@@ -14,6 +14,6 @@ public interface GroupMemberMapper extends BaseMapper<GroupMember> {
     @Select("select * from anyim_group_member " +
             " where group_id in (SELECT group_id FROM anyim_group_member WHERE account = #{account}) " +
             " and (account = #{searchKey} or nick_name like CONCAT('%', #{searchKey}, '%'))")
-    List<GroupMember> selectGroupByMember(String account, String searchKey);
+    List<GroupMember> searchGroupMember(String account, String searchKey);
 
 }

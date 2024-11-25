@@ -160,16 +160,29 @@ public class GroupMngService {
     }
 
     /**
-     * 按关键字检索某个用户的所有群组下有没有叫xxx(或者账号是xxx)的人
+     * 在用户的所有群组中：1精确匹配account，2模糊匹配nickName，查出member列表
      * @param dto 当前用户账号, 检索关键字
-     * @return 检索结果: anyim_group_member表记录
+     * @return 检索结果: member集合
      */
-    public ResponseEntity<IMHttpResponse> searchGroupByMember(SearchGroupByMemberReq dto) {
-        log.info("GroupMngService::searchGroupByMember");
+    public ResponseEntity<IMHttpResponse> searchGroupMember(SearchGroupMemberReq dto) {
+        log.info("GroupMngService::searchGroupMember");
         String account = ReqSession.getSession().getAccount();
         String searchKey = dto.getSearchKey();
-        List<GroupMember> members = groupMemberMapper.selectGroupByMember(account, searchKey);
+        List<GroupMember> members = groupMemberMapper.searchGroupMember(account, searchKey);
         return ResultUtil.success(members);
+    }
+
+    /**
+     * 在用户的所有群组中：1精确匹配groupId，2模糊匹配groupName，查出groupInfo
+     * @param dto 当前用户账号, 检索关键字
+     * @return 检索结果: groupInfo集合
+     */
+    public ResponseEntity<IMHttpResponse> searchGroupInfo(SearchGroupInfoReq dto) {
+        log.info("GroupMngService::searchGroupInfo");
+        String account = ReqSession.getSession().getAccount();
+        String searchKey = dto.getSearchKey();
+        List<GroupInfo> groups = groupInfoMapper.searchGroupInfo(account, searchKey);
+        return ResultUtil.success(groups);
     }
 
     /**
