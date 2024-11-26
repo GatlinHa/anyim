@@ -423,6 +423,15 @@ public class ChatService {
         vo.setObjectInfo(objectInfo);
         loadLastMsg(session.getSessionId(), account, session.getReadMsgId(), vo);
 
+        // 如果这个session是删除状态，这里被查询到了说明要激活
+        if (session.getDelFlag().booleanValue() == true) {
+            LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
+            updateWrapper.eq(Session::getAccount, account)
+                    .eq(Session::getSessionId, sessionId)
+                    .set(Session::getDelFlag, false);
+            sessionMapper.update(updateWrapper);
+        }
+
         return vo;
     }
 
