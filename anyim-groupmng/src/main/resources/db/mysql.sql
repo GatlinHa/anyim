@@ -11,6 +11,9 @@ CREATE TABLE `anyim_group_info`(
     `all_muted` BOOLEAN DEFAULT FALSE COMMENT '是否全员禁言,默认false',
     `join_group_approval` BOOLEAN DEFAULT FALSE COMMENT '是否入群验证,默认false',
     `creator` VARCHAR(255) NOT NULL COMMENT '创建者账号',
+    `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `del_flag` BOOLEAN DEFAULT FALSE COMMENT '软删除的标记',
+    `del_time` DATETIME DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (group_id),
     INDEX `idx_creator`(creator)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '群组信息表';

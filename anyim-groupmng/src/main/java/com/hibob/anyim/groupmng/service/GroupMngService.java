@@ -24,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -262,9 +259,12 @@ public class GroupMngService {
         groupMemberWrapper.eq(GroupMember::getGroupId, groupId);
         groupMemberMapper.delete(groupMemberWrapper);
 
-        LambdaQueryWrapper<GroupInfo> groupInfoWrapper = new LambdaQueryWrapper<>();
+        // 这里采用软删除方式，因为GroupInfo的信息在展示session会话信息时还需要用到
+        LambdaUpdateWrapper<GroupInfo> groupInfoWrapper = new LambdaUpdateWrapper<>();
         groupInfoWrapper.eq(GroupInfo::getGroupId, groupId);
-        groupInfoMapper.delete(groupInfoWrapper);
+        groupInfoWrapper.set(GroupInfo::isDelFlag, true);
+        groupInfoWrapper.set(GroupInfo::getDelTime, new Date(System.currentTimeMillis()));
+        groupInfoMapper.update(groupInfoWrapper);
 
         // 这里不删除群组的聊天记录，让其自然老化
 

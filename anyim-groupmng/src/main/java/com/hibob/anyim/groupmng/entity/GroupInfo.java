@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 @TableName("anyim_group_info")
 public class GroupInfo {
@@ -39,6 +41,15 @@ public class GroupInfo {
 
     @TableField(value = "creator")
     private String creator;
+
+    @TableField("created_time")
+    private Date createdTime;
+
+    @TableField(value = "del_flag")
+    private boolean delFlag;
+
+    @TableField("del_time")
+    private Date delTime;
 
     @TableField(value = "my_role", exist = false)
     private int myRole;
