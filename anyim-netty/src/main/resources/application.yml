@@ -69,3 +69,7 @@ custom:
   ref-msg-id:
     default: 10000
     step: 10000
+  thread-pool:
+    max-pool-size: 100
+    keep-alive-time: 1000
+    queue-size: 200

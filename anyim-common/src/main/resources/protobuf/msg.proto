@@ -24,6 +24,8 @@ enum MsgType {
   STATUS_RES = 9; //连接状态响应
   STATUS_SYNC = 10; //端侧的连接状态同步给云端（比如在线，离开）
 
+  SYS_GROUP_CREATE = 21; //系统消息之创建群组
+
   CLOSE_BY_READ_IDLE = 50; //超时关闭
   CLOSE_BY_ERROR_MAGIC = 51; //magic不对关闭
 
@@ -53,20 +55,20 @@ message Header {
 | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
 | 11 | sessionId    |   -  |    -      |  M  |     M     |     M    |        M       |    M     |       todo        |         todo        |
 +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
-  NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC
-+----+--------------+------------+------------+------------+
-| 1  | fromId       |      M     |      M     |      M     |
-| 2  | fromClient   |      M     |      M     |      M     |
-| 3  | toId         |      -     |      -     |      -     |
-| 4  | toClient     |      -     |      -     |      -     |
-| 5  | groupId      |      -     |      -     |      -     |
-| 6  | msgId        |      -     |      -     |      -     |
-| 7  | seq(todo)    |      -     |      -     |      -     |
-| 8  | ack(todo)    |      -     |      -     |      -     |
-| 9  | content      |      M     |      M     |      M     |
-| 10 | tempMsgId    |      -     |      -     |      -     |
-| 11 | sessionId    |      -     |      -     |      -     |
-+----+--------------+------------+------------+------------+
+  NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_CREATE
++----+--------------+------------+------------+-------------+------------+
+| 1  | fromId       |      M     |      M     |      M      |      -     |
+| 2  | fromClient   |      M     |      M     |      M      |      -     |
+| 3  | toId         |      -     |      -     |      -      |      -     |
+| 4  | toClient     |      -     |      -     |      -      |      -     |
+| 5  | groupId      |      -     |      -     |      -      |      M     |
+| 6  | msgId        |      -     |      -     |      -      |      M     |
+| 7  | seq(todo)    |      -     |      -     |      -      |      -     |
+| 8  | ack(todo)    |      -     |      -     |      -      |      -     |
+| 9  | content      |      M     |      M     |      M      |      M     |
+| 10 | tempMsgId    |      -     |      -     |      -      |      -     |
+| 11 | sessionId    |      -     |      -     |      -      |      M     |
++----+--------------+------------+------------+-------------+------------+
  */
 message Body {
   optional string fromId = 1;

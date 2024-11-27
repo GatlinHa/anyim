@@ -22,6 +22,12 @@ public interface SessionMapper extends BaseMapper<Session> {
             " ORDER BY t1.session_id ASC ")
     List<Session> selectSessionListForChat(String account);
 
+    /**
+     * 查询指定的session信息，不论这个session是不是del_flag=true状态
+     * @param account
+     * @param sessionId
+     * @return
+     */
     @Select("SELECT t1.*, IFNULL(t2.read_msg_id, 0) AS remote_read FROM anyim_chat_session t1 " +
             " LEFT JOIN anyim_chat_session t2 ON t2.account = t1.remote_id AND t2.remote_id = t1.account " +
             " WHERE t1.account = #{account} AND t1.session_id = #{sessionId}")

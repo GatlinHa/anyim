@@ -70,7 +70,6 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         CompletableFuture<Integer> future =
                 CompletableFuture.supplyAsync(() -> saveMsg(msg) ? 1 : 0, threadPoolExecutor);
         future.whenComplete((result, throwable) -> {
-            log.info("==================>asyncSaveChat execute result: {}", result);
             if (throwable != null) {
                 log.error("asyncSaveChat execute exception: {}", throwable.getCause());
             }

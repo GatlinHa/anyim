@@ -471,7 +471,8 @@ public class ChatService {
         query.addCriteria(Criteria
                 .where("sessionId").is(sessionId)
                 .and("fromId").ne(account)
-                .and("msgId").gt(lastMsgId));
+                .and("msgId").gt(lastMsgId)
+                .and("msgType").in(MsgType.CHAT.getNumber(), MsgType.GROUP_CHAT.getNumber()));
         return (int) mongoTemplate.count(query, MsgDb.class);
     }
 
@@ -489,6 +490,7 @@ public class ChatService {
         Set<Object> objects = redisTemplate.opsForZSet().reverseRangeByScore(key, -1, Double.MAX_VALUE, 0, 1);//倒序只取第1个元素，即为msgId最大的那一个（lastMsgId）
         if (objects.size() == 0) {
             vo.setLastMsgId(0);
+            vo.setLastMsgType(0);
             vo.setLastMsgContent(null);
             vo.setLastMsgAccount(null);
             vo.setLastMsgTime(null);
@@ -514,6 +516,7 @@ public class ChatService {
         int unReadCount = getUnReadCount(sessionId, account, readMsgId);
         if (msg != null) {
             vo.setLastMsgId(msgId);
+            vo.setLastMsgType(msg.getMsgType());
             vo.setLastMsgContent(msg.getContent());
             vo.setLastMsgAccount(msg.getFromId());
             vo.setLastMsgTime(msg.getMsgTime());

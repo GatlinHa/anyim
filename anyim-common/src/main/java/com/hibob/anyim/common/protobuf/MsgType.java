@@ -99,6 +99,14 @@ public enum MsgType
   STATUS_SYNC(10),
   /**
    * <pre>
+   * 系统消息之创建群组
+   * </pre>
+   *
+   * <code>SYS_GROUP_CREATE = 21;</code>
+   */
+  SYS_GROUP_CREATE(21),
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -219,6 +227,14 @@ public enum MsgType
   public static final int STATUS_SYNC_VALUE = 10;
   /**
    * <pre>
+   * 系统消息之创建群组
+   * </pre>
+   *
+   * <code>SYS_GROUP_CREATE = 21;</code>
+   */
+  public static final int SYS_GROUP_CREATE_VALUE = 21;
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -274,6 +290,7 @@ public enum MsgType
       case 8: return STATUS_REQ;
       case 9: return STATUS_RES;
       case 10: return STATUS_SYNC;
+      case 21: return SYS_GROUP_CREATE;
       case 50: return CLOSE_BY_READ_IDLE;
       case 51: return CLOSE_BY_ERROR_MAGIC;
       case 99: return DEFAULT;
