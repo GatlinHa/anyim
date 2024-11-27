@@ -8,8 +8,8 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-@ApiModel("删除会话记录接口的请求体参数")
-public class DeleteSessionReq extends BaseRequest {
+@ApiModel("关闭会话记录接口的请求体参数")
+public class CloseSessionReq extends BaseRequest {
 
     @NotEmpty
     @ApiModelProperty(value = "会话Id")

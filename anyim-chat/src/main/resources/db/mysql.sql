@@ -21,7 +21,7 @@ CREATE TABLE `anyim_chat_session`
     `draft` VARCHAR(3000) DEFAULT '' COMMENT '草稿',
     `mark` VARCHAR(255) DEFAULT '' COMMENT '备注',
     `partition_id` INT DEFAULT 0 COMMENT '分组id，默认0表示没有分组',
-    `del_flag` BOOLEAN DEFAULT FALSE COMMENT '软删除的标记', -- 这里对应前端删除了会话，但是有可能前端还要恢复
+    `closed` BOOLEAN DEFAULT FALSE COMMENT '会话关闭状态',
     PRIMARY KEY(`account`, `session_id`)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户的会话信息表';
 

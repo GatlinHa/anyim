@@ -156,7 +156,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
             session.setDraft("");
             session.setMark("");
             session.setPartitionId(0);
-            session.setDelFlag(false);
+            session.setClosed(false);
             insertSessions.add(session);
         }
         return sessionMapper.insertBatchSomeColumn(insertSessions) > 0;

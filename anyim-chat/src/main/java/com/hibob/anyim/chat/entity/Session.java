@@ -47,8 +47,8 @@ public class Session {
     @TableField(value = "partition_id")
     private int partitionId;
 
-    @TableField(value = "del_flag")
-    private Boolean delFlag;
+    @TableField(value = "closed")
+    private Boolean closed;
 
     @TableField(value = "remote_read", exist = false)
     private long remoteRead;

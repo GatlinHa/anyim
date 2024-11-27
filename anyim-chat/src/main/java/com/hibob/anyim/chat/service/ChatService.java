@@ -204,7 +204,7 @@ public class ChatService {
             LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
             updateWrapper.eq(Session::getAccount, account)
                     .eq(Session::getSessionId, sessionId)
-                    .set(Session::getDelFlag, false);
+                    .set(Session::getClosed, false);
             result = sessionMapper.update(updateWrapper);
         }
         else {
@@ -224,7 +224,7 @@ public class ChatService {
         }
     }
 
-    public ResponseEntity<IMHttpResponse> deleteSession(DeleteSessionReq dto) {
+    public ResponseEntity<IMHttpResponse> closeSession(CloseSessionReq dto) {
         ReqSession reqSession = ReqSession.getSession();
         String account = reqSession.getAccount();
         String sessionId = dto.getSessionId();
@@ -233,7 +233,7 @@ public class ChatService {
         LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.eq(Session::getAccount, account)
                 .eq(Session::getSessionId, sessionId)
-                .set(Session::getDelFlag, true);
+                .set(Session::getClosed, true);
         int update = sessionMapper.update(updateWrapper);
         if (update > 0) {
             return ResultUtil.success();
@@ -366,7 +366,7 @@ public class ChatService {
     private Map<String, ChatSessionVO> getGroupChatSessionVo(String account) {
         LambdaQueryWrapper<Session> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Session::getAccount, account);
-        queryWrapper.eq(Session::getDelFlag, false);
+        queryWrapper.eq(Session::getClosed, false);
         queryWrapper.eq(Session::getSessionType, MsgType.GROUP_CHAT.getNumber());
         List<Session> sessionListGroupChat = sessionMapper.selectList(queryWrapper);
         Map<String, ChatSessionVO> voMap = new HashMap<>();
@@ -424,11 +424,11 @@ public class ChatService {
         loadLastMsg(session.getSessionId(), account, session.getReadMsgId(), vo);
 
         // 如果这个session是删除状态，这里被查询到了说明要激活
-        if (session.getDelFlag().booleanValue() == true) {
+        if (session.getClosed().booleanValue() == true) {
             LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
             updateWrapper.eq(Session::getAccount, account)
                     .eq(Session::getSessionId, sessionId)
-                    .set(Session::getDelFlag, false);
+                    .set(Session::getClosed, false);
             sessionMapper.update(updateWrapper);
         }
 
