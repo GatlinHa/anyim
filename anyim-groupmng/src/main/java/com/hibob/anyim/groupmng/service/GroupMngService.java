@@ -71,7 +71,6 @@ public class GroupMngService {
         groupInfo.setMyRole(2); //不是数据库字段,加了注解不会插入进去,这里是为了返回结果
 
         List<GroupMember> insertMembers = new ArrayList<>();
-        List<String> membersAccount = new ArrayList<>();
         List<Map<String, Object>> members = dto.getMembers();
         if (members.size() < 3) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_ENOUGH_MEMBER);
@@ -89,7 +88,6 @@ public class GroupMngService {
                 member.setRole(0);
             }
             insertMembers.add(member);
-            membersAccount.add(item.get("account").toString());
         }
 
         groupInfoMapper.insert(groupInfo);
@@ -110,8 +108,12 @@ public class GroupMngService {
         Map<String, Object> msgMap = new HashMap<>();
         msgMap.put("msgType", MsgType.SYS_GROUP_CREATE.getNumber());
         msgMap.put("groupId", groupId);
-        msgMap.put("creator", creator);
-        msgMap.put("members", membersAccount);
+        msgMap.put("creatorId", creator);
+        Map<String, String> membersMap = new HashMap<>();
+        for (GroupMember member : insertMembers) {
+            membersMap.put(member.getAccount(), member.getNickName());
+        }
+        msgMap.put("members", membersMap);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         GroupVO vo = new GroupVO();

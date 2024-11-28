@@ -12,8 +12,8 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -28,9 +28,9 @@ public class GroupCreateProcessor extends MsgProcessor implements SystemMsgProce
         Long msgId = refMsgIdConfig.generateMsgId(sessionId);
 
         Map<String, Object> contentMap = new HashMap<>();
-        String creator = (String) msgMap.get("creator");
-        List<String> members = (List<String>) msgMap.get("members");
-        contentMap.put("creator", creator);
+        String creatorId = (String) msgMap.get("creatorId");
+        Map<String, String> members = (Map<String, String>) msgMap.get("members");
+        contentMap.put("creatorId", creatorId);
         contentMap.put("members",members);
         ObjectMapper objectMapper = new ObjectMapper();
         String content = objectMapper.writeValueAsString(contentMap);
@@ -48,7 +48,7 @@ public class GroupCreateProcessor extends MsgProcessor implements SystemMsgProce
                 .build();
         Msg msg = Msg.newBuilder().setHeader(header).setBody(body).build();
         saveMsg(msg, msgId); //这里的系统消息要入库
-        sendToMembers(msg, members, msgId); // 发给群成员
+        sendToMembers(msg, new ArrayList<>(members.keySet()), msgId); // 发给群成员
     }
 
     @Override
