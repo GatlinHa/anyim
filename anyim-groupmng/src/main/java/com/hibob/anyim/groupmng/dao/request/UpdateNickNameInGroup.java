@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @ApiModel("修改自己的群昵称")
-public class UpdateGroupNickNameReq extends BaseRequest {
+public class UpdateNickNameInGroup extends BaseRequest {
 
     @ApiModelProperty(value = "群组id")
     @NotEmpty

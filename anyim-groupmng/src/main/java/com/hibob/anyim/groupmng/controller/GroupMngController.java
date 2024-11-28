@@ -129,9 +129,9 @@ public class GroupMngController {
      */
     @ApiOperation(value = "修改自己的群昵称）", notes = "修改自己的群昵称")
     @CommonHeader
-    @PostMapping("/updateGroupNickName")
-    public ResponseEntity<IMHttpResponse> updateGroupNickName(@Valid @RequestBody UpdateGroupNickNameReq dto) {
-        return groupMngService.updateGroupNickName(dto);
+    @PostMapping("/updateNickNameInGroup")
+    public ResponseEntity<IMHttpResponse> updateNickNameInGroup(@Valid @RequestBody UpdateNickNameInGroup dto) {
+        return groupMngService.updateNickNameInGroup(dto);
     }
 
     /**

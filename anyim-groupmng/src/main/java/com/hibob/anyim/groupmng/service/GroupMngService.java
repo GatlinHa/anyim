@@ -388,8 +388,8 @@ public class GroupMngService {
      * @param dto 目标群组id, 群昵称
      * @return 成功或失败, 不返回数据
      */
-    public ResponseEntity<IMHttpResponse> updateGroupNickName(UpdateGroupNickNameReq dto) {
-        log.info("GroupMngService::updateGroupNickName");
+    public ResponseEntity<IMHttpResponse> updateNickNameInGroup(UpdateNickNameInGroup dto) {
+        log.info("GroupMngService::updateNickNameInGroup");
         String groupId = dto.getGroupId();
         String account = ReqSession.getSession().getAccount();
         LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
