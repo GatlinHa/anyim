@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -30,7 +31,7 @@ public class GroupAddMemberProcessor extends MsgProcessor implements SystemMsgPr
 
         Map<String, Object> contentMap = new HashMap<>();
         Map<String, String> manager = (Map<String, String>)  msgMap.get("manager");
-        Map<String, String> newMembers = (Map<String, String>) msgMap.get("newMembers");
+        List<Map<String, Object>> newMembers = (List<Map<String, Object>>) msgMap.get("newMembers");
         contentMap.put("manager", manager);
         contentMap.put("newMembers",newMembers);
         ObjectMapper objectMapper = new ObjectMapper();

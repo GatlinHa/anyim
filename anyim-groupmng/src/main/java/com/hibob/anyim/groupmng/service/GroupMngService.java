@@ -109,11 +109,7 @@ public class GroupMngService {
         msgMap.put("msgType", MsgType.SYS_GROUP_CREATE.getNumber());
         msgMap.put("groupId", groupId);
         msgMap.put("creatorId", creator);
-        Map<String, String> membersMap = new HashMap<>();
-        for (GroupMember member : insertMembers) {
-            membersMap.put(member.getAccount(), member.getNickName());
-        }
-        msgMap.put("members", membersMap);
+        msgMap.put("members", members);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         GroupVO vo = new GroupVO();
@@ -324,11 +320,7 @@ public class GroupMngService {
         manager.put("account", account);
         manager.put("nickName", (String) usersMap.get(account).get("nickName"));
         msgMap.put("manager", manager);
-        Map<String, String> newMembersMap = new HashMap<>();
-        for (GroupMember member : addMembers) {
-            newMembersMap.put(member.getAccount(), member.getNickName());
-        }
-        msgMap.put("newMembers", newMembersMap);
+        msgMap.put("newMembers", dto.getMembers());
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         GroupVO vo = new GroupVO();
