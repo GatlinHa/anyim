@@ -10,6 +10,8 @@ public class SystemMsgProcessorFactory {
                 return SpringContextUtil.getBean(GroupCreateProcessor.class);
             case SYS_GROUP_ADD_MEMBER:
                 return SpringContextUtil.getBean(GroupAddMemberProcessor.class);
+            case SYS_GROUP_DEL_MEMBER:
+                return SpringContextUtil.getBean(GroupDelMemberProcessor.class);
             default:
                 return null;
         }

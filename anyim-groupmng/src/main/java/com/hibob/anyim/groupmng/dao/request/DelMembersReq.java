@@ -8,6 +8,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @ApiModel("群组减人请求的参数")
@@ -17,7 +18,7 @@ public class DelMembersReq extends BaseRequest {
     @NotEmpty
     private String groupId;
 
-    @ApiModelProperty(value = "减少的群组成员：account数组")
+    @ApiModelProperty(value = "移除的群组成员：account, nickName")
     @NotNull
-    private List<String> accounts;
+    private List<Map<String, Object>> members;
 }

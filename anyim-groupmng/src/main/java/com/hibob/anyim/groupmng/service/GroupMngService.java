@@ -349,10 +349,12 @@ public class GroupMngService {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
+        List<Map<String, Object>> delMembers = dto.getMembers();
+        List<Object> delMemberAccounts = delMembers.stream().map(item -> item.get("account")).collect(Collectors.toList());
         LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupMember::getGroupId, groupId);
         queryWrapper.ne(GroupMember::getRole, 2); // 群主不能直接删除
-        queryWrapper.in(GroupMember::getAccount, dto.getAccounts());
+        queryWrapper.in(GroupMember::getAccount, delMemberAccounts);
         groupMemberMapper.delete(queryWrapper);
 
         queryWrapper.clear();
@@ -365,6 +367,16 @@ public class GroupMngService {
             usersMap.get(member.getAccount()).put("role", member.getRole());
             usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
         }
+
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("msgType", MsgType.SYS_GROUP_DEL_MEMBER.getNumber());
+        msgMap.put("groupId", groupId);
+        Map<String, String> manager = new HashMap<>();
+        manager.put("account", account);
+        manager.put("nickName", (String) usersMap.get(account).get("nickName"));
+        msgMap.put("manager", manager);
+        msgMap.put("delMembers", delMembers);
+        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         GroupVO vo = new GroupVO();
         vo.setMembers(usersMap);
