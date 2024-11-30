@@ -8,6 +8,8 @@ public class SystemMsgProcessorFactory {
         switch (msgType) {
             case SYS_GROUP_CREATE:
                 return SpringContextUtil.getBean(GroupCreateProcessor.class);
+            case SYS_GROUP_ADD_MEMBER:
+                return SpringContextUtil.getBean(GroupAddMemberProcessor.class);
             default:
                 return null;
         }

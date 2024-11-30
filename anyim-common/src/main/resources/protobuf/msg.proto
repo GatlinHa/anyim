@@ -25,6 +25,8 @@ enum MsgType {
   STATUS_SYNC = 10; //端侧的连接状态同步给云端（比如在线，离开）
 
   SYS_GROUP_CREATE = 21; //系统消息之创建群组
+  SYS_GROUP_ADD_MEMBER = 22; //系统消息之添加群组成员
+  SYS_GROUP_DEL_MEMBER = 23; //系统消息之移除群组成员
 
   CLOSE_BY_READ_IDLE = 50; //超时关闭
   CLOSE_BY_ERROR_MAGIC = 51; //magic不对关闭

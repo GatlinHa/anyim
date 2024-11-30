@@ -317,6 +317,20 @@ public class GroupMngService {
             usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
         }
 
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("msgType", MsgType.SYS_GROUP_ADD_MEMBER.getNumber());
+        msgMap.put("groupId", groupId);
+        Map<String, String> manager = new HashMap<>();
+        manager.put("account", account);
+        manager.put("nickName", (String) usersMap.get(account).get("nickName"));
+        msgMap.put("manager", manager);
+        Map<String, String> newMembersMap = new HashMap<>();
+        for (GroupMember member : addMembers) {
+            newMembersMap.put(member.getAccount(), member.getNickName());
+        }
+        msgMap.put("newMembers", newMembersMap);
+        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+
         GroupVO vo = new GroupVO();
         vo.setMembers(usersMap);
         return ResultUtil.success(vo);

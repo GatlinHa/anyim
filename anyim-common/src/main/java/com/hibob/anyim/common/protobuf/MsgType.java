@@ -107,6 +107,22 @@ public enum MsgType
   SYS_GROUP_CREATE(21),
   /**
    * <pre>
+   * 系统消息之添加群组成员
+   * </pre>
+   *
+   * <code>SYS_GROUP_ADD_MEMBER = 22;</code>
+   */
+  SYS_GROUP_ADD_MEMBER(22),
+  /**
+   * <pre>
+   * 系统消息之移除群组成员
+   * </pre>
+   *
+   * <code>SYS_GROUP_DEL_MEMBER = 23;</code>
+   */
+  SYS_GROUP_DEL_MEMBER(23),
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -235,6 +251,22 @@ public enum MsgType
   public static final int SYS_GROUP_CREATE_VALUE = 21;
   /**
    * <pre>
+   * 系统消息之添加群组成员
+   * </pre>
+   *
+   * <code>SYS_GROUP_ADD_MEMBER = 22;</code>
+   */
+  public static final int SYS_GROUP_ADD_MEMBER_VALUE = 22;
+  /**
+   * <pre>
+   * 系统消息之移除群组成员
+   * </pre>
+   *
+   * <code>SYS_GROUP_DEL_MEMBER = 23;</code>
+   */
+  public static final int SYS_GROUP_DEL_MEMBER_VALUE = 23;
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -291,6 +323,8 @@ public enum MsgType
       case 9: return STATUS_RES;
       case 10: return STATUS_SYNC;
       case 21: return SYS_GROUP_CREATE;
+      case 22: return SYS_GROUP_ADD_MEMBER;
+      case 23: return SYS_GROUP_DEL_MEMBER;
       case 50: return CLOSE_BY_READ_IDLE;
       case 51: return CLOSE_BY_ERROR_MAGIC;
       case 99: return DEFAULT;
