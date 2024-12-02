@@ -403,6 +403,32 @@ public class GroupMngService {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId)
+                .in(GroupMember::getAccount, new String[]{myAccount, memberAccount});
+        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
+        Map<String, String> operator = new HashMap<>();
+        Map<String, Object> updatedMember = new HashMap<>();
+        for (GroupMember member : members) {
+            if (member.getAccount().equals(myAccount)) {
+                operator.put("account", myAccount);
+                operator.put("nickName", member.getNickName());
+            } else if (member.getAccount().equals(memberAccount)){
+                updatedMember.put("account", myAccount);
+                updatedMember.put("nickName", member.getNickName());
+            }
+        }
+        Map<String, Object> msgMap = new HashMap<>();
+        if (dto.getRole() == 1) {
+            msgMap.put("msgType", MsgType.SYS_GROUP_SET_MANAGER.getNumber());
+        } else if (dto.getRole() == 0) {
+            msgMap.put("msgType", MsgType.SYS_GROUP_CANCEL_MANAGER.getNumber());
+        }
+        msgMap.put("groupId", groupId);
+        msgMap.put("operator", operator);
+        msgMap.put("member", updatedMember);
+        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+
         return ResultUtil.success();
     }
 

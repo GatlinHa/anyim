@@ -123,6 +123,22 @@ public enum MsgType
   SYS_GROUP_DEL_MEMBER(23),
   /**
    * <pre>
+   * 设置为管理员角色
+   * </pre>
+   *
+   * <code>SYS_GROUP_SET_MANAGER = 24;</code>
+   */
+  SYS_GROUP_SET_MANAGER(24),
+  /**
+   * <pre>
+   * 取消管理员角色
+   * </pre>
+   *
+   * <code>SYS_GROUP_CANCEL_MANAGER = 25;</code>
+   */
+  SYS_GROUP_CANCEL_MANAGER(25),
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -267,6 +283,22 @@ public enum MsgType
   public static final int SYS_GROUP_DEL_MEMBER_VALUE = 23;
   /**
    * <pre>
+   * 设置为管理员角色
+   * </pre>
+   *
+   * <code>SYS_GROUP_SET_MANAGER = 24;</code>
+   */
+  public static final int SYS_GROUP_SET_MANAGER_VALUE = 24;
+  /**
+   * <pre>
+   * 取消管理员角色
+   * </pre>
+   *
+   * <code>SYS_GROUP_CANCEL_MANAGER = 25;</code>
+   */
+  public static final int SYS_GROUP_CANCEL_MANAGER_VALUE = 25;
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -325,6 +357,8 @@ public enum MsgType
       case 21: return SYS_GROUP_CREATE;
       case 22: return SYS_GROUP_ADD_MEMBER;
       case 23: return SYS_GROUP_DEL_MEMBER;
+      case 24: return SYS_GROUP_SET_MANAGER;
+      case 25: return SYS_GROUP_CANCEL_MANAGER;
       case 50: return CLOSE_BY_READ_IDLE;
       case 51: return CLOSE_BY_ERROR_MAGIC;
       case 99: return DEFAULT;

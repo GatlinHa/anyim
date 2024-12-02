@@ -14,12 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class GroupDelMemberProcessor extends MsgProcessor implements SystemMsgProcessor {
+public class GroupChangeRoleProcessor extends MsgProcessor implements SystemMsgProcessor {
 
     private final RefMsgIdConfig refMsgIdConfig;
     private final RpcClient rpcClient;
@@ -31,9 +30,9 @@ public class GroupDelMemberProcessor extends MsgProcessor implements SystemMsgPr
 
         Map<String, Object> contentMap = new HashMap<>();
         Map<String, String> operator = (Map<String, String>) msgMap.get("operator");
-        List<Map<String, Object>> members = (List<Map<String, Object>>) msgMap.get("members");
+        Map<String, Object> member = (Map<String, Object>) msgMap.get("member");
         contentMap.put("operator", operator);
-        contentMap.put("members",members);
+        contentMap.put("member",member);
         ObjectMapper objectMapper = new ObjectMapper();
         String content = objectMapper.writeValueAsString(contentMap);
 

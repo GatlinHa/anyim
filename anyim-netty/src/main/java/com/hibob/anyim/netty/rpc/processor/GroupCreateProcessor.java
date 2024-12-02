@@ -40,7 +40,7 @@ public class GroupCreateProcessor extends MsgProcessor implements SystemMsgProce
         Header header = Header.newBuilder()
                 .setMagic(Const.MAGIC)
                 .setVersion(0) //TODO 服务器版本
-                .setMsgType(MsgType.SYS_GROUP_CREATE)
+                .setMsgType(MsgType.forNumber((Integer) msgMap.get("msgType")))
                 .build();
         Body body = Body.newBuilder()
                 .setGroupId(groupId)

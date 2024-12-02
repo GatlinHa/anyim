@@ -80,16 +80,17 @@ public final class MsgOuterClass {
       "sionMap\030\001 \003(\0132<.com.hibob.anyim.common.p" +
       "rotobuf.Extension.ExtensionMapEntry\0323\n\021E" +
       "xtensionMapEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002" +
-      " \001(\t:\0028\001*\270\002\n\007MsgType\022\t\n\005HELLO\020\000\022\016\n\nHEART" +
+      " \001(\t:\0028\001*\361\002\n\007MsgType\022\t\n\005HELLO\020\000\022\016\n\nHEART" +
       "_BEAT\020\001\022\010\n\004CHAT\020\002\022\016\n\nGROUP_CHAT\020\003\022\r\n\tCHA" +
       "T_READ\020\004\022\023\n\017GROUP_CHAT_READ\020\005\022\r\n\tDELIVER" +
       "ED\020\006\022\013\n\007RESERVE\020\007\022\016\n\nSTATUS_REQ\020\010\022\016\n\nSTA" +
       "TUS_RES\020\t\022\017\n\013STATUS_SYNC\020\n\022\024\n\020SYS_GROUP_" +
       "CREATE\020\025\022\030\n\024SYS_GROUP_ADD_MEMBER\020\026\022\030\n\024SY" +
-      "S_GROUP_DEL_MEMBER\020\027\022\026\n\022CLOSE_BY_READ_ID" +
-      "LE\0202\022\030\n\024CLOSE_BY_ERROR_MAGIC\0203\022\013\n\007DEFAUL" +
-      "T\020cB#\n\037com.hibob.anyim.common.protobufP\001" +
-      "b\006proto3"
+      "S_GROUP_DEL_MEMBER\020\027\022\031\n\025SYS_GROUP_SET_MA" +
+      "NAGER\020\030\022\034\n\030SYS_GROUP_CANCEL_MANAGER\020\031\022\026\n" +
+      "\022CLOSE_BY_READ_IDLE\0202\022\030\n\024CLOSE_BY_ERROR_" +
+      "MAGIC\0203\022\013\n\007DEFAULT\020cB#\n\037com.hibob.anyim." +
+      "common.protobufP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

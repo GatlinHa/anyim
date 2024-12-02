@@ -27,6 +27,8 @@ enum MsgType {
   SYS_GROUP_CREATE = 21; //系统消息之创建群组
   SYS_GROUP_ADD_MEMBER = 22; //系统消息之添加群组成员
   SYS_GROUP_DEL_MEMBER = 23; //系统消息之移除群组成员
+  SYS_GROUP_SET_MANAGER = 24; //设置为管理员角色
+  SYS_GROUP_CANCEL_MANAGER = 25; //取消管理员角色
 
   CLOSE_BY_READ_IDLE = 50; //超时关闭
   CLOSE_BY_ERROR_MAGIC = 51; //magic不对关闭
