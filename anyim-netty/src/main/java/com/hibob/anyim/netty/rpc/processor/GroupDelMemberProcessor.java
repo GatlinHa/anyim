@@ -30,10 +30,10 @@ public class GroupDelMemberProcessor extends MsgProcessor implements SystemMsgPr
         Long msgId = refMsgIdConfig.generateMsgId(groupId);
 
         Map<String, Object> contentMap = new HashMap<>();
-        Map<String, String> manager = (Map<String, String>)  msgMap.get("manager");
-        List<Map<String, Object>> delMembers = (List<Map<String, Object>>) msgMap.get("delMembers");
-        contentMap.put("manager", manager);
-        contentMap.put("delMembers",delMembers);
+        Map<String, String> operator = (Map<String, String>) msgMap.get("operator");
+        List<Map<String, Object>> members = (List<Map<String, Object>>) msgMap.get("members");
+        contentMap.put("operator", operator);
+        contentMap.put("members",members);
         ObjectMapper objectMapper = new ObjectMapper();
         String content = objectMapper.writeValueAsString(contentMap);
 

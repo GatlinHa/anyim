@@ -30,10 +30,10 @@ public class GroupAddMemberProcessor extends MsgProcessor implements SystemMsgPr
         Long msgId = refMsgIdConfig.generateMsgId(groupId);
 
         Map<String, Object> contentMap = new HashMap<>();
-        Map<String, String> manager = (Map<String, String>)  msgMap.get("manager");
-        List<Map<String, Object>> newMembers = (List<Map<String, Object>>) msgMap.get("newMembers");
-        contentMap.put("manager", manager);
-        contentMap.put("newMembers",newMembers);
+        Map<String, String> operator = (Map<String, String>) msgMap.get("operator");
+        List<Map<String, Object>> members = (List<Map<String, Object>>) msgMap.get("members");
+        contentMap.put("operator", operator);
+        contentMap.put("members",members);
         ObjectMapper objectMapper = new ObjectMapper();
         String content = objectMapper.writeValueAsString(contentMap);
 

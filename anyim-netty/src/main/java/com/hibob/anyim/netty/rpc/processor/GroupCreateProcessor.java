@@ -30,9 +30,9 @@ public class GroupCreateProcessor extends MsgProcessor implements SystemMsgProce
         Long msgId = refMsgIdConfig.generateMsgId(sessionId);
 
         Map<String, Object> contentMap = new HashMap<>();
-        String creatorId = (String) msgMap.get("creatorId");
+        Map<String, String> operator = (Map<String, String>) msgMap.get("operator");
         List<Map<String, Object>> members = (List<Map<String, Object>>) msgMap.get("members");
-        contentMap.put("creatorId", creatorId);
+        contentMap.put("operator", operator);
         contentMap.put("members",members);
         ObjectMapper objectMapper = new ObjectMapper();
         String content = objectMapper.writeValueAsString(contentMap);

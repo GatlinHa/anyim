@@ -76,12 +76,14 @@ public class GroupMngService {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_ENOUGH_MEMBER);
         }
 
+        String creatorNickName = "";
         for (Map<String, Object> item: members) {
             GroupMember member = new GroupMember();
             member.setGroupId(groupId);
             member.setAccount(item.get("account").toString());
             member.setNickName(item.get("nickName").toString());
-            if (account.equals(item.get("account"))) {
+            if (creator.equals(item.get("account"))) {
+                creatorNickName = item.get("nickName").toString();
                 member.setRole(2);
             }
             else {
@@ -108,7 +110,10 @@ public class GroupMngService {
         Map<String, Object> msgMap = new HashMap<>();
         msgMap.put("msgType", MsgType.SYS_GROUP_CREATE.getNumber());
         msgMap.put("groupId", groupId);
-        msgMap.put("creatorId", creator);
+        Map<String, String> operator = new HashMap<>();
+        operator.put("account", creator);
+        operator.put("nickName", creatorNickName);
+        msgMap.put("operator", operator);
         msgMap.put("members", members);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
@@ -316,11 +321,11 @@ public class GroupMngService {
         Map<String, Object> msgMap = new HashMap<>();
         msgMap.put("msgType", MsgType.SYS_GROUP_ADD_MEMBER.getNumber());
         msgMap.put("groupId", groupId);
-        Map<String, String> manager = new HashMap<>();
-        manager.put("account", account);
-        manager.put("nickName", (String) usersMap.get(account).get("nickName"));
-        msgMap.put("manager", manager);
-        msgMap.put("newMembers", dto.getMembers());
+        Map<String, String> operator = new HashMap<>();
+        operator.put("account", account);
+        operator.put("nickName", (String) usersMap.get(account).get("nickName"));
+        msgMap.put("operator", operator);
+        msgMap.put("members", dto.getMembers());
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         GroupVO vo = new GroupVO();
@@ -363,11 +368,11 @@ public class GroupMngService {
         Map<String, Object> msgMap = new HashMap<>();
         msgMap.put("msgType", MsgType.SYS_GROUP_DEL_MEMBER.getNumber());
         msgMap.put("groupId", groupId);
-        Map<String, String> manager = new HashMap<>();
-        manager.put("account", account);
-        manager.put("nickName", (String) usersMap.get(account).get("nickName"));
-        msgMap.put("manager", manager);
-        msgMap.put("delMembers", delMembers);
+        Map<String, String> operator = new HashMap<>();
+        operator.put("account", account);
+        operator.put("nickName", (String) usersMap.get(account).get("nickName"));
+        msgMap.put("operator", operator);
+        msgMap.put("members", delMembers);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         GroupVO vo = new GroupVO();
