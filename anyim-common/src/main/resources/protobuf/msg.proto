@@ -29,6 +29,19 @@ enum MsgType {
   SYS_GROUP_DEL_MEMBER = 23; //系统消息之移除群组成员
   SYS_GROUP_SET_MANAGER = 24; //设置为管理员角色
   SYS_GROUP_CANCEL_MANAGER = 25; //取消管理员角色
+  SYS_GROUP_SET_ALL_MUTED = 26; //设置全员禁言
+  SYS_GROUP_CANCEL_ALL_MUTED = 27; //取消全员禁言
+  SYS_GROUP_SET_JOIN_APPROVAL = 28; //开启入群验证
+  SYS_GROUP_CANCEL_JOIN_APPROVAL = 29; //关闭入群验证
+  SYS_GROUP_SET_HISTORY_BROWSE = 30; // 开启新成员浏览历史记录
+  SYS_GROUP_CANCEL_HISTORY_BROWSE = 31; // 开启新成员浏览历史记录
+  SYS_GROUP_OWNER_TRANSFER = 32; // 群主转移
+  SYS_GROUP_UPDATE_MEMBER_MUTED = 33; //设置某个成员禁言
+  SYS_GROUP_LEAVE = 34; //离开群组
+  SYS_GROUP_DROP = 35; //解散群组
+  SYS_GROUP_UPDATE_ANNOUNCEMENT = 36; //更新了群公告
+  SYS_GROUP_UPDATE_NAME = 37; //更新了群名称
+  SYS_GROUP_UPDATE_AVATAR = 38; //更新了群头像
 
   CLOSE_BY_READ_IDLE = 50; //超时关闭
   CLOSE_BY_ERROR_MAGIC = 51; //magic不对关闭

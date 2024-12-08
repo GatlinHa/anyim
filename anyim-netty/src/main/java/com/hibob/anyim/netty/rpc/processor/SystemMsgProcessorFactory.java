@@ -7,14 +7,24 @@ public class SystemMsgProcessorFactory {
     public static SystemMsgProcessor getProcessor(MsgType msgType) {
         switch (msgType) {
             case SYS_GROUP_CREATE:
-                return SpringContextUtil.getBean(GroupCreateProcessor.class);
             case SYS_GROUP_ADD_MEMBER:
-                return SpringContextUtil.getBean(GroupAddMemberProcessor.class);
             case SYS_GROUP_DEL_MEMBER:
-                return SpringContextUtil.getBean(GroupDelMemberProcessor.class);
             case SYS_GROUP_SET_MANAGER:
             case SYS_GROUP_CANCEL_MANAGER:
-                return SpringContextUtil.getBean(GroupChangeRoleProcessor.class);
+            case SYS_GROUP_SET_ALL_MUTED:
+            case SYS_GROUP_CANCEL_ALL_MUTED:
+            case SYS_GROUP_SET_JOIN_APPROVAL:
+            case SYS_GROUP_CANCEL_JOIN_APPROVAL:
+            case SYS_GROUP_SET_HISTORY_BROWSE:
+            case SYS_GROUP_CANCEL_HISTORY_BROWSE:
+            case SYS_GROUP_UPDATE_ANNOUNCEMENT:
+            case SYS_GROUP_UPDATE_NAME:
+            case SYS_GROUP_UPDATE_AVATAR:
+            case SYS_GROUP_LEAVE:
+            case SYS_GROUP_DROP:
+            case SYS_GROUP_OWNER_TRANSFER:
+            case SYS_GROUP_UPDATE_MEMBER_MUTED:
+                return SpringContextUtil.getBean(GroupSystemMsgProcessor.class);
             default:
                 return null;
         }

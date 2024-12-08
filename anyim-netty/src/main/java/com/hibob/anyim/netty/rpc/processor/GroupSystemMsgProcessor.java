@@ -13,34 +13,30 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class GroupDelMemberProcessor extends MsgProcessor implements SystemMsgProcessor {
+public class GroupSystemMsgProcessor extends MsgProcessor implements SystemMsgProcessor {
 
     private final RefMsgIdConfig refMsgIdConfig;
     private final RpcClient rpcClient;
 
     @Override
     public void processSystemMsg(Map<String, Object> msgMap) throws Exception {
+        MsgType msgType = MsgType.forNumber((Integer) msgMap.get("msgType"));
         String groupId = (String) msgMap.get("groupId");
         Long msgId = refMsgIdConfig.generateMsgId(groupId);
-
-        Map<String, Object> contentMap = new HashMap<>();
-        Map<String, String> operator = (Map<String, String>) msgMap.get("operator");
-        List<Map<String, Object>> members = (List<Map<String, Object>>) msgMap.get("members");
-        contentMap.put("operator", operator);
-        contentMap.put("members",members);
+        Map<String, Object> contentMap = (Map<String, Object>) msgMap.get("content");
         ObjectMapper objectMapper = new ObjectMapper();
         String content = objectMapper.writeValueAsString(contentMap);
 
         Header header = Header.newBuilder()
                 .setMagic(Const.MAGIC)
                 .setVersion(0) //TODO 服务器版本
-                .setMsgType(MsgType.forNumber((Integer) msgMap.get("msgType")))
+                .setMsgType(msgType)
                 .build();
         Body body = Body.newBuilder()
                 .setGroupId(groupId)
@@ -50,7 +46,22 @@ public class GroupDelMemberProcessor extends MsgProcessor implements SystemMsgPr
                 .build();
         Msg msg = Msg.newBuilder().setHeader(header).setBody(body).build();
         saveMsg(msg, msgId); //这里的系统消息要入库
-        sendToMembers(msg, rpcClient.getGroupMngRpcService().queryGroupMembers(groupId), msgId); // 发给群成员
+
+        List<String> members;
+        if (msgType == MsgType.SYS_GROUP_UPDATE_MEMBER_MUTED) {
+            // 设置某个成员禁言，消息只发给被禁言或取消禁言的成员
+            String account = ((Map<String, String>)contentMap.get("member")).get("account");
+            members = new ArrayList<>();
+            members.add(account);
+        } else if (msgType == MsgType.SYS_GROUP_DROP) {
+            // 群组已经解散，查不到成员信息了
+            members = (List<String>) msgMap.get("toAccounts");
+        }
+        else {
+            members = rpcClient.getGroupMngRpcService().queryGroupMembers(groupId);
+        }
+
+        sendToMembers(msg, members, msgId); // 发给群成员
     }
 
     @Override

@@ -139,6 +139,110 @@ public enum MsgType
   SYS_GROUP_CANCEL_MANAGER(25),
   /**
    * <pre>
+   * 设置全员禁言
+   * </pre>
+   *
+   * <code>SYS_GROUP_SET_ALL_MUTED = 26;</code>
+   */
+  SYS_GROUP_SET_ALL_MUTED(26),
+  /**
+   * <pre>
+   * 取消全员禁言
+   * </pre>
+   *
+   * <code>SYS_GROUP_CANCEL_ALL_MUTED = 27;</code>
+   */
+  SYS_GROUP_CANCEL_ALL_MUTED(27),
+  /**
+   * <pre>
+   * 开启入群验证
+   * </pre>
+   *
+   * <code>SYS_GROUP_SET_JOIN_APPROVAL = 28;</code>
+   */
+  SYS_GROUP_SET_JOIN_APPROVAL(28),
+  /**
+   * <pre>
+   * 取消入群验证
+   * </pre>
+   *
+   * <code>SYS_GROUP_CANCEL_JOIN_APPROVAL = 29;</code>
+   */
+  SYS_GROUP_CANCEL_JOIN_APPROVAL(29),
+  /**
+   * <pre>
+   * 开启新成员浏览历史记录
+   * </pre>
+   *
+   * <code>SYS_GROUP_SET_HISTORY_BROWSE = 30;</code>
+   */
+  SYS_GROUP_SET_HISTORY_BROWSE(30),
+  /**
+   * <pre>
+   * 开启新成员浏览历史记录
+   * </pre>
+   *
+   * <code>SYS_GROUP_CANCEL_HISTORY_BROWSE = 31;</code>
+   */
+  SYS_GROUP_CANCEL_HISTORY_BROWSE(31),
+  /**
+   * <pre>
+   * 群主转移
+   * </pre>
+   *
+   * <code>SYS_GROUP_OWNER_TRANSFER = 32;</code>
+   */
+  SYS_GROUP_OWNER_TRANSFER(32),
+  /**
+   * <pre>
+   * 设置某个成员禁言，消息只发给被禁言或取消禁言的成员
+   * </pre>
+   *
+   * <code>SYS_GROUP_UPDATE_MEMBER_MUTED = 33;</code>
+   */
+  SYS_GROUP_UPDATE_MEMBER_MUTED(33),
+  /**
+   * <pre>
+   * 离开群组
+   * </pre>
+   *
+   * <code>SYS_GROUP_LEAVE = 34;</code>
+   */
+  SYS_GROUP_LEAVE(34),
+  /**
+   * <pre>
+   * 解散群组
+   * </pre>
+   *
+   * <code>SYS_GROUP_DROP = 35;</code>
+   */
+  SYS_GROUP_DROP(35),
+  /**
+   * <pre>
+   * 更新了群公告
+   * </pre>
+   *
+   * <code>SYS_GROUP_UPDATE_ANNOUNCEMENT = 36;</code>
+   */
+  SYS_GROUP_UPDATE_ANNOUNCEMENT(36),
+  /**
+   * <pre>
+   * 更新了群名称
+   * </pre>
+   *
+   * <code>SYS_GROUP_UPDATE_NAME = 37;</code>
+   */
+  SYS_GROUP_UPDATE_NAME(37),
+  /**
+   * <pre>
+   * 更新了群名称
+   * </pre>
+   *
+   * <code>SYS_GROUP_UPDATE_AVATAR = 38;</code>
+   */
+  SYS_GROUP_UPDATE_AVATAR(38),
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -299,6 +403,110 @@ public enum MsgType
   public static final int SYS_GROUP_CANCEL_MANAGER_VALUE = 25;
   /**
    * <pre>
+   * 设置全员禁言
+   * </pre>
+   *
+   * <code>SYS_GROUP_SET_ALL_MUTED = 26;</code>
+   */
+  public static final int SYS_GROUP_SET_ALL_MUTED_VALUE = 26;
+  /**
+   * <pre>
+   * 取消全员禁言
+   * </pre>
+   *
+   * <code>SYS_GROUP_CANCEL_ALL_MUTED = 27;</code>
+   */
+  public static final int SYS_GROUP_CANCEL_ALL_MUTED_VALUE = 27;
+  /**
+   * <pre>
+   * 开启入群验证
+   * </pre>
+   *
+   * <code>SYS_GROUP_SET_JOIN_APPROVAL = 28;</code>
+   */
+  public static final int SYS_GROUP_SET_JOIN_APPROVAL_VALUE = 28;
+  /**
+   * <pre>
+   * 取消入群验证
+   * </pre>
+   *
+   * <code>SYS_GROUP_CANCEL_JOIN_APPROVAL = 29;</code>
+   */
+  public static final int SYS_GROUP_CANCEL_JOIN_APPROVAL_VALUE = 29;
+  /**
+   * <pre>
+   * 开启新成员浏览历史记录
+   * </pre>
+   *
+   * <code>SYS_GROUP_SET_HISTORY_BROWSE = 30;</code>
+   */
+  public static final int SYS_GROUP_SET_HISTORY_BROWSE_VALUE = 30;
+  /**
+   * <pre>
+   * 开启新成员浏览历史记录
+   * </pre>
+   *
+   * <code>SYS_GROUP_CANCEL_HISTORY_BROWSE = 31;</code>
+   */
+  public static final int SYS_GROUP_CANCEL_HISTORY_BROWSE_VALUE = 31;
+  /**
+   * <pre>
+   * 群主转移
+   * </pre>
+   *
+   * <code>SYS_GROUP_OWNER_TRANSFER = 32;</code>
+   */
+  public static final int SYS_GROUP_OWNER_TRANSFER_VALUE = 32;
+  /**
+   * <pre>
+   * 设置某个成员禁言，消息只发给被禁言或取消禁言的成员
+   * </pre>
+   *
+   * <code>SYS_GROUP_UPDATE_MEMBER_MUTED = 33;</code>
+   */
+  public static final int SYS_GROUP_UPDATE_MEMBER_MUTED_VALUE = 33;
+  /**
+   * <pre>
+   * 离开群组
+   * </pre>
+   *
+   * <code>SYS_GROUP_LEAVE = 34;</code>
+   */
+  public static final int SYS_GROUP_LEAVE_VALUE = 34;
+  /**
+   * <pre>
+   * 解散群组
+   * </pre>
+   *
+   * <code>SYS_GROUP_DROP = 35;</code>
+   */
+  public static final int SYS_GROUP_DROP_VALUE = 35;
+  /**
+   * <pre>
+   * 更新了群公告
+   * </pre>
+   *
+   * <code>SYS_GROUP_UPDATE_ANNOUNCEMENT = 36;</code>
+   */
+  public static final int SYS_GROUP_UPDATE_ANNOUNCEMENT_VALUE = 36;
+  /**
+   * <pre>
+   * 更新了群名称
+   * </pre>
+   *
+   * <code>SYS_GROUP_UPDATE_NAME = 37;</code>
+   */
+  public static final int SYS_GROUP_UPDATE_NAME_VALUE = 37;
+  /**
+   * <pre>
+   * 更新了群名称
+   * </pre>
+   *
+   * <code>SYS_GROUP_UPDATE_AVATAR = 38;</code>
+   */
+  public static final int SYS_GROUP_UPDATE_AVATAR_VALUE = 38;
+  /**
+   * <pre>
    * 超时关闭
    * </pre>
    *
@@ -359,6 +567,19 @@ public enum MsgType
       case 23: return SYS_GROUP_DEL_MEMBER;
       case 24: return SYS_GROUP_SET_MANAGER;
       case 25: return SYS_GROUP_CANCEL_MANAGER;
+      case 26: return SYS_GROUP_SET_ALL_MUTED;
+      case 27: return SYS_GROUP_CANCEL_ALL_MUTED;
+      case 28: return SYS_GROUP_SET_JOIN_APPROVAL;
+      case 29: return SYS_GROUP_CANCEL_JOIN_APPROVAL;
+      case 30: return SYS_GROUP_SET_HISTORY_BROWSE;
+      case 31: return SYS_GROUP_CANCEL_HISTORY_BROWSE;
+      case 32: return SYS_GROUP_OWNER_TRANSFER;
+      case 33: return SYS_GROUP_UPDATE_MEMBER_MUTED;
+      case 34: return SYS_GROUP_LEAVE;
+      case 35: return SYS_GROUP_DROP;
+      case 36: return SYS_GROUP_UPDATE_ANNOUNCEMENT;
+      case 37: return SYS_GROUP_UPDATE_NAME;
+      case 38: return SYS_GROUP_UPDATE_AVATAR;
       case 50: return CLOSE_BY_READ_IDLE;
       case 51: return CLOSE_BY_ERROR_MAGIC;
       case 99: return DEFAULT;

@@ -107,14 +107,17 @@ public class GroupMngService {
         }
         rpcClient.getChatRpcService().createGroupSession(insertSessionList);
 
-        Map<String, Object> msgMap = new HashMap<>();
-        msgMap.put("msgType", MsgType.SYS_GROUP_CREATE.getNumber());
-        msgMap.put("groupId", groupId);
         Map<String, String> operator = new HashMap<>();
         operator.put("account", creator);
         operator.put("nickName", creatorNickName);
-        msgMap.put("operator", operator);
-        msgMap.put("members", members);
+        Map<String, Object> content = new HashMap<>();
+        content.put("operator", operator);
+        content.put("members", members);
+
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("msgType", MsgType.SYS_GROUP_CREATE.getNumber());
+        msgMap.put("groupId", groupId);
+        msgMap.put("content", content);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         GroupVO vo = new GroupVO();
@@ -226,28 +229,55 @@ public class GroupMngService {
 
         LambdaUpdateWrapper<GroupInfo> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(GroupInfo::getGroupId, groupId);
+        Map<String, Object> msgMap = new HashMap<>();
+        Map<String, Object> content = new HashMap<>();
         if (announcement != null) {
             updateWrapper.set(GroupInfo::getAnnouncement, announcement);
-        }
-        if (StringUtils.hasLength(groupName)) {
+            msgMap.put("msgType", MsgType.SYS_GROUP_UPDATE_ANNOUNCEMENT.getNumber());
+        } else if (StringUtils.hasLength(groupName)) {
             updateWrapper.set(GroupInfo::getGroupName, groupName);
-        }
-        if (StringUtils.hasLength(avatar)) {
+            msgMap.put("msgType", MsgType.SYS_GROUP_UPDATE_NAME.getNumber());
+            content.put("groupName", groupName);
+        } else if (StringUtils.hasLength(avatar) && StringUtils.hasLength(avatarThumb)) {
             updateWrapper.set(GroupInfo::getAvatar, avatar);
-        }
-        if (StringUtils.hasLength(avatarThumb)) {
             updateWrapper.set(GroupInfo::getAvatarThumb, avatarThumb);
-        }
-        if (historyBrowse != null) {
+            msgMap.put("msgType", MsgType.SYS_GROUP_UPDATE_AVATAR.getNumber());
+        } else if (historyBrowse != null) {
             updateWrapper.set(GroupInfo::isHistoryBrowse, historyBrowse);
-        }
-        if (allMuted != null) {
+            if (historyBrowse.booleanValue()) {
+                msgMap.put("msgType", MsgType.SYS_GROUP_SET_HISTORY_BROWSE.getNumber());
+            } else {
+                msgMap.put("msgType", MsgType.SYS_GROUP_CANCEL_HISTORY_BROWSE.getNumber());
+            }
+        } else if (allMuted != null) {
             updateWrapper.set(GroupInfo::isAllMuted, allMuted);
-        }
-        if (joinGroupApproval != null) {
+            if (allMuted.booleanValue()) {
+                msgMap.put("msgType", MsgType.SYS_GROUP_SET_ALL_MUTED.getNumber());
+            } else {
+                msgMap.put("msgType", MsgType.SYS_GROUP_CANCEL_ALL_MUTED.getNumber());
+            }
+        } else if (joinGroupApproval != null) {
             updateWrapper.set(GroupInfo::isJoinGroupApproval, joinGroupApproval);
+            if (joinGroupApproval.booleanValue()) {
+                msgMap.put("msgType", MsgType.SYS_GROUP_SET_JOIN_APPROVAL.getNumber());
+            } else {
+                msgMap.put("msgType", MsgType.SYS_GROUP_CANCEL_JOIN_APPROVAL.getNumber());
+            }
         }
         groupInfoMapper.update(updateWrapper);
+
+        Map<String, String> operator = new HashMap<>();
+        operator.put("account", account);
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getAccount, account);
+        GroupMember members = groupMemberMapper.selectOne(queryWrapper);
+        operator.put("nickName", members.getNickName());
+        content.put("operator", operator);
+
+        msgMap.put("groupId", groupId);
+        msgMap.put("content", content);
+        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         return ResultUtil.success();
     }
@@ -267,6 +297,10 @@ public class GroupMngService {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId);
+        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
+
         LambdaQueryWrapper<GroupMember> groupMemberWrapper = new LambdaQueryWrapper<>();
         groupMemberWrapper.eq(GroupMember::getGroupId, groupId);
         groupMemberMapper.delete(groupMemberWrapper);
@@ -277,8 +311,22 @@ public class GroupMngService {
         groupInfoWrapper.set(GroupInfo::isDelFlag, true);
         groupInfoWrapper.set(GroupInfo::getDelTime, new Date(System.currentTimeMillis()));
         groupInfoMapper.update(groupInfoWrapper);
-
         // 这里不删除群组的聊天记录，让其自然老化
+
+        Map<String, String> operator = new HashMap<>();
+        operator.put("account", account);
+        String nickName = members.stream().filter(item -> account.equals(item.getAccount())).findFirst().get().getNickName();
+        operator.put("nickName", nickName);
+        Map<String, Object> content = new HashMap<>();
+        content.put("operator", operator);
+
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("groupId", groupId);
+        msgMap.put("msgType", MsgType.SYS_GROUP_DROP.getNumber());
+        msgMap.put("content", content);
+        List<String> toAccounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
+        msgMap.put("toAccounts", toAccounts);
+        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         return ResultUtil.success();
     }
@@ -318,14 +366,17 @@ public class GroupMngService {
             usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
         }
 
-        Map<String, Object> msgMap = new HashMap<>();
-        msgMap.put("msgType", MsgType.SYS_GROUP_ADD_MEMBER.getNumber());
-        msgMap.put("groupId", groupId);
         Map<String, String> operator = new HashMap<>();
         operator.put("account", account);
         operator.put("nickName", (String) usersMap.get(account).get("nickName"));
-        msgMap.put("operator", operator);
-        msgMap.put("members", dto.getMembers());
+        Map<String, Object> content = new HashMap<>();
+        content.put("operator", operator);
+        content.put("members", dto.getMembers());
+
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("msgType", MsgType.SYS_GROUP_ADD_MEMBER.getNumber());
+        msgMap.put("groupId", groupId);
+        msgMap.put("content", content);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         GroupVO vo = new GroupVO();
@@ -365,14 +416,17 @@ public class GroupMngService {
             usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
         }
 
-        Map<String, Object> msgMap = new HashMap<>();
-        msgMap.put("msgType", MsgType.SYS_GROUP_DEL_MEMBER.getNumber());
-        msgMap.put("groupId", groupId);
         Map<String, String> operator = new HashMap<>();
         operator.put("account", account);
         operator.put("nickName", (String) usersMap.get(account).get("nickName"));
-        msgMap.put("operator", operator);
-        msgMap.put("members", delMembers);
+        Map<String, Object> content = new HashMap<>();
+        content.put("operator", operator);
+        content.put("members", delMembers);
+
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("msgType", MsgType.SYS_GROUP_DEL_MEMBER.getNumber());
+        msgMap.put("groupId", groupId);
+        msgMap.put("content", content);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         GroupVO vo = new GroupVO();
@@ -418,6 +472,10 @@ public class GroupMngService {
                 updatedMember.put("nickName", member.getNickName());
             }
         }
+        Map<String, Object> content = new HashMap<>();
+        content.put("operator", operator);
+        content.put("member", updatedMember);
+
         Map<String, Object> msgMap = new HashMap<>();
         if (dto.getRole() == 1) {
             msgMap.put("msgType", MsgType.SYS_GROUP_SET_MANAGER.getNumber());
@@ -425,8 +483,7 @@ public class GroupMngService {
             msgMap.put("msgType", MsgType.SYS_GROUP_CANCEL_MANAGER.getNumber());
         }
         msgMap.put("groupId", groupId);
-        msgMap.put("operator", operator);
-        msgMap.put("member", updatedMember);
+        msgMap.put("content", content);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         return ResultUtil.success();
@@ -465,15 +522,43 @@ public class GroupMngService {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
-        String account = dto.getAccount();
+        String targetAccount = dto.getAccount();
         int mutedMode = dto.getMutedMode();
         LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getAccount, account);
+        updateWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getAccount, targetAccount);
         updateWrapper.set(GroupMember::getMutedMode, mutedMode);
         int update = groupMemberMapper.update(updateWrapper);
         if (update == 0) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_HAS_NO_THIS_MEMBER);
         }
+
+
+        Map<String, String> operator = new HashMap<>();
+        Map<String, String> target = new HashMap<>();
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId)
+                .in(GroupMember::getAccount, new String[]{myAccount, targetAccount});
+        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
+        for (GroupMember member : members) {
+            if (member.getAccount().equals(myAccount)) {
+                operator.put("account", member.getAccount());
+                operator.put("nickName", member.getNickName());
+            }
+            if (member.getAccount().equals(targetAccount)){
+                target.put("account", member.getAccount());
+                target.put("nickName", member.getNickName());
+            }
+        }
+        Map<String, Object> content = new HashMap<>();
+        content.put("operator", operator);
+        content.put("member", target);
+        content.put("mutedMode", mutedMode);
+
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("groupId", groupId);
+        msgMap.put("msgType", MsgType.SYS_GROUP_UPDATE_MEMBER_MUTED.getNumber());
+        msgMap.put("content", content);
+        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         return ResultUtil.success();
     }
@@ -510,6 +595,31 @@ public class GroupMngService {
             throw new ServiceException(ServiceErrorCode.ERROR_GROUP_MNG_OWNER_TRANSFER);
         }
 
+        Map<String, String> operator = new HashMap<>();
+        Map<String, String> target = new HashMap<>();
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId)
+                .in(GroupMember::getAccount, new String[]{myAccount, targetAccount});
+        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
+        for (GroupMember member : members) {
+            if (member.getAccount().equals(myAccount)) {
+                operator.put("account", myAccount);
+                operator.put("nickName", member.getNickName());
+            } else if (member.getAccount().equals(targetAccount)){
+                target.put("account", myAccount);
+                target.put("nickName", member.getNickName());
+            }
+        }
+        Map<String, Object> content = new HashMap<>();
+        content.put("operator", operator);
+        content.put("member", target);
+
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("groupId", groupId);
+        msgMap.put("msgType", MsgType.SYS_GROUP_OWNER_TRANSFER.getNumber());
+        msgMap.put("content", content);
+        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+
         return ResultUtil.success();
     }
 
@@ -523,6 +633,12 @@ public class GroupMngService {
         log.info("GroupMngService::leaveGroup");
         String account = ReqSession.getSession().getAccount();
         String groupId = dto.getGroupId();
+
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getAccount, account);
+        GroupMember member = groupMemberMapper.selectOne(queryWrapper);
+
         LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(GroupMember::getGroupId, groupId)
                 .eq(GroupMember::getAccount, account)
@@ -531,6 +647,18 @@ public class GroupMngService {
         if (delete == 0) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_HAS_NO_THIS_MEMBER);
         }
+
+        Map<String, String> operator = new HashMap<>();
+        operator.put("account", account);
+        operator.put("nickName", member.getNickName());
+        Map<String, Object> content = new HashMap<>();
+        content.put("operator", operator);
+
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("groupId", groupId);
+        msgMap.put("msgType", MsgType.SYS_GROUP_LEAVE.getNumber());
+        msgMap.put("content", content);
+        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         return ResultUtil.success();
     }
