@@ -49,7 +49,7 @@ drop table `anyim_user_status`;
 CREATE TABLE `anyim_user_status`(
     `account` VARCHAR(255) NOT NULL COMMENT '账号',
     `unique_id` VARCHAR(255) NOT NULL COMMENT '客户端唯一ID，account+@+客户端生成的uuid',
-    `status` TINYINT(1) DEFAULT 0 COMMENT '状态: 0离线，1在线，2离开，3忙碌',
+    `status` TINYINT(1) DEFAULT 0 COMMENT '状态: 0离线，1离开，2在线，3忙碌',
     `update_time`  DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
     PRIMARY KEY(account, unique_id)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户状态表';

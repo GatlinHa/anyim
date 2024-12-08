@@ -185,7 +185,12 @@ public class ChatService {
     }
 
     public ResponseEntity<IMHttpResponse> querySession(QuerySessionReq dto) {
-        return ResultUtil.success(querySession(ReqSession.getSession().getAccount(), dto.getSessionId()));
+        ChatSessionVO vo = querySession(ReqSession.getSession().getAccount(), dto.getSessionId());
+        if (vo == null) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_SESSION_NOT_EXIST);
+        } else {
+            return ResultUtil.success(vo);
+        }
     }
 
     public ResponseEntity<IMHttpResponse> createSession(CreateSessionReq dto) {
@@ -401,6 +406,10 @@ public class ChatService {
 
     private ChatSessionVO querySession(String account, String sessionId) {
         Session session = sessionMapper.selectSession(account, sessionId);
+        if (session == null) {
+            return null;
+        }
+
         ChatSessionVO vo = new ChatSessionVO();
         vo.setSessionId(session.getSessionId());
         vo.setSessionType(session.getSessionType());
