@@ -66,6 +66,7 @@ public class UserRpcServiceImpl implements UserRpcService {
                 UserStatus userStatus = userStatusMapper.queryStatus(account);
                 user.setStatus(userStatus == null ? ConnectStatus.OFFLINE.getValue() : userStatus.getStatus());
                 UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
+                vo.setBirthday(null); //查询别人信息不返回生日信息
                 return BeanUtil.objectToMap(vo);
             } catch (IllegalAccessException e) {
                 log.error("UserRpcServiceImpl::queryUserInfo type conversion error......exception: {}", e.getMessage());
@@ -93,6 +94,7 @@ public class UserRpcServiceImpl implements UserRpcService {
                 }
                 // 把User对象转成返回对象
                 UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
+                vo.setBirthday(null); //查询别人信息不返回生日信息
                 result.put(user.getAccount(), BeanUtil.objectToMap(vo));
             }
         } catch (IllegalAccessException e) {
