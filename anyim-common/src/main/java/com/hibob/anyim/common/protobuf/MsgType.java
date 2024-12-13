@@ -126,17 +126,17 @@ public enum MsgType
    * 设置为管理员角色
    * </pre>
    *
-   * <code>SYS_GROUP_SET_MANAGER = 24;</code>
+   * <code>SYS_GROUP_SET_ADMIN = 24;</code>
    */
-  SYS_GROUP_SET_MANAGER(24),
+  SYS_GROUP_SET_ADMIN(24),
   /**
    * <pre>
    * 取消管理员角色
    * </pre>
    *
-   * <code>SYS_GROUP_CANCEL_MANAGER = 25;</code>
+   * <code>SYS_GROUP_CANCEL_ADMIN = 25;</code>
    */
-  SYS_GROUP_CANCEL_MANAGER(25),
+  SYS_GROUP_CANCEL_ADMIN(25),
   /**
    * <pre>
    * 设置全员禁言
@@ -163,7 +163,7 @@ public enum MsgType
   SYS_GROUP_SET_JOIN_APPROVAL(28),
   /**
    * <pre>
-   * 取消入群验证
+   * 关闭入群验证
    * </pre>
    *
    * <code>SYS_GROUP_CANCEL_JOIN_APPROVAL = 29;</code>
@@ -195,7 +195,7 @@ public enum MsgType
   SYS_GROUP_OWNER_TRANSFER(32),
   /**
    * <pre>
-   * 设置某个成员禁言，消息只发给被禁言或取消禁言的成员
+   * 设置某个成员禁言
    * </pre>
    *
    * <code>SYS_GROUP_UPDATE_MEMBER_MUTED = 33;</code>
@@ -235,7 +235,7 @@ public enum MsgType
   SYS_GROUP_UPDATE_NAME(37),
   /**
    * <pre>
-   * 更新了群名称
+   * 更新了群头像
    * </pre>
    *
    * <code>SYS_GROUP_UPDATE_AVATAR = 38;</code>
@@ -390,17 +390,17 @@ public enum MsgType
    * 设置为管理员角色
    * </pre>
    *
-   * <code>SYS_GROUP_SET_MANAGER = 24;</code>
+   * <code>SYS_GROUP_SET_ADMIN = 24;</code>
    */
-  public static final int SYS_GROUP_SET_MANAGER_VALUE = 24;
+  public static final int SYS_GROUP_SET_ADMIN_VALUE = 24;
   /**
    * <pre>
    * 取消管理员角色
    * </pre>
    *
-   * <code>SYS_GROUP_CANCEL_MANAGER = 25;</code>
+   * <code>SYS_GROUP_CANCEL_ADMIN = 25;</code>
    */
-  public static final int SYS_GROUP_CANCEL_MANAGER_VALUE = 25;
+  public static final int SYS_GROUP_CANCEL_ADMIN_VALUE = 25;
   /**
    * <pre>
    * 设置全员禁言
@@ -427,7 +427,7 @@ public enum MsgType
   public static final int SYS_GROUP_SET_JOIN_APPROVAL_VALUE = 28;
   /**
    * <pre>
-   * 取消入群验证
+   * 关闭入群验证
    * </pre>
    *
    * <code>SYS_GROUP_CANCEL_JOIN_APPROVAL = 29;</code>
@@ -459,7 +459,7 @@ public enum MsgType
   public static final int SYS_GROUP_OWNER_TRANSFER_VALUE = 32;
   /**
    * <pre>
-   * 设置某个成员禁言，消息只发给被禁言或取消禁言的成员
+   * 设置某个成员禁言
    * </pre>
    *
    * <code>SYS_GROUP_UPDATE_MEMBER_MUTED = 33;</code>
@@ -499,7 +499,7 @@ public enum MsgType
   public static final int SYS_GROUP_UPDATE_NAME_VALUE = 37;
   /**
    * <pre>
-   * 更新了群名称
+   * 更新了群头像
    * </pre>
    *
    * <code>SYS_GROUP_UPDATE_AVATAR = 38;</code>
@@ -565,8 +565,8 @@ public enum MsgType
       case 21: return SYS_GROUP_CREATE;
       case 22: return SYS_GROUP_ADD_MEMBER;
       case 23: return SYS_GROUP_DEL_MEMBER;
-      case 24: return SYS_GROUP_SET_MANAGER;
-      case 25: return SYS_GROUP_CANCEL_MANAGER;
+      case 24: return SYS_GROUP_SET_ADMIN;
+      case 25: return SYS_GROUP_CANCEL_ADMIN;
       case 26: return SYS_GROUP_SET_ALL_MUTED;
       case 27: return SYS_GROUP_CANCEL_ALL_MUTED;
       case 28: return SYS_GROUP_SET_JOIN_APPROVAL;

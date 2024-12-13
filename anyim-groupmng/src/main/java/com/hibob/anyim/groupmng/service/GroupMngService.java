@@ -478,9 +478,9 @@ public class GroupMngService {
 
         Map<String, Object> msgMap = new HashMap<>();
         if (dto.getRole() == 1) {
-            msgMap.put("msgType", MsgType.SYS_GROUP_SET_MANAGER.getNumber());
+            msgMap.put("msgType", MsgType.SYS_GROUP_SET_ADMIN.getNumber());
         } else if (dto.getRole() == 0) {
-            msgMap.put("msgType", MsgType.SYS_GROUP_CANCEL_MANAGER.getNumber());
+            msgMap.put("msgType", MsgType.SYS_GROUP_CANCEL_ADMIN.getNumber());
         }
         msgMap.put("groupId", groupId);
         msgMap.put("content", content);

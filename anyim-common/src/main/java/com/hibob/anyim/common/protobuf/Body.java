@@ -22,7 +22,7 @@ package com.hibob.anyim.common.protobuf;
  * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
  * | 11 | sessionId    |   -  |    -      |  M  |     M     |     M    |        M       |    M     |       todo        |         todo        |
  * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
- * NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_CREATE
+ * NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX
  * +----+--------------+------------+------------+-------------+------------+
  * | 1  | fromId       |      M     |      M     |      M      |      -     |
  * | 2  | fromClient   |      M     |      M     |      M      |      -     |
@@ -873,7 +873,7 @@ private static final long serialVersionUID = 0L;
    * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
    * | 11 | sessionId    |   -  |    -      |  M  |     M     |     M    |        M       |    M     |       todo        |         todo        |
    * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
-   * NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_CREATE
+   * NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX
    * +----+--------------+------------+------------+-------------+------------+
    * | 1  | fromId       |      M     |      M     |      M      |      -     |
    * | 2  | fromClient   |      M     |      M     |      M      |      -     |

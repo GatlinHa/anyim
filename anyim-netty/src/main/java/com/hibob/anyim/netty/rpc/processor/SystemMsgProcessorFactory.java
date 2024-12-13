@@ -9,8 +9,8 @@ public class SystemMsgProcessorFactory {
             case SYS_GROUP_CREATE:
             case SYS_GROUP_ADD_MEMBER:
             case SYS_GROUP_DEL_MEMBER:
-            case SYS_GROUP_SET_MANAGER:
-            case SYS_GROUP_CANCEL_MANAGER:
+            case SYS_GROUP_SET_ADMIN:
+            case SYS_GROUP_CANCEL_ADMIN:
             case SYS_GROUP_SET_ALL_MUTED:
             case SYS_GROUP_CANCEL_ALL_MUTED:
             case SYS_GROUP_SET_JOIN_APPROVAL:
