@@ -48,13 +48,8 @@ public class GroupSystemMsgProcessor extends MsgProcessor implements SystemMsgPr
         saveMsg(msg, msgId); //这里的系统消息要入库
 
         List<String> members;
-        if (msgType == MsgType.SYS_GROUP_UPDATE_MEMBER_MUTED) {
-            // 设置某个成员禁言，消息只发给被禁言或取消禁言的成员
-            String account = ((Map<String, String>)contentMap.get("member")).get("account");
-            members = new ArrayList<>();
-            members.add(account);
-        } else if (msgType == MsgType.SYS_GROUP_DROP) {
-            // 群组已经解散，查不到成员信息了
+        if (msgType == MsgType.SYS_GROUP_DROP) {
+            // 群组已经解散，查不到成员信息了，因此要从参数中获取toAccounts
             members = (List<String>) msgMap.get("toAccounts");
         }
         else {
