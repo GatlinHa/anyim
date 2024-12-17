@@ -11,7 +11,6 @@ import com.hibob.anyim.groupmng.mapper.GroupMemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,30 +60,14 @@ public class GroupMngRpcServiceImpl implements GroupMngRpcService {
 
     @Override
     public List<String> queryGroupMembers(String groupId) {
-        return queryGroupMembers(groupId, null);
-    }
-
-    @Override
-    public List<String> queryGroupMembers(String groupId, String account) {
         LambdaQueryWrapper<GroupMember> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.select(GroupMember::getAccount);
         queryWrapper.eq(GroupMember::getGroupId, groupId);
-        if (StringUtils.hasLength(account)) {
-            queryWrapper.ne(GroupMember::getAccount, account);
-        }
+        queryWrapper.eq(GroupMember::getInStatus, 0);
         List<String> accounts = new ArrayList<>();
         groupMemberMapper.selectList(queryWrapper).forEach(x -> {
             accounts.add(x.getAccount());
         });
         return accounts;
-    }
-
-    @Override
-    public boolean isMemberInGroup(String groupId, String account) {
-        LambdaQueryWrapper<GroupMember> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(GroupMember::getGroupId, groupId);
-        queryWrapper.eq(GroupMember::getAccount, account);
-        Long count = groupMemberMapper.selectCount(queryWrapper);
-        return count > 0 ? true : false;
     }
 }

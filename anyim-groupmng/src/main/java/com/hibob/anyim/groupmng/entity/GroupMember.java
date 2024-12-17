@@ -23,4 +23,7 @@ public class GroupMember {
 
     @TableField(value = "muted_mode")
     private int mutedMode;
+
+    @TableField(value = "in_status")
+    private int inStatus;
 }

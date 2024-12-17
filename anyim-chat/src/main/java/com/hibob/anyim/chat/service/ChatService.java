@@ -392,6 +392,8 @@ public class ChatService {
             vo.setDraft(item.getDraft());
             vo.setMark(item.getMark());
             vo.setPartitionId(item.getPartitionId());
+            vo.setLeaveFlag(item.getLeaveFlag());
+            vo.setLeaveMsgId(item.getLeaveMsgId());
             loadLastMsg(item.getSessionId(), account, item.getReadMsgId(), vo);
             voMap.put(item.getSessionId(), vo);
             groupIdList.add(item.getRemoteId());
@@ -427,6 +429,8 @@ public class ChatService {
             objectInfo = rpcClient.getUserRpcService().queryUserInfo(session.getRemoteId());
         }
         else if(session.getSessionType() == MsgType.GROUP_CHAT.getNumber()) {
+            vo.setLeaveFlag(session.getLeaveFlag());
+            vo.setLeaveMsgId(session.getLeaveMsgId());
             objectInfo = rpcClient.getGroupMngRpcService().queryGroupInfo(session.getRemoteId());
         }
         vo.setObjectInfo(objectInfo);
@@ -475,12 +479,12 @@ public class ChatService {
         return resultMap;
     }
 
-    private int getUnReadCount(String sessionId, String account, long lastMsgId) {
+    private int getUnReadCount(String sessionId, String account, long lastMsgId, long max) {
         Query query = new Query();
         query.addCriteria(Criteria
                 .where("sessionId").is(sessionId)
                 .and("fromId").ne(account)
-                .and("msgId").gt(lastMsgId)
+                .and("msgId").gt(lastMsgId).lte(max)
                 .and("msgType").in(MsgType.CHAT.getNumber(), MsgType.GROUP_CHAT.getNumber()));
         return (int) mongoTemplate.count(query, MsgDb.class);
     }
@@ -494,9 +498,14 @@ public class ChatService {
     }
 
     private void loadLastMsg(String sessionId, String account, long readMsgId , ChatSessionVO vo) {
+        long max = (long) Double.MAX_VALUE;
+        // 如果用户离群了，就只能最大查到离群时的msgId
+        if (vo.isLeaveFlag()) {
+            max = vo.getLeaveMsgId();
+        }
         // 查最后一条msg
         String key = RedisKey.CHAT_SESSION_MSG_ID + sessionId;
-        Set<Object> objects = redisTemplate.opsForZSet().reverseRangeByScore(key, -1, Double.MAX_VALUE, 0, 1);//倒序只取第1个元素，即为msgId最大的那一个（lastMsgId）
+        Set<Object> objects = redisTemplate.opsForZSet().reverseRangeByScore(key, -1, max, 0, 1);//倒序只取第1个元素，即为msgId最大的那一个（lastMsgId）
         if (objects.size() == 0) {
             vo.setLastMsgId(0);
             vo.setLastMsgType(0);
@@ -522,7 +531,7 @@ public class ChatService {
         }
 
         // 查未读的消息数
-        int unReadCount = getUnReadCount(sessionId, account, readMsgId);
+        int unReadCount = getUnReadCount(sessionId, account, readMsgId, max);
         if (msg != null) {
             vo.setLastMsgId(msgId);
             vo.setLastMsgType(msg.getMsgType());

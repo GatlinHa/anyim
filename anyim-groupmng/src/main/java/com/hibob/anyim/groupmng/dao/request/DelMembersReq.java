@@ -18,6 +18,10 @@ public class DelMembersReq extends BaseRequest {
     @NotEmpty
     private String groupId;
 
+    @ApiModelProperty(value = "离群时的最后一个msgId")
+    @NotNull
+    private long leaveMsgId;
+
     @ApiModelProperty(value = "移除的群组成员：account, nickName")
     @NotNull
     private List<Map<String, Object>> members;

@@ -142,23 +142,19 @@ public class ChatRpcServiceImpl implements ChatRpcService {
 
     @Override
     public boolean createGroupSession(List<Map<String, Object>> sessionList) {
-        List<Session> insertSessions = new ArrayList<>();
-        for (Map<String, Object> map : sessionList) {
-            Session session = new Session();
-            session.setAccount((String) map.get("account"));
-            session.setSessionId((String) map.get("sessionId"));
-            session.setRemoteId((String) map.get("remoteId"));
-            session.setSessionType((int) map.get("sessionType"));
-            session.setReadMsgId(0);
-            session.setReadTime(null);
-            session.setTop(false);
-            session.setDnd(false);
-            session.setDraft("");
-            session.setMark("");
-            session.setPartitionId(0);
-            session.setClosed(false);
-            insertSessions.add(session);
-        }
-        return sessionMapper.insertBatchSomeColumn(insertSessions) > 0;
+        return sessionMapper.batchInsertOrUpdate(sessionList) > 0;
     }
+
+    @Override
+    public void updateLeaveGroup(List<Map<String, Object>> list) {
+        LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
+        for (Map<String, Object> map : list) {
+            updateWrapper.set(Session::getLeaveFlag, true)
+                    .set(Session::getLeaveMsgId, map.get("leaveMsgId"))
+                    .eq(Session::getSessionId, map.get("groupId"))
+                    .eq(Session::getAccount, map.get("account"));
+            sessionMapper.update(updateWrapper);
+        }
+    }
+
 }

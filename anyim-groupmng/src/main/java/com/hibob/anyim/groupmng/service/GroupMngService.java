@@ -44,6 +44,10 @@ public class GroupMngService {
     @Transactional
     public ResponseEntity<IMHttpResponse> createGroup(CreateGroupReq dto) {
         log.info("GroupMngService::createGroup");
+        if (dto.getMembers().size() < 3) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_ENOUGH_MEMBER);
+        }
+
         ReqSession reqSession = ReqSession.getSession();
         String account = reqSession.getAccount();
         String groupId = String.valueOf(generateGroupId());
@@ -69,50 +73,44 @@ public class GroupMngService {
         groupInfo.setJoinGroupApproval(joinGroupApproval);
         groupInfo.setCreator(creator);
         groupInfo.setMyRole(2); //不是数据库字段,加了注解不会插入进去,这里是为了返回结果
-
-        List<GroupMember> insertMembers = new ArrayList<>();
-        List<Map<String, Object>> members = dto.getMembers();
-        if (members.size() < 3) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_ENOUGH_MEMBER);
-        }
-
-        String creatorNickName = "";
-        for (Map<String, Object> item: members) {
-            GroupMember member = new GroupMember();
-            member.setGroupId(groupId);
-            member.setAccount(item.get("account").toString());
-            member.setNickName(item.get("nickName").toString());
-            if (creator.equals(item.get("account"))) {
-                creatorNickName = item.get("nickName").toString();
-                member.setRole(2);
-            }
-            else {
-                member.setRole(0);
-            }
-            insertMembers.add(member);
-        }
-
         groupInfoMapper.insert(groupInfo);
-        groupMemberMapper.insertBatchSomeColumn(insertMembers);
 
-        // 群组创建成功后, 为所有成员创建session, 向所有成员发送创建新群的系统消息
+        List<Map<String, Object>> insertMemberList = new ArrayList<>();
         List<Map<String, Object>> insertSessionList = new ArrayList<>();
-        for (Map<String, Object> item: members) {
+        String creatorNickName = "";
+        for (Map<String, Object> item: dto.getMembers()) {
+            Map<String, Object> memberMap = new HashMap<>();
+            memberMap.put("groupId", groupId);
+            memberMap.put("account", item.get("account"));
+            memberMap.put("nickName", item.get("nickName"));
+            memberMap.put("role", item.get("account").toString().equals(account) ? 2 : 0);
+            memberMap.put("mutedMode", 0);
+            memberMap.put("inStatus", 0);
+            insertMemberList.add(memberMap);
+
             Map<String, Object> sessionMap = new HashMap<>();
             sessionMap.put("account", item.get("account"));
             sessionMap.put("sessionId", groupId);
             sessionMap.put("remoteId", groupId);
             sessionMap.put("sessionType", MsgType.GROUP_CHAT.getNumber());
+            sessionMap.put("leaveFlag", false);
+            sessionMap.put("leaveMsgId", 0);
             insertSessionList.add(sessionMap);
+
+            if (creator.equals(item.get("account"))) {
+                creatorNickName = item.get("nickName").toString();
+            }
         }
-        rpcClient.getChatRpcService().createGroupSession(insertSessionList);
+
+        groupMemberMapper.batchInsertOrUpdate(insertMemberList);
+        rpcClient.getChatRpcService().createGroupSession(insertSessionList); // 群组创建成功后, 为所有成员创建session, 向所有成员发送创建新群的系统消息
 
         Map<String, String> operator = new HashMap<>();
         operator.put("account", creator);
         operator.put("nickName", creatorNickName);
         Map<String, Object> content = new HashMap<>();
         content.put("operator", operator);
-        content.put("members", members);
+        content.put("members", dto.getMembers());
 
         Map<String, Object> msgMap = new HashMap<>();
         msgMap.put("msgType", MsgType.SYS_GROUP_CREATE.getNumber());
@@ -148,10 +146,6 @@ public class GroupMngService {
         String account = ReqSession.getSession().getAccount();
         // 1.查询群基本信息
         GroupInfo groupInfo = groupInfoMapper.selectGroupInfoOne(account, groupId);
-        if (groupInfo == null) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
-        }
-
         // 2.查询群成员列表及成员在群信息
         LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupMember::getGroupId, groupId);
@@ -163,6 +157,7 @@ public class GroupMngService {
             usersMap.get(member.getAccount()).put("nickName", member.getNickName()); //群昵称不用user表中的
             usersMap.get(member.getAccount()).put("role", member.getRole());
             usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
+            usersMap.get(member.getAccount()).put("inStatus", member.getInStatus());
         }
 
         GroupVO vo = new GroupVO();
@@ -271,8 +266,7 @@ public class GroupMngService {
         LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupMember::getGroupId, groupId)
                 .eq(GroupMember::getAccount, account);
-        GroupMember members = groupMemberMapper.selectOne(queryWrapper);
-        operator.put("nickName", members.getNickName());
+        operator.put("nickName", groupMemberMapper.selectOne(queryWrapper).getNickName());
         content.put("operator", operator);
 
         msgMap.put("groupId", groupId);
@@ -297,13 +291,10 @@ public class GroupMngService {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
-        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupMember::getGroupId, groupId);
-        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
-
-        LambdaQueryWrapper<GroupMember> groupMemberWrapper = new LambdaQueryWrapper<>();
-        groupMemberWrapper.eq(GroupMember::getGroupId, groupId);
-        groupMemberMapper.delete(groupMemberWrapper);
+        LambdaUpdateWrapper<GroupMember> groupMemberWrapper = new LambdaUpdateWrapper<>();
+        groupMemberWrapper.set(GroupMember::getInStatus, 2)
+            .eq(GroupMember::getGroupId, groupId);
+        groupMemberMapper.update(groupMemberWrapper);
 
         // 这里采用软删除方式，因为GroupInfo的信息在展示session会话信息时还需要用到
         LambdaUpdateWrapper<GroupInfo> groupInfoWrapper = new LambdaUpdateWrapper<>();
@@ -315,8 +306,10 @@ public class GroupMngService {
 
         Map<String, String> operator = new HashMap<>();
         operator.put("account", account);
-        String nickName = members.stream().filter(item -> account.equals(item.getAccount())).findFirst().get().getNickName();
-        operator.put("nickName", nickName);
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getAccount, account);
+        operator.put("nickName", groupMemberMapper.selectOne(queryWrapper).getNickName());
         Map<String, Object> content = new HashMap<>();
         content.put("operator", operator);
 
@@ -324,8 +317,8 @@ public class GroupMngService {
         msgMap.put("groupId", groupId);
         msgMap.put("msgType", MsgType.SYS_GROUP_DROP.getNumber());
         msgMap.put("content", content);
-        List<String> toAccounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
-        msgMap.put("toAccounts", toAccounts);
+//        List<String> toAccounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
+//        msgMap.put("toAccounts", toAccounts);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         return ResultUtil.success();
@@ -344,16 +337,29 @@ public class GroupMngService {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
-        List<GroupMember> addMembers = new ArrayList<>();
-        for (Map member : dto.getMembers()) {
-            GroupMember insertMember = new GroupMember();
-            insertMember.setGroupId(String.valueOf(groupId));
-            insertMember.setAccount(member.get("account").toString());
-            insertMember.setNickName(member.get("nickName").toString());
-            insertMember.setRole(0);
-            addMembers.add(insertMember);
+        List<Map<String, Object>> addMemberList = new ArrayList<>();
+        List<Map<String, Object>> insertSessionList = new ArrayList<>();
+        for (Map<String, Object> item: dto.getMembers()) {
+            Map<String, Object> sessionMap = new HashMap<>();
+            sessionMap.put("account", item.get("account"));
+            sessionMap.put("sessionId", groupId);
+            sessionMap.put("remoteId", groupId);
+            sessionMap.put("sessionType", MsgType.GROUP_CHAT.getNumber());
+            sessionMap.put("leaveFlag", false);
+            sessionMap.put("leaveMsgId", 0);
+            insertSessionList.add(sessionMap);
+
+            Map<String, Object> memberMap = new HashMap<>();
+            memberMap.put("groupId", groupId);
+            memberMap.put("account", item.get("account"));
+            memberMap.put("nickName", item.get("nickName"));
+            memberMap.put("role", 0);
+            memberMap.put("mutedMode", 0);
+            memberMap.put("inStatus", 0);
+            addMemberList.add(memberMap);
         }
-        groupMemberMapper.insertBatchSomeColumn(addMembers);
+        groupMemberMapper.batchInsertOrUpdate(addMemberList);
+        rpcClient.getChatRpcService().createGroupSession(insertSessionList); // 邀请成功后, 为新成员创建session
 
         LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupMember::getGroupId, groupId);
@@ -364,6 +370,7 @@ public class GroupMngService {
             usersMap.get(member.getAccount()).put("nickName", member.getNickName()); //群昵称不用user表中的
             usersMap.get(member.getAccount()).put("role", member.getRole());
             usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
+            usersMap.get(member.getAccount()).put("inStatus", member.getInStatus());
         }
 
         Map<String, String> operator = new HashMap<>();
@@ -399,13 +406,24 @@ public class GroupMngService {
 
         List<Map<String, Object>> delMembers = dto.getMembers();
         List<Object> delMemberAccounts = delMembers.stream().map(item -> item.get("account")).collect(Collectors.toList());
-        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupMember::getGroupId, groupId);
-        queryWrapper.ne(GroupMember::getRole, 2); // 群主不能直接删除
-        queryWrapper.in(GroupMember::getAccount, delMemberAccounts);
-        groupMemberMapper.delete(queryWrapper);
+        LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.set(GroupMember::getInStatus, 1)
+            .eq(GroupMember::getGroupId, groupId)
+            .ne(GroupMember::getRole, 2) // 群主不能直接删除
+            .in(GroupMember::getAccount, delMemberAccounts);
+        groupMemberMapper.update(updateWrapper);
 
-        queryWrapper.clear();
+        // 往session表中更新离群信息
+        List<Map<String, Object>> updateLeaveGroupParamList = delMembers.stream().map(item -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("groupId", groupId);
+            map.put("account", item.get("account"));
+            map.put("leaveMsgId", dto.getLeaveMsgId());
+            return map;
+        }).collect(Collectors.toList());
+        rpcClient.getChatRpcService().updateLeaveGroup(updateLeaveGroupParamList);
+
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupMember::getGroupId, groupId);
         List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
         List<String> accounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
@@ -414,6 +432,7 @@ public class GroupMngService {
             usersMap.get(member.getAccount()).put("nickName", member.getNickName()); //群昵称不用user表中的
             usersMap.get(member.getAccount()).put("role", member.getRole());
             usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
+            usersMap.get(member.getAccount()).put("inStatus", member.getInStatus());
         }
 
         Map<String, String> operator = new HashMap<>();
@@ -525,8 +544,9 @@ public class GroupMngService {
         String targetAccount = dto.getAccount();
         int mutedMode = dto.getMutedMode();
         LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(GroupMember::getGroupId, groupId).eq(GroupMember::getAccount, targetAccount);
-        updateWrapper.set(GroupMember::getMutedMode, mutedMode);
+        updateWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getAccount, targetAccount)
+                .set(GroupMember::getMutedMode, mutedMode);
         int update = groupMemberMapper.update(updateWrapper);
         if (update == 0) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_HAS_NO_THIS_MEMBER);
@@ -640,13 +660,23 @@ public class GroupMngService {
         GroupMember member = groupMemberMapper.selectOne(queryWrapper);
 
         LambdaUpdateWrapper<GroupMember> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(GroupMember::getGroupId, groupId)
+        updateWrapper.set(GroupMember::getInStatus, 1)
+                .eq(GroupMember::getGroupId, groupId)
                 .eq(GroupMember::getAccount, account)
                 .ne(GroupMember::getRole, 2); //群主不能退群,要先转移出去
-        int delete = groupMemberMapper.delete(updateWrapper);
-        if (delete == 0) {
+        int update = groupMemberMapper.update(updateWrapper);
+        if (update == 0) {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_HAS_NO_THIS_MEMBER);
         }
+
+        // 往session表中更新离群信息
+        List<Map<String, Object>> updateLeaveGroupParamList = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("groupId", groupId);
+        map.put("account", account);
+        map.put("leaveMsgId", dto.getLeaveMsgId());
+        updateLeaveGroupParamList.add(map);
+        rpcClient.getChatRpcService().updateLeaveGroup(updateLeaveGroupParamList);
 
         Map<String, String> operator = new HashMap<>();
         operator.put("account", account);

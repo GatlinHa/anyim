@@ -50,6 +50,12 @@ public class Session {
     @TableField(value = "closed")
     private Boolean closed;
 
+    @TableField(value = "leave_flag")
+    private Boolean leaveFlag;
+
+    @TableField(value = "leave_msg_id")
+    private long leaveMsgId;
+
     @TableField(value = "remote_read", exist = false)
     private long remoteRead;
 }

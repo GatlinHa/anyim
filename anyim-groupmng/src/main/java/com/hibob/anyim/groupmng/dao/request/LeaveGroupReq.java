@@ -10,9 +10,12 @@ import javax.validation.constraints.NotNull;
 @Data
 @ApiModel("退出群组请求的参数")
 public class LeaveGroupReq extends BaseRequest {
-
     @ApiModelProperty(value = "群组id")
     @NotNull
     private String groupId;
+
+    @ApiModelProperty(value = "离群时的最后一个msgId")
+    @NotNull
+    private long leaveMsgId;
 
 }

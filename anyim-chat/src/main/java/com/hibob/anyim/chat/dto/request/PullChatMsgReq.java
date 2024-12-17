@@ -17,8 +17,8 @@ public class PullChatMsgReq extends BaseRequest {
     private String sessionId;
 
     @NotNull
-    @Max(value = 1, message = "页大小不能大于100")
-    @Min(value = 0, message = "页大小不能小于10")
+    @Max(value = 1, message = "mode小不能大于1")
+    @Min(value = 0, message = "mode小不能小于0")
     @ApiModelProperty(value = "查询模式：0 查最近N条，1 查refMsgId之前N条")
     private int mode;
 

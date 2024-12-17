@@ -25,6 +25,7 @@ CREATE TABLE `anyim_group_member`(
     `nick_name` VARCHAR(255) NOT NULL COMMENT '群内昵称',
     `role` TINYINT(1) DEFAULT 0 COMMENT '成员角色：0普通成员，1管理员，2群主',
     `muted_mode` TINYINT(1) DEFAULT 0 COMMENT '禁言模式: 0未设置, 1禁言黑名单, 2禁言白名单',
+    `in_status` TINYINT(1) DEFAULT 0 COMMENT '在群状态：0正常，1退群，2群解散',
     PRIMARY KEY (group_id, account)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '群组成员表';
 

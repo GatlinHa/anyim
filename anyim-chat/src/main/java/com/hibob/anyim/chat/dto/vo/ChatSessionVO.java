@@ -62,6 +62,12 @@ public class ChatSessionVO {
     @ApiModelProperty(value = "分组id")
     private int partitionId;
 
+    @ApiModelProperty(value = "离群状态")
+    private boolean leaveFlag;
+
+    @ApiModelProperty(value = "离群时消息Id")
+    private long leaveMsgId;
+
     @ApiModelProperty(value = "对方详情")
     private Map<String, Object> ObjectInfo;
 }

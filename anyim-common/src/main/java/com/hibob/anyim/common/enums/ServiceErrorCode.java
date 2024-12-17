@@ -63,6 +63,8 @@ public enum ServiceErrorCode {
 
     ERROR_GROUP_MNG_OWNER_TRANSFER(Const.SERVICE_CODE_GROUP_MNG + 6, "群主转让失败"),
 
+    ERROR_GROUP_MNG_NOT_IN_GROUP(Const.SERVICE_CODE_GROUP_MNG + 7, "您已离开或解散该群"),
+
     ERROR_DEFAULT(Const.SERVICE_CODE_DEFAULT, "未知错误");
 
 

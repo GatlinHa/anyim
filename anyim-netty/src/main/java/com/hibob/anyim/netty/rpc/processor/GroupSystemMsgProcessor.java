@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -47,15 +48,21 @@ public class GroupSystemMsgProcessor extends MsgProcessor implements SystemMsgPr
         Msg msg = Msg.newBuilder().setHeader(header).setBody(body).build();
         saveMsg(msg, msgId); //这里的系统消息要入库
 
-        List<String> members;
-        if (msgType == MsgType.SYS_GROUP_DROP) {
+        List<String> members = rpcClient.getGroupMngRpcService().queryGroupMembers(groupId);
+        if (msgType == MsgType.SYS_GROUP_DEL_MEMBER) {
+            // 系统消息还有通知到被移除的成员
+            List<Map<String, Object>> delMemberslist = (List<Map<String, Object>>)contentMap.get("members");
+            List<String> delMembersAccounts = delMemberslist.stream().map(item -> (String) item.get("account")).collect(Collectors.toList());
+            members.addAll(delMembersAccounts);
+        } else if (msgType == MsgType.SYS_GROUP_LEAVE) {
+            // 自己离开群后，最后一条离群的系统消息还是要通知到
+            Map<String, String> operator = (Map<String, String>)contentMap.get("operator");
+            members.add(operator.get("account"));
+        } else if (msgType == MsgType.SYS_GROUP_DROP) {
+            // TODO 解散群还是要单独处理toAccounts
             // 群组已经解散，查不到成员信息了，因此要从参数中获取toAccounts
-            members = (List<String>) msgMap.get("toAccounts");
+//            members = (List<String>) msgMap.get("toAccounts");
         }
-        else {
-            members = rpcClient.getGroupMngRpcService().queryGroupMembers(groupId);
-        }
-
         sendToMembers(msg, members, msgId); // 发给群成员
     }
 
