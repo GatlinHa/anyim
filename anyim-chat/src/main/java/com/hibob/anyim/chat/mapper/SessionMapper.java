@@ -11,8 +11,6 @@ import java.util.Map;
 
 public interface SessionMapper extends BaseMapper<Session> {
 
-    int insertBatchSomeColumn(Collection<Session> entityList);
-
     /**
      * 单聊查询, 这里引用Left join的方式查到对方的已读消息Id(remote_read)
      * @param account

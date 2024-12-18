@@ -19,8 +19,6 @@ spring:
         server-addr: localhost:8848
         namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147
 
-
-
 dubbo:
   application:
     name: anyim-user-dubbo # 这里要区别于spring.application.name，否则agw会把请求转发到这里，因为轮询机制
