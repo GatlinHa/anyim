@@ -22,6 +22,11 @@ public class GroupChatProcessor extends MsgProcessor{
     public void process(ChannelHandlerContext ctx, Msg msg)  throws Exception{
         String groupId = msg.getBody().getGroupId();
         List<String> members = rpcClient.getGroupMngRpcService().queryGroupMembers(groupId);
+        String fromId = msg.getBody().getFromId();
+        if (!members.contains(fromId)) {
+            log.error("fromId is invalid: {}", fromId);
+            return;
+        }
         String sessionId = msg.getBody().getSessionId();
         Long msgId = refMsgIdConfig.generateMsgId(sessionId); // 生成msgId
         saveMsg(msg, msgId); //消息入库，当前采用服务方异步入库，因此不支持等待回调结果。
