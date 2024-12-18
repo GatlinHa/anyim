@@ -13,6 +13,15 @@ import java.util.Map;
 @ApiModel("群组加人请求的参数")
 public class AddMembersReq extends BaseRequest {
 
+    @ApiModelProperty(value = "操作者id")
+    @NotEmpty
+    private String operatorId;
+
+    @ApiModelProperty(value = "操作者昵称")
+    @NotEmpty
+    private String operatorNickName;
+
+
     @ApiModelProperty(value = "群组id")
     @NotEmpty
     private String groupId;

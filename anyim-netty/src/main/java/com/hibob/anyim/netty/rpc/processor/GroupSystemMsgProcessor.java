@@ -59,9 +59,8 @@ public class GroupSystemMsgProcessor extends MsgProcessor implements SystemMsgPr
             Map<String, String> operator = (Map<String, String>)contentMap.get("operator");
             members.add(operator.get("account"));
         } else if (msgType == MsgType.SYS_GROUP_DROP) {
-            // TODO 解散群还是要单独处理toAccounts
             // 群组已经解散，查不到成员信息了，因此要从参数中获取toAccounts
-//            members = (List<String>) msgMap.get("toAccounts");
+            members = (List<String>) msgMap.get("toAccounts");
         }
         sendToMembers(msg, members, msgId); // 发给群成员
     }

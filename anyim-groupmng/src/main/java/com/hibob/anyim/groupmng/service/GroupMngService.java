@@ -291,6 +291,12 @@ public class GroupMngService {
             return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_PERMISSION_DENIED);
         }
 
+        // update GroupMember之前先查询群内所有成员，用于发送系统通知的目标用户
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getInStatus, 0);
+        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
+
         LambdaUpdateWrapper<GroupMember> groupMemberWrapper = new LambdaUpdateWrapper<>();
         groupMemberWrapper.set(GroupMember::getInStatus, 2)
             .eq(GroupMember::getGroupId, groupId);
@@ -302,14 +308,20 @@ public class GroupMngService {
         groupInfoWrapper.set(GroupInfo::isDelFlag, true);
         groupInfoWrapper.set(GroupInfo::getDelTime, new Date(System.currentTimeMillis()));
         groupInfoMapper.update(groupInfoWrapper);
+
         // 这里不删除群组的聊天记录，让其自然老化
 
+        String operatorNickName = "";
+        List<String> toAccounts = new ArrayList<>();
+        for (GroupMember member : members) {
+            if (member.getAccount().equals(account)) {
+                operatorNickName = member.getNickName();
+            }
+            toAccounts.add(member.getAccount());
+        }
         Map<String, String> operator = new HashMap<>();
         operator.put("account", account);
-        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupMember::getGroupId, groupId)
-                .eq(GroupMember::getAccount, account);
-        operator.put("nickName", groupMemberMapper.selectOne(queryWrapper).getNickName());
+        operator.put("nickName", operatorNickName);
         Map<String, Object> content = new HashMap<>();
         content.put("operator", operator);
 
@@ -317,8 +329,7 @@ public class GroupMngService {
         msgMap.put("groupId", groupId);
         msgMap.put("msgType", MsgType.SYS_GROUP_DROP.getNumber());
         msgMap.put("content", content);
-//        List<String> toAccounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
-//        msgMap.put("toAccounts", toAccounts);
+        msgMap.put("toAccounts", toAccounts);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         return ResultUtil.success();
@@ -361,21 +372,9 @@ public class GroupMngService {
         groupMemberMapper.batchInsertOrUpdate(addMemberList);
         rpcClient.getChatRpcService().createGroupSession(insertSessionList); // 邀请成功后, 为新成员创建session
 
-        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupMember::getGroupId, groupId);
-        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
-        List<String> accounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
-        Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(accounts);
-        for (GroupMember member : members) {
-            usersMap.get(member.getAccount()).put("nickName", member.getNickName()); //群昵称不用user表中的
-            usersMap.get(member.getAccount()).put("role", member.getRole());
-            usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
-            usersMap.get(member.getAccount()).put("inStatus", member.getInStatus());
-        }
-
         Map<String, String> operator = new HashMap<>();
-        operator.put("account", account);
-        operator.put("nickName", (String) usersMap.get(account).get("nickName"));
+        operator.put("account", dto.getOperatorId());
+        operator.put("nickName", dto.getOperatorNickName());
         Map<String, Object> content = new HashMap<>();
         content.put("operator", operator);
         content.put("members", dto.getMembers());
@@ -386,9 +385,7 @@ public class GroupMngService {
         msgMap.put("content", content);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
-        GroupVO vo = new GroupVO();
-        vo.setMembers(usersMap);
-        return ResultUtil.success(vo);
+        return ResultUtil.success();
     }
 
     /**
@@ -423,21 +420,9 @@ public class GroupMngService {
         }).collect(Collectors.toList());
         rpcClient.getChatRpcService().updateLeaveGroup(updateLeaveGroupParamList);
 
-        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupMember::getGroupId, groupId);
-        List<GroupMember> members = groupMemberMapper.selectList(queryWrapper);
-        List<String> accounts = members.stream().map(item -> item.getAccount()).collect(Collectors.toList());
-        Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(accounts);
-        for (GroupMember member : members) {
-            usersMap.get(member.getAccount()).put("nickName", member.getNickName()); //群昵称不用user表中的
-            usersMap.get(member.getAccount()).put("role", member.getRole());
-            usersMap.get(member.getAccount()).put("mutedMode", member.getMutedMode());
-            usersMap.get(member.getAccount()).put("inStatus", member.getInStatus());
-        }
-
         Map<String, String> operator = new HashMap<>();
-        operator.put("account", account);
-        operator.put("nickName", (String) usersMap.get(account).get("nickName"));
+        operator.put("account", dto.getOperatorId());
+        operator.put("nickName", dto.getOperatorNickName());
         Map<String, Object> content = new HashMap<>();
         content.put("operator", operator);
         content.put("members", delMembers);
@@ -448,9 +433,7 @@ public class GroupMngService {
         msgMap.put("content", content);
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
-        GroupVO vo = new GroupVO();
-        vo.setMembers(usersMap);
-        return ResultUtil.success(vo);
+        return ResultUtil.success();
     }
 
     /**
