@@ -9,6 +9,7 @@ import com.hibob.anyim.chat.mapper.RefMsgIdMapper;
 import com.hibob.anyim.chat.mapper.SessionMapper;
 import com.hibob.anyim.common.constants.Const;
 import com.hibob.anyim.common.constants.RedisKey;
+import com.hibob.anyim.common.protobuf.MsgType;
 import com.hibob.anyim.common.rpc.service.ChatRpcService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +19,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -147,14 +145,18 @@ public class ChatRpcServiceImpl implements ChatRpcService {
 
     @Override
     public void updateLeaveGroup(List<Map<String, Object>> list) {
-        LambdaUpdateWrapper<Session> updateWrapper = Wrappers.lambdaUpdate();
+        List<Map<String, Object>> sessionList = new ArrayList<>();
         for (Map<String, Object> map : list) {
-            updateWrapper.set(Session::getLeaveFlag, true)
-                    .set(Session::getLeaveMsgId, map.get("leaveMsgId"))
-                    .eq(Session::getSessionId, map.get("groupId"))
-                    .eq(Session::getAccount, map.get("account"));
-            sessionMapper.update(updateWrapper);
+            Map<String, Object> sessionMap = new HashMap<>();
+            sessionMap.put("account", map.get("account"));
+            sessionMap.put("sessionId", map.get("groupId"));
+            sessionMap.put("remoteId", map.get("groupId"));
+            sessionMap.put("sessionType", MsgType.GROUP_CHAT.getNumber());
+            sessionMap.put("leaveFlag", true);
+            sessionMap.put("leaveMsgId", map.get("leaveMsgId"));
+            sessionList.add(sessionMap);
         }
+        sessionMapper.batchInsertOrUpdate(sessionList);
     }
 
 }

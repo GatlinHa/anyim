@@ -313,12 +313,22 @@ public class GroupMngService {
 
         String operatorNickName = "";
         List<String> toAccounts = new ArrayList<>();
+        List<Map<String, Object>> updateLeaveGroupParamList = new ArrayList<>();
         for (GroupMember member : members) {
             if (member.getAccount().equals(account)) {
                 operatorNickName = member.getNickName();
             }
             toAccounts.add(member.getAccount());
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("groupId", groupId);
+            map.put("account", member.getAccount());
+            map.put("leaveMsgId", dto.getLeaveMsgId());
+            updateLeaveGroupParamList.add(map);
         }
+
+        rpcClient.getChatRpcService().updateLeaveGroup(updateLeaveGroupParamList); // 往session表中更新离群信息
+
         Map<String, String> operator = new HashMap<>();
         operator.put("account", account);
         operator.put("nickName", operatorNickName);

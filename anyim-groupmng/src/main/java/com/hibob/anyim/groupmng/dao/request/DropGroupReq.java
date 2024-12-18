@@ -15,4 +15,8 @@ public class DropGroupReq extends BaseRequest {
     @NotNull
     private String groupId;
 
+    @ApiModelProperty(value = "群解散时的最后一个msgId")
+    @NotNull
+    private long leaveMsgId;
+
 }
