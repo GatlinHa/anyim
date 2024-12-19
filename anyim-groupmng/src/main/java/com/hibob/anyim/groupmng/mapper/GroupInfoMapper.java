@@ -19,7 +19,7 @@ public interface GroupInfoMapper extends BaseMapper<GroupInfo> {
     GroupInfo selectGroupInfoOne(String account, String groupId);
 
     @Select("select * from anyim_group_info " +
-            " where group_id in (SELECT group_id FROM anyim_group_member WHERE account = #{account}) AND in_status = 0" +
+            " where group_id in (SELECT group_id FROM anyim_group_member WHERE account = #{account} AND in_status = 0)" +
             " and (group_id = #{searchKey} or group_name like CONCAT('%', #{searchKey}, '%'))")
     List<GroupInfo> searchGroupInfo(String account, String searchKey);
 }
