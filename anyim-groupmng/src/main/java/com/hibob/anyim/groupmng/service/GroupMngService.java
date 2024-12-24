@@ -229,6 +229,7 @@ public class GroupMngService {
         if (announcement != null) {
             updateWrapper.set(GroupInfo::getAnnouncement, announcement);
             msgMap.put("msgType", MsgType.SYS_GROUP_UPDATE_ANNOUNCEMENT.getNumber());
+            content.put("announcement", announcement);
         } else if (StringUtils.hasLength(groupName)) {
             updateWrapper.set(GroupInfo::getGroupName, groupName);
             msgMap.put("msgType", MsgType.SYS_GROUP_UPDATE_NAME.getNumber());
