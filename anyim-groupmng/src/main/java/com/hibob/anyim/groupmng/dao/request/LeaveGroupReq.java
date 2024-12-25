@@ -14,8 +14,4 @@ public class LeaveGroupReq extends BaseRequest {
     @NotNull
     private String groupId;
 
-    @ApiModelProperty(value = "离群时的最后一个msgId")
-    @NotNull
-    private long leaveMsgId;
-
 }

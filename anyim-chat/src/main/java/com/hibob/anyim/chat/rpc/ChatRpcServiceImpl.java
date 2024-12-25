@@ -17,6 +17,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.*;
@@ -139,24 +140,16 @@ public class ChatRpcServiceImpl implements ChatRpcService {
     }
 
     @Override
-    public boolean createGroupSession(List<Map<String, Object>> sessionList) {
-        return sessionMapper.batchInsertOrUpdate(sessionList) > 0;
+    @Transactional
+    public boolean insertGroupSessions(List<Map<String, Object>> sessionList) {
+        sessionMapper.batchInsertOrUpdate(sessionList); // 先插入
+        sessionMapper.batchUpdateForJoin(sessionList);  // 后更新
+        return true;
     }
 
     @Override
-    public void updateLeaveGroup(List<Map<String, Object>> list) {
-        List<Map<String, Object>> sessionList = new ArrayList<>();
-        for (Map<String, Object> map : list) {
-            Map<String, Object> sessionMap = new HashMap<>();
-            sessionMap.put("account", map.get("account"));
-            sessionMap.put("sessionId", map.get("groupId"));
-            sessionMap.put("remoteId", map.get("groupId"));
-            sessionMap.put("sessionType", MsgType.GROUP_CHAT.getNumber());
-            sessionMap.put("leaveFlag", true);
-            sessionMap.put("leaveMsgId", map.get("leaveMsgId"));
-            sessionList.add(sessionMap);
-        }
-        sessionMapper.batchInsertOrUpdate(sessionList);
+    public boolean updateGroupSessionsForLeave(List<Map<String, Object>> sessionList) {
+        return sessionMapper.batchUpdateForLeave(sessionList) > 0;
     }
 
 }

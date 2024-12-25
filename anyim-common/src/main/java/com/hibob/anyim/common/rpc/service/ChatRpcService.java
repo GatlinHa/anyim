@@ -25,13 +25,18 @@ public interface ChatRpcService {
 
     boolean updateReadMsgId(Map<String, Object> map);
 
-    boolean createGroupSession(List<Map<String, Object>> sessionList);
+    /**
+     * 插入群session数据，支持批量插入
+     * @param sessionList
+     * @return
+     */
+    boolean insertGroupSessions(List<Map<String, Object>> sessionList);
 
     /**
      * 用户离群时需要往session表中更新相关信息
-     * @param list 需要更新的信息，1个用户1个元素，每个元素中包含：sessionId, account，leaveMsgId
+     * @param list 需要更新的信息，1个用户1个元素，每个元素中包含：sessionId, account
      * @return
      */
-    void updateLeaveGroup(List<Map<String, Object>> list);
+    boolean updateGroupSessionsForLeave(List<Map<String, Object>> list);
 
 }

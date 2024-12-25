@@ -22,8 +22,8 @@ CREATE TABLE `anyim_chat_session`
     `mark` VARCHAR(255) DEFAULT '' COMMENT '备注',
     `partition_id` INT DEFAULT 0 COMMENT '分组id，默认0表示没有分组',
     `closed` BOOLEAN DEFAULT FALSE COMMENT '会话关闭状态',
-    `leave_flag` BOOLEAN DEFAULT FALSE COMMENT '离群状态',
-    `leave_msg_id` BIGINT DEFAULT 0 COMMENT '离群时消息Id',
+    `join_time` JSON COMMENT '记录每一次进群的时间，数组结构',
+    `leave_time` JSON COMMENT '记录每一次离群的时间，数组结构',
     PRIMARY KEY(`account`, `session_id`)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户的会话信息表';
 

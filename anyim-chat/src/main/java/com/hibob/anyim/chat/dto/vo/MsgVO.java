@@ -7,8 +7,8 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@ApiModel("查询聊天（单聊/群聊）记录返回的字段")
-public class ChatMsgVO {
+@ApiModel("单聊/群聊记录返回的字段")
+public class MsgVO {
 
     @ApiModelProperty(value = "会话ID")
     private String sessionId;

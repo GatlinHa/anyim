@@ -2,13 +2,15 @@ package com.hibob.anyim.chat.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.hibob.anyim.chat.typeHandler.StringListTypeHandler;
 import lombok.Data;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
-@TableName("anyim_chat_session")
+@TableName(value = "anyim_chat_session", autoResultMap = true)
 public class Session {
     private static final long serialVersionUID = 1L;
 
@@ -44,17 +46,17 @@ public class Session {
     @TableField(value = "mark")
     private String mark;
 
+    @TableField(value = "join_time", typeHandler = StringListTypeHandler.class)
+    private List<String> joinTime;
+
+    @TableField(value = "leave_time", typeHandler = StringListTypeHandler.class)
+    private List<String> leaveTime;
+
     @TableField(value = "partition_id")
     private int partitionId;
 
     @TableField(value = "closed")
     private Boolean closed;
-
-    @TableField(value = "leave_flag")
-    private Boolean leaveFlag;
-
-    @TableField(value = "leave_msg_id")
-    private long leaveMsgId;
 
     @TableField(value = "remote_read", exist = false)
     private long remoteRead;

@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.*;
-import java.util.Date;
 
 @Data
 @ApiModel("单聊消息拉取接口的请求体参数")
@@ -15,12 +14,6 @@ public class PullChatMsgReq extends BaseRequest {
     @NotEmpty
     @ApiModelProperty(value = "会话Id")
     private String sessionId;
-
-    @NotNull
-    @Max(value = 1, message = "mode小不能大于1")
-    @Min(value = 0, message = "mode小不能小于0")
-    @ApiModelProperty(value = "查询模式：0 查最近N条，1 查refMsgId之前N条")
-    private int mode;
 
     @NotNull
     @Max(value = 100, message = "页大小不能大于100")

@@ -93,8 +93,6 @@ public class GroupMngService {
             sessionMap.put("sessionId", groupId);
             sessionMap.put("remoteId", groupId);
             sessionMap.put("sessionType", MsgType.GROUP_CHAT.getNumber());
-            sessionMap.put("leaveFlag", false);
-            sessionMap.put("leaveMsgId", 0);
             insertSessionList.add(sessionMap);
 
             if (creator.equals(item.get("account"))) {
@@ -103,7 +101,7 @@ public class GroupMngService {
         }
 
         groupMemberMapper.batchInsertOrUpdate(insertMemberList);
-        rpcClient.getChatRpcService().createGroupSession(insertSessionList); // 群组创建成功后, 为所有成员创建session, 向所有成员发送创建新群的系统消息
+        rpcClient.getChatRpcService().insertGroupSessions(insertSessionList); // 群组创建成功后, 为所有成员创建session, 向所有成员发送创建新群的系统消息
 
         Map<String, String> operator = new HashMap<>();
         operator.put("account", creator);
@@ -322,13 +320,12 @@ public class GroupMngService {
             toAccounts.add(member.getAccount());
 
             Map<String, Object> map = new HashMap<>();
-            map.put("groupId", groupId);
+            map.put("sessionId", groupId);
             map.put("account", member.getAccount());
-            map.put("leaveMsgId", dto.getLeaveMsgId());
             updateLeaveGroupParamList.add(map);
         }
 
-        rpcClient.getChatRpcService().updateLeaveGroup(updateLeaveGroupParamList); // 往session表中更新离群信息
+        rpcClient.getChatRpcService().updateGroupSessionsForLeave(updateLeaveGroupParamList); // 往session表中更新离群信息
 
         Map<String, String> operator = new HashMap<>();
         operator.put("account", account);
@@ -367,8 +364,6 @@ public class GroupMngService {
             sessionMap.put("sessionId", groupId);
             sessionMap.put("remoteId", groupId);
             sessionMap.put("sessionType", MsgType.GROUP_CHAT.getNumber());
-            sessionMap.put("leaveFlag", false);
-            sessionMap.put("leaveMsgId", 0);
             insertSessionList.add(sessionMap);
 
             Map<String, Object> memberMap = new HashMap<>();
@@ -381,7 +376,7 @@ public class GroupMngService {
             addMemberList.add(memberMap);
         }
         groupMemberMapper.batchInsertOrUpdate(addMemberList);
-        rpcClient.getChatRpcService().createGroupSession(insertSessionList); // 邀请成功后, 为新成员创建session
+        rpcClient.getChatRpcService().insertGroupSessions(insertSessionList); // 邀请成功后, 为新成员创建session
 
         Map<String, String> operator = new HashMap<>();
         operator.put("account", dto.getOperatorId());
@@ -424,12 +419,11 @@ public class GroupMngService {
         // 往session表中更新离群信息
         List<Map<String, Object>> updateLeaveGroupParamList = delMembers.stream().map(item -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("groupId", groupId);
+            map.put("sessionId", groupId);
             map.put("account", item.get("account"));
-            map.put("leaveMsgId", dto.getLeaveMsgId());
             return map;
         }).collect(Collectors.toList());
-        rpcClient.getChatRpcService().updateLeaveGroup(updateLeaveGroupParamList);
+        rpcClient.getChatRpcService().updateGroupSessionsForLeave(updateLeaveGroupParamList);
 
         Map<String, String> operator = new HashMap<>();
         operator.put("account", dto.getOperatorId());
@@ -666,11 +660,10 @@ public class GroupMngService {
         // 往session表中更新离群信息
         List<Map<String, Object>> updateLeaveGroupParamList = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
-        map.put("groupId", groupId);
+        map.put("sessionId", groupId);
         map.put("account", account);
-        map.put("leaveMsgId", dto.getLeaveMsgId());
         updateLeaveGroupParamList.add(map);
-        rpcClient.getChatRpcService().updateLeaveGroup(updateLeaveGroupParamList);
+        rpcClient.getChatRpcService().updateGroupSessionsForLeave(updateLeaveGroupParamList);
 
         Map<String, String> operator = new HashMap<>();
         operator.put("account", account);
