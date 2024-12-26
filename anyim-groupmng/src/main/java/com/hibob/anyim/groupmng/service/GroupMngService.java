@@ -101,7 +101,7 @@ public class GroupMngService {
         }
 
         groupMemberMapper.batchInsertOrUpdate(insertMemberList);
-        rpcClient.getChatRpcService().insertGroupSessions(insertSessionList); // 群组创建成功后, 为所有成员创建session, 向所有成员发送创建新群的系统消息
+        rpcClient.getChatRpcService().insertGroupSessions(groupId, insertSessionList); // 群组创建成功后, 为所有成员创建session, 向所有成员发送创建新群的系统消息
 
         Map<String, String> operator = new HashMap<>();
         operator.put("account", creator);
@@ -376,7 +376,7 @@ public class GroupMngService {
             addMemberList.add(memberMap);
         }
         groupMemberMapper.batchInsertOrUpdate(addMemberList);
-        rpcClient.getChatRpcService().insertGroupSessions(insertSessionList); // 邀请成功后, 为新成员创建session
+        rpcClient.getChatRpcService().insertGroupSessions(groupId, insertSessionList); // 邀请成功后, 为新成员创建session
 
         Map<String, String> operator = new HashMap<>();
         operator.put("account", dto.getOperatorId());

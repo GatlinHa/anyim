@@ -141,9 +141,26 @@ public class ChatRpcServiceImpl implements ChatRpcService {
 
     @Override
     @Transactional
-    public boolean insertGroupSessions(List<Map<String, Object>> sessionList) {
-        sessionMapper.batchInsertOrUpdate(sessionList); // 先插入
-        sessionMapper.batchUpdateForJoin(sessionList);  // 后更新
+    public boolean insertGroupSessions(String groupId, List<Map<String, Object>> sessionList) {
+        // 先插入
+        sessionMapper.batchInsertOrUpdate(sessionList);
+
+        // 加群后，已读消息从这一刻的群最大消息算
+        long max = (long) Double.MAX_VALUE;
+        String key = RedisKey.CHAT_SESSION_MSG_ID + groupId;
+        //查最后一条msgId
+        Set<Object> objects = redisTemplate.opsForZSet().reverseRangeByScore(key, -1, max, 0, 1);
+        long lastMsgId = 0;
+        if (objects.size() > 0) {
+            String[] split = ((String) objects.toArray()[0]).split(Const.SPLIT_V);
+            lastMsgId = Long.parseLong(split[0]); // 最后一条msg的id
+        }
+
+        // 后更新
+        for (Map<String, Object> param : sessionList) {
+            sessionMapper.updateForJoin((String) param.get("account"), (String) param.get("sessionId"), lastMsgId);
+        }
+
         return true;
     }
 

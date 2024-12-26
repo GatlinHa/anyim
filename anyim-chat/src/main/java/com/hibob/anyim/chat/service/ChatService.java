@@ -20,6 +20,7 @@ import com.hibob.anyim.common.protobuf.MsgType;
 import com.hibob.anyim.common.rpc.client.RpcClient;
 import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.utils.BeanUtil;
+import com.hibob.anyim.common.utils.DateTimeUtil;
 import com.hibob.anyim.common.utils.ResultUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +60,7 @@ public class ChatService {
         int pageSize = dto.getPageSize();
         long refMsgId = dto.getRefMsgId();
         Session session = sessionMapper.selectSession(account, sessionId);
-        return ResultUtil.success(getMsgFromStore(session, 1, pageSize, refMsgId));
+        return ResultUtil.success(getMsgFromStore(session, 1, pageSize, refMsgId, null));
     }
 
     public ResponseEntity<IMHttpResponse> history(ChatHistoryReq dto) {
@@ -73,8 +74,8 @@ public class ChatService {
     public ResponseEntity<IMHttpResponse> sessionList(ChatSessionListReq dto) {
         ReqSession reqSession = ReqSession.getSession();
         String account = reqSession.getAccount();
-        Map<String, ChatSessionVO> voMap = getChatSessionVo(account);
-        voMap.putAll(getGroupChatSessionVo(account));
+        Map<String, ChatSessionVO> voMap = getChatSessionList(account);
+        voMap.putAll(getGroupChatSessionList(account));
         return ResultUtil.success(voMap);
     }
 
@@ -105,7 +106,7 @@ public class ChatService {
     }
 
     public ResponseEntity<IMHttpResponse> querySession(QuerySessionReq dto) {
-        ChatSessionVO vo = getSession(ReqSession.getSession().getAccount(), dto.getSessionId());
+        ChatSessionVO vo = getSessionById(ReqSession.getSession().getAccount(), dto.getSessionId());
         if (vo == null) {
             return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_SESSION_NOT_EXIST);
         } else {
@@ -143,7 +144,7 @@ public class ChatService {
         }
 
         if (result > 0) {
-            return ResultUtil.success(getSession(account, sessionId));
+            return ResultUtil.success(getSessionById(account, sessionId));
         }
         else {
             return ResultUtil.error(ServiceErrorCode.ERROR_CHAT_CREATE_SESSION);
@@ -257,8 +258,14 @@ public class ChatService {
 
     /**
      * 从缓存或数据库获取消息
+     * @param session 会话对象
+     * @param mode 查询模式
+     * @param pageSize pageSize
+     * @param refMsgId refMsgId
+     * @param groupInfo 看调用方有没有groupInfoMap对象，有则传过来
+     * @return
      */
-    private ChatMessageVO getMsgFromStore(Session session, int mode, int pageSize, long refMsgId) {
+    private ChatMessageVO getMsgFromStore(Session session, int mode, int pageSize, long refMsgId, Map<String, Object> groupInfo) {
         ChatMessageVO result = new ChatMessageVO();
         // 获取sessionId下面的msgId集合
         String key1 = RedisKey.CHAT_SESSION_MSG_ID + session.getSessionId();
@@ -279,12 +286,16 @@ public class ChatService {
             return result;
         }
 
-        boolean isGroupChat = session.getSessionType() == MsgType.GROUP_CHAT.getNumber();
         List<String> joinTime = new ArrayList<>();
         List<String> leaveTime = new ArrayList<>();
+        boolean isGroupChat = session.getSessionType() == MsgType.GROUP_CHAT.getNumber();
+        boolean isLeaveGroup = false;
+
         if (isGroupChat) {
             joinTime = session.getJoinTime() == null ? joinTime : session.getJoinTime();
             leaveTime = session.getLeaveTime() == null ? leaveTime : session.getLeaveTime();
+            isLeaveGroup = isGroupChat && joinTime.size() == leaveTime.size();
+            groupInfo = groupInfo == null ? rpcClient.getGroupMngRpcService().queryGroupInfo(session.getRemoteId()) : groupInfo;
         }
 
         List<Long> msgIdInRedis = new ArrayList<>();
@@ -297,20 +308,16 @@ public class ChatService {
             long msgId = Long.parseLong(split[0]);
             long time = Long.parseLong(split[1]);
 
-            if (isGroupChat) {
+            if (isGroupChat && !(boolean)groupInfo.get("historyBrowse")) {
                 // 判断每个msgId是否处于成员在群期间
                 boolean isValid = false;
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
                 for (int i = 0; i < joinTime.size(); i++) {
-                    try {
-                        long jt = sdf.parse(joinTime.get(i)).getTime();
-                        long lt = i > leaveTime.size() - 1 ? Long.MAX_VALUE : sdf.parse(leaveTime.get(i)).getTime();
-                        if (time > jt && time < lt) {
-                            isValid = true;
-                            break;
-                        }
-                    } catch (ParseException e) {
-                        log.error("joinTime or leaveTime SimpleDateFormat error: {}", e.getMessage());
+                    String format = "yyyy-MM-dd HH:mm:ss.SSSSSS";
+                    long jt = DateTimeUtil.getMillisecondFromStr(joinTime.get(i), format);
+                    long lt = i > leaveTime.size() - 1 ? Long.MAX_VALUE : DateTimeUtil.getMillisecondFromStr(leaveTime.get(i), format);
+                    if (time > jt && time < lt) {
+                        isValid = true;
+                        break;
                     }
                 }
                 // msgId不是成员在群期间的，该成员无法获取
@@ -349,18 +356,21 @@ public class ChatService {
         }
 
         if (!msgList.isEmpty()) {
+            Date endTime = null;
+            if (isLeaveGroup) {
+                endTime = DateTimeUtil.getDateFromStr(leaveTime.get(leaveTime.size() - 1), "yyyy-MM-dd HH:mm:ss.SSSSSS");
+            }
+            int unReadCount = getUnReadCount(session.getSessionId(), session.getAccount(), session.getReadMsgId(), endTime);
             result.setCount(count);
             result.setFirstMsgId(firstMsgId);
             result.setLastMsgId(lastMsgId);
-            result.setUnreadCount(getUnReadCount(session.getSessionId(), session.getAccount(), session.getReadMsgId()));
+            result.setUnreadCount(unReadCount);
             result.setMsgList(msgList);
-            return result;
-        } else {
-            return result;
         }
+        return result;
     }
 
-    private Map<String, ChatSessionVO> getChatSessionVo(String account) {
+    private Map<String, ChatSessionVO> getChatSessionList(String account) {
         List<Session> sessionListChat = sessionMapper.selectSessionListForChat(account);
         Map<String, ChatSessionVO> voMap = new HashMap<>();
         if (sessionListChat == null || sessionListChat.size() == 0) {
@@ -369,7 +379,7 @@ public class ChatService {
 
         List<String> toAccountList = new ArrayList<>();
         for (Session item : sessionListChat) {
-            ChatMessageVO msg = getMsgFromStore(item, 0, 30, 0);
+            ChatMessageVO msg = getMsgFromStore(item, 0, 30, 0, null);
             SessionVO sessionvo = BeanUtil.copyProperties(item, SessionVO.class);
             sessionvo.setUnreadCount(msg.getUnreadCount());
 
@@ -387,7 +397,7 @@ public class ChatService {
     }
 
 
-    private Map<String, ChatSessionVO> getGroupChatSessionVo(String account) {
+    private Map<String, ChatSessionVO> getGroupChatSessionList(String account) {
         LambdaQueryWrapper<Session> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Session::getAccount, account);
         queryWrapper.eq(Session::getClosed, false);
@@ -398,49 +408,49 @@ public class ChatService {
             return  voMap;
         }
 
-        List<String> groupIdList = new ArrayList<>();
+        List<String> groupIdList = sessionListGroupChat.stream().map(item -> item.getRemoteId()).collect(Collectors.toList());
+        Map<String, Map<String, Object>> groupInfoMap = rpcClient.getGroupMngRpcService().queryGroupInfoBatch(groupIdList);
+
         for (Session item : sessionListGroupChat) {
-            ChatMessageVO msg = getMsgFromStore(item, 0, 30, 0);
+            Map<String, Object> groupInfo = groupInfoMap.get(item.getRemoteId());
+            ChatMessageVO msg = getMsgFromStore(item, 0, 30, 0, groupInfo);
             SessionVO sessionvo = BeanUtil.copyProperties(item, SessionVO.class);
             sessionvo.setUnreadCount(msg.getUnreadCount());
             sessionvo.setLeave((item.getJoinTime() == null ? 0 : item.getJoinTime().size())
                     == (item.getLeaveTime() == null ? 0 : item.getLeaveTime().size()));
+            sessionvo.setObjectInfo(groupInfo);
 
             ChatSessionVO vo = new ChatSessionVO();
             vo.setSession(sessionvo);
             vo.setMsgList(msg.getMsgList());
             voMap.put(item.getSessionId(), vo);
-            groupIdList.add(item.getRemoteId());
-        }
-        Map<String, Map<String, Object>> groupInfoMap = rpcClient.getGroupMngRpcService().queryGroupInfoBatch(groupIdList);
-        for (ChatSessionVO vo : voMap.values()) {
-            vo.getSession().setObjectInfo(groupInfoMap.get(vo.getSession().getRemoteId()));
         }
 
         return  voMap;
     }
 
-    private ChatSessionVO getSession(String account, String sessionId) {
+    private ChatSessionVO getSessionById(String account, String sessionId) {
         Session session = sessionMapper.selectSession(account, sessionId);
         if (session == null) {
             return null;
         }
 
-        ChatMessageVO msg = getMsgFromStore(session, 0, 30, 0);
         SessionVO sessionvo = BeanUtil.copyProperties(session, SessionVO.class);
+        Map<String, Object> groupInfo = null;
+        if (session.getSessionType() == MsgType.CHAT.getNumber()) {
+            sessionvo.setObjectInfo(rpcClient.getUserRpcService().queryUserInfo(session.getRemoteId()));
+        }
+        else if(session.getSessionType() == MsgType.GROUP_CHAT.getNumber()) {
+            groupInfo = rpcClient.getGroupMngRpcService().queryGroupInfo(session.getRemoteId());
+            sessionvo.setObjectInfo(groupInfo);
+            sessionvo.setLeave((session.getJoinTime() == null ? 0 : session.getJoinTime().size())
+                    == (session.getLeaveTime() == null ? 0 : session.getLeaveTime().size()));
+        }
+
+        ChatMessageVO msg = getMsgFromStore(session, 0, 30, 0, groupInfo);
         sessionvo.setUnreadCount(msg.getUnreadCount());
 
         ChatSessionVO vo = new ChatSessionVO();
-        Map<String, Object> objectInfo = null;
-        if (session.getSessionType() == MsgType.CHAT.getNumber()) {
-            objectInfo = rpcClient.getUserRpcService().queryUserInfo(session.getRemoteId());
-        }
-        else if(session.getSessionType() == MsgType.GROUP_CHAT.getNumber()) {
-            sessionvo.setLeave((session.getJoinTime() == null ? 0 : session.getJoinTime().size())
-                    == (session.getLeaveTime() == null ? 0 : session.getLeaveTime().size()));
-            objectInfo = rpcClient.getGroupMngRpcService().queryGroupInfo(session.getRemoteId());
-        }
-        sessionvo.setObjectInfo(objectInfo);
         vo.setSession(sessionvo);
         vo.setMsgList(msg.getMsgList());
 
@@ -486,13 +496,17 @@ public class ChatService {
         return chatMessageVO;
     }
 
-    private int getUnReadCount(String sessionId, String account, long lastMsgId) {
+    private int getUnReadCount(String sessionId, String account, long lastMsgId, Date endTime) {
         Query query = new Query();
-        query.addCriteria(Criteria
-                .where("sessionId").is(sessionId)
-                .and("fromId").ne(account)
-                .and("msgId").gt(lastMsgId)
-                .and("msgType").in(MsgType.CHAT.getNumber(), MsgType.GROUP_CHAT.getNumber()));
+        Criteria criteria = Criteria
+            .where("sessionId").is(sessionId)
+            .and("fromId").ne(account)
+            .and("msgId").gt(lastMsgId)
+            .and("msgType").in(MsgType.CHAT.getNumber(), MsgType.GROUP_CHAT.getNumber());
+        if (endTime != null) {
+            criteria.and("msgTime").lt(endTime);
+        }
+        query.addCriteria(criteria);
         return (int) mongoTemplate.count(query, MsgDb.class);
     }
 

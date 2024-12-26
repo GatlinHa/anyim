@@ -27,10 +27,11 @@ public interface ChatRpcService {
 
     /**
      * 插入群session数据，支持批量插入
+     * @param groupId 群组id
      * @param sessionList
      * @return
      */
-    boolean insertGroupSessions(List<Map<String, Object>> sessionList);
+    boolean insertGroupSessions(String groupId, List<Map<String, Object>> sessionList);
 
     /**
      * 用户离群时需要往session表中更新相关信息

@@ -55,13 +55,13 @@ public interface SessionMapper extends BaseMapper<Session> {
     int batchInsertOrUpdate(List<Map<String, Object>> sessionList);
 
     @Update("<script>" +
-            " update anyim_chat_session set join_time = CASE " +
-            " <foreach item='item' index='index' collection='sessionList' separator=' '> " +
-            " WHEN account = #{item.account} and session_id = #{item.sessionId} then JSON_ARRAY_APPEND(IFNULL(join_time, '[]'), '$', now())" +
-            " </foreach> " +
-            " ELSE join_time END" +
+            " update anyim_chat_session set " +
+            " join_time = JSON_ARRAY_APPEND(IFNULL(join_time, '[]'), '$', now()), " +
+            " read_msg_id = #{lastMsgId}, " +
+            " read_time = now() " +
+            " where account = #{account} and session_id = #{sessionId} " +
             "</script>")
-    int batchUpdateForJoin(List<Map<String, Object>> sessionList);
+    int updateForJoin(String account, String sessionId, long lastMsgId);
 
     @Update("<script>" +
             " update anyim_chat_session set leave_time = CASE " +
