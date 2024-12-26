@@ -10,6 +10,14 @@ import java.util.Map;
 
 public interface SessionMapper extends BaseMapper<Session> {
 
+    @Insert("<script>" +
+            " INSERT INTO anyim_chat_session (account, session_id, remote_id, session_type)" +
+            " values" +
+            " (#{account}, #{sessionId}, #{remoteId}, #{sessionType})" +
+            " ON DUPLICATE KEY UPDATE closed = false " +
+            "</script>")
+    int insertOrUpdate(String account, String sessionId, String remoteId, int sessionType);
+
     /**
      * 单聊查询, 这里引用Left join的方式查到对方的已读消息Id(remote_read)
      * @param account
