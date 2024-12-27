@@ -15,7 +15,7 @@ CREATE TABLE `anyim_chat_session`
     `remote_id` VARCHAR(255) NOT NULL COMMENT '会话的对方Id，单聊为对方账号，群聊为groupId',
     `session_type`  TINYINT(1) NOT NULL DEFAULT 99 COMMENT '会话类型：按照MsgType定义',
     `read_msg_id` BIGINT DEFAULT 0 COMMENT '已读消息Id，初始值0，表示没有已读的',
-    `read_time` DATETIME DEFAULT '1970-01-01 00:00:00' COMMENT '已读消息的时间',
+    `read_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '已读消息的时间',
     `top` BOOLEAN DEFAULT FALSE COMMENT '会话是否置顶，默认false',
     `dnd` BOOLEAN DEFAULT FALSE COMMENT '会话是免打扰，默认false',
     `draft` VARCHAR(3000) DEFAULT '' COMMENT '草稿',

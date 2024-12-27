@@ -42,7 +42,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     private final ClientMapper clientMapper;
     private final LoginMapper loginMapper;
     private final UserStatusMapper userStatusMapper;
-    private SnowflakeId snowflakeId = null;
 
     public ResponseEntity<IMHttpResponse> validateAccount(ValidateAccountReq dto) {
         log.info("UserService::validateAccount");

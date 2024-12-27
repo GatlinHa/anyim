@@ -19,14 +19,14 @@ public interface SessionMapper extends BaseMapper<Session> {
     int insertOrUpdate(String account, String sessionId, String remoteId, int sessionType);
 
     /**
-     * 单聊查询, 这里引用Left join的方式查到对方的已读消息Id(remote_read)
+     * 查询account下的session列表，这里引用Left join的目的：单聊时查到对方的已读消息Id(remote_read)
      * @param account
      * @return
      */
     @Select("SELECT t1.*, IFNULL(t2.read_msg_id, 0) AS remote_read FROM anyim_chat_session t1 " +
-            " LEFT JOIN anyim_chat_session t2 ON t2.account = t1.remote_id AND t2.remote_id = t1.account " +
-            " WHERE t1.closed = false AND t1.account = #{account} AND t1.session_type = 2 " +
-            " ORDER BY t1.session_id ASC ")
+            " LEFT JOIN anyim_chat_session t2 ON t2.account = t1.remote_id AND t2.remote_id = t1.account and t2.session_type = 2 " +
+            " WHERE t1.closed = false AND t1.account = #{account} " +
+            " ORDER BY t1.read_time desc")
     @Results({
             @Result(property = "joinTime", column = "join_time", typeHandler = StringListTypeHandler.class),
             @Result(property = "leaveTime", column = "leave_time", typeHandler = StringListTypeHandler.class)
@@ -40,7 +40,7 @@ public interface SessionMapper extends BaseMapper<Session> {
      * @return
      */
     @Select("SELECT t1.*, IFNULL(t2.read_msg_id, 0) AS remote_read FROM anyim_chat_session t1 " +
-            " LEFT JOIN anyim_chat_session t2 ON t2.account = t1.remote_id AND t2.remote_id = t1.account " +
+            " LEFT JOIN anyim_chat_session t2 ON t2.account = t1.remote_id AND t2.remote_id = t1.account and t2.session_type = 2 " +
             " WHERE t1.account = #{account} AND t1.session_id = #{sessionId}")
     @Results({
             @Result(property = "joinTime", column = "join_time", typeHandler = StringListTypeHandler.class),

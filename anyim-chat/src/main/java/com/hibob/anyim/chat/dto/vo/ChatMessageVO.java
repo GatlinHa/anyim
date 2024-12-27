@@ -13,9 +13,6 @@ public class ChatMessageVO {
     @ApiModelProperty(value = "消息总条数")
     private int count;
 
-    @ApiModelProperty(value = "未读消息条数")
-    private int unreadCount;
-
     @ApiModelProperty(value = "本次返回首条消息id")
     private long firstMsgId;
 

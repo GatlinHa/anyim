@@ -21,8 +21,7 @@ public class PullChatMsgReq extends BaseRequest {
     @ApiModelProperty(value = "每次拉取的消息数量")
     private int pageSize;
 
-    @NotNull
-    @ApiModelProperty(value = "指定参考的msgId，不指定传-1")
-    private long refMsgId;
+    @ApiModelProperty(value = "查询的结束msgId(不含)")
+    private Long endMsgId;
 
 }
