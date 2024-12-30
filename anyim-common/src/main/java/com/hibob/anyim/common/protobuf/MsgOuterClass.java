@@ -67,40 +67,38 @@ public final class MsgOuterClass {
       "sion\"x\n\006Header\022\r\n\005magic\030\001 \001(\005\022\017\n\007version" +
       "\030\002 \001(\005\0229\n\007msgType\030\003 \001(\0162(.com.hibob.anyi" +
       "m.common.protobuf.MsgType\022\023\n\013isExtension" +
-      "\030\004 \001(\010\"\360\002\n\004Body\022\023\n\006fromId\030\001 \001(\tH\000\210\001\001\022\027\n\n" +
+      "\030\004 \001(\010\"\260\002\n\004Body\022\023\n\006fromId\030\001 \001(\tH\000\210\001\001\022\027\n\n" +
       "fromClient\030\002 \001(\tH\001\210\001\001\022\021\n\004toId\030\003 \001(\tH\002\210\001\001" +
       "\022\025\n\010toClient\030\004 \001(\tH\003\210\001\001\022\024\n\007groupId\030\005 \001(\t" +
-      "H\004\210\001\001\022\022\n\005msgId\030\006 \001(\003H\005\210\001\001\022\020\n\003seq\030\007 \001(\005H\006" +
-      "\210\001\001\022\020\n\003ack\030\010 \001(\005H\007\210\001\001\022\024\n\007content\030\t \001(\tH\010" +
-      "\210\001\001\022\026\n\ttempMsgId\030\n \001(\tH\t\210\001\001\022\026\n\tsessionId" +
-      "\030\013 \001(\tH\n\210\001\001B\t\n\007_fromIdB\r\n\013_fromClientB\007\n" +
-      "\005_toIdB\013\n\t_toClientB\n\n\010_groupIdB\010\n\006_msgI" +
-      "dB\006\n\004_seqB\006\n\004_ackB\n\n\010_contentB\014\n\n_tempMs" +
-      "gIdB\014\n\n_sessionId\"\224\001\n\tExtension\022R\n\014exten" +
-      "sionMap\030\001 \003(\0132<.com.hibob.anyim.common.p" +
-      "rotobuf.Extension.ExtensionMapEntry\0323\n\021E" +
-      "xtensionMapEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002" +
-      " \001(\t:\0028\001*\373\005\n\007MsgType\022\t\n\005HELLO\020\000\022\016\n\nHEART" +
-      "_BEAT\020\001\022\010\n\004CHAT\020\002\022\016\n\nGROUP_CHAT\020\003\022\r\n\tCHA" +
-      "T_READ\020\004\022\023\n\017GROUP_CHAT_READ\020\005\022\r\n\tDELIVER" +
-      "ED\020\006\022\013\n\007RESERVE\020\007\022\016\n\nSTATUS_REQ\020\010\022\016\n\nSTA" +
-      "TUS_RES\020\t\022\017\n\013STATUS_SYNC\020\n\022\024\n\020SYS_GROUP_" +
-      "CREATE\020\025\022\030\n\024SYS_GROUP_ADD_MEMBER\020\026\022\030\n\024SY" +
-      "S_GROUP_DEL_MEMBER\020\027\022\027\n\023SYS_GROUP_SET_AD" +
-      "MIN\020\030\022\032\n\026SYS_GROUP_CANCEL_ADMIN\020\031\022\033\n\027SYS" +
-      "_GROUP_SET_ALL_MUTED\020\032\022\036\n\032SYS_GROUP_CANC" +
-      "EL_ALL_MUTED\020\033\022\037\n\033SYS_GROUP_SET_JOIN_APP" +
-      "ROVAL\020\034\022\"\n\036SYS_GROUP_CANCEL_JOIN_APPROVA" +
-      "L\020\035\022 \n\034SYS_GROUP_SET_HISTORY_BROWSE\020\036\022#\n" +
-      "\037SYS_GROUP_CANCEL_HISTORY_BROWSE\020\037\022\034\n\030SY" +
-      "S_GROUP_OWNER_TRANSFER\020 \022!\n\035SYS_GROUP_UP" +
-      "DATE_MEMBER_MUTED\020!\022\023\n\017SYS_GROUP_LEAVE\020\"" +
-      "\022\022\n\016SYS_GROUP_DROP\020#\022!\n\035SYS_GROUP_UPDATE" +
-      "_ANNOUNCEMENT\020$\022\031\n\025SYS_GROUP_UPDATE_NAME" +
-      "\020%\022\033\n\027SYS_GROUP_UPDATE_AVATAR\020&\022\026\n\022CLOSE" +
-      "_BY_READ_IDLE\0202\022\030\n\024CLOSE_BY_ERROR_MAGIC\020" +
-      "3\022\013\n\007DEFAULT\020cB#\n\037com.hibob.anyim.common" +
-      ".protobufP\001b\006proto3"
+      "H\004\210\001\001\022\022\n\005msgId\030\006 \001(\003H\005\210\001\001\022\024\n\007content\030\007 \001" +
+      "(\tH\006\210\001\001\022\020\n\003seq\030\010 \001(\tH\007\210\001\001\022\026\n\tsessionId\030\t" +
+      " \001(\tH\010\210\001\001B\t\n\007_fromIdB\r\n\013_fromClientB\007\n\005_" +
+      "toIdB\013\n\t_toClientB\n\n\010_groupIdB\010\n\006_msgIdB" +
+      "\n\n\010_contentB\006\n\004_seqB\014\n\n_sessionId\"\224\001\n\tEx" +
+      "tension\022R\n\014extensionMap\030\001 \003(\0132<.com.hibo" +
+      "b.anyim.common.protobuf.Extension.Extens" +
+      "ionMapEntry\0323\n\021ExtensionMapEntry\022\013\n\003key\030" +
+      "\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001*\373\005\n\007MsgType\022\t\n\005" +
+      "HELLO\020\000\022\016\n\nHEART_BEAT\020\001\022\010\n\004CHAT\020\002\022\016\n\nGRO" +
+      "UP_CHAT\020\003\022\r\n\tCHAT_READ\020\004\022\023\n\017GROUP_CHAT_R" +
+      "EAD\020\005\022\r\n\tDELIVERED\020\006\022\013\n\007RESERVE\020\007\022\016\n\nSTA" +
+      "TUS_REQ\020\010\022\016\n\nSTATUS_RES\020\t\022\017\n\013STATUS_SYNC" +
+      "\020\n\022\024\n\020SYS_GROUP_CREATE\020\025\022\030\n\024SYS_GROUP_AD" +
+      "D_MEMBER\020\026\022\030\n\024SYS_GROUP_DEL_MEMBER\020\027\022\027\n\023" +
+      "SYS_GROUP_SET_ADMIN\020\030\022\032\n\026SYS_GROUP_CANCE" +
+      "L_ADMIN\020\031\022\033\n\027SYS_GROUP_SET_ALL_MUTED\020\032\022\036" +
+      "\n\032SYS_GROUP_CANCEL_ALL_MUTED\020\033\022\037\n\033SYS_GR" +
+      "OUP_SET_JOIN_APPROVAL\020\034\022\"\n\036SYS_GROUP_CAN" +
+      "CEL_JOIN_APPROVAL\020\035\022 \n\034SYS_GROUP_SET_HIS" +
+      "TORY_BROWSE\020\036\022#\n\037SYS_GROUP_CANCEL_HISTOR" +
+      "Y_BROWSE\020\037\022\034\n\030SYS_GROUP_OWNER_TRANSFER\020 " +
+      "\022!\n\035SYS_GROUP_UPDATE_MEMBER_MUTED\020!\022\023\n\017S" +
+      "YS_GROUP_LEAVE\020\"\022\022\n\016SYS_GROUP_DROP\020#\022!\n\035" +
+      "SYS_GROUP_UPDATE_ANNOUNCEMENT\020$\022\031\n\025SYS_G" +
+      "ROUP_UPDATE_NAME\020%\022\033\n\027SYS_GROUP_UPDATE_A" +
+      "VATAR\020&\022\026\n\022CLOSE_BY_READ_IDLE\0202\022\030\n\024CLOSE" +
+      "_BY_ERROR_MAGIC\0203\022\013\n\007DEFAULT\020cB#\n\037com.hi" +
+      "bob.anyim.common.protobufP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -123,7 +121,7 @@ public final class MsgOuterClass {
     internal_static_com_hibob_anyim_common_protobuf_Body_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_hibob_anyim_common_protobuf_Body_descriptor,
-        new java.lang.String[] { "FromId", "FromClient", "ToId", "ToClient", "GroupId", "MsgId", "Seq", "Ack", "Content", "TempMsgId", "SessionId", });
+        new java.lang.String[] { "FromId", "FromClient", "ToId", "ToClient", "GroupId", "MsgId", "Content", "Seq", "SessionId", });
     internal_static_com_hibob_anyim_common_protobuf_Extension_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_com_hibob_anyim_common_protobuf_Extension_fieldAccessorTable = new

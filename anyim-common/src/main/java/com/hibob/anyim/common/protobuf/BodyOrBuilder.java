@@ -94,50 +94,36 @@ public interface BodyOrBuilder extends
       getGroupIdBytes();
 
   /**
+   * <pre>
+   * 服务端生成的消息ID，会话内单调递增，可用于消息排序
+   * </pre>
+   *
    * <code>optional int64 msgId = 6;</code>
    * @return Whether the msgId field is set.
    */
   boolean hasMsgId();
   /**
+   * <pre>
+   * 服务端生成的消息ID，会话内单调递增，可用于消息排序
+   * </pre>
+   *
    * <code>optional int64 msgId = 6;</code>
    * @return The msgId.
    */
   long getMsgId();
 
   /**
-   * <code>optional int32 seq = 7;</code>
-   * @return Whether the seq field is set.
-   */
-  boolean hasSeq();
-  /**
-   * <code>optional int32 seq = 7;</code>
-   * @return The seq.
-   */
-  int getSeq();
-
-  /**
-   * <code>optional int32 ack = 8;</code>
-   * @return Whether the ack field is set.
-   */
-  boolean hasAck();
-  /**
-   * <code>optional int32 ack = 8;</code>
-   * @return The ack.
-   */
-  int getAck();
-
-  /**
-   * <code>optional string content = 9;</code>
+   * <code>optional string content = 7;</code>
    * @return Whether the content field is set.
    */
   boolean hasContent();
   /**
-   * <code>optional string content = 9;</code>
+   * <code>optional string content = 7;</code>
    * @return The content.
    */
   java.lang.String getContent();
   /**
-   * <code>optional string content = 9;</code>
+   * <code>optional string content = 7;</code>
    * @return The bytes for content.
    */
   com.google.protobuf.ByteString
@@ -145,39 +131,39 @@ public interface BodyOrBuilder extends
 
   /**
    * <pre>
-   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string tempMsgId = 10;</code>
-   * @return Whether the tempMsgId field is set.
+   * <code>optional string seq = 8;</code>
+   * @return Whether the seq field is set.
    */
-  boolean hasTempMsgId();
+  boolean hasSeq();
   /**
    * <pre>
-   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string tempMsgId = 10;</code>
-   * @return The tempMsgId.
+   * <code>optional string seq = 8;</code>
+   * @return The seq.
    */
-  java.lang.String getTempMsgId();
+  java.lang.String getSeq();
   /**
    * <pre>
-   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string tempMsgId = 10;</code>
-   * @return The bytes for tempMsgId.
+   * <code>optional string seq = 8;</code>
+   * @return The bytes for seq.
    */
   com.google.protobuf.ByteString
-      getTempMsgIdBytes();
+      getSeqBytes();
 
   /**
    * <pre>
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 11;</code>
+   * <code>optional string sessionId = 9;</code>
    * @return Whether the sessionId field is set.
    */
   boolean hasSessionId();
@@ -186,7 +172,7 @@ public interface BodyOrBuilder extends
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 11;</code>
+   * <code>optional string sessionId = 9;</code>
    * @return The sessionId.
    */
   java.lang.String getSessionId();
@@ -195,7 +181,7 @@ public interface BodyOrBuilder extends
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 11;</code>
+   * <code>optional string sessionId = 9;</code>
    * @return The bytes for sessionId.
    */
   com.google.protobuf.ByteString

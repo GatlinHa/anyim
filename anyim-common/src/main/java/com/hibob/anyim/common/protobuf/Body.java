@@ -8,34 +8,30 @@ package com.hibob.anyim.common.protobuf;
  * <pre>
  * *
  * 每种消息需要携带的字段规定：M必须，o非必须，-不带
- * NO       filed      HELLO  HEART_BEAT  CHAT  GROUP_CHAT  CHAT_READ  GROUP_CHAT_READ  DELIVERED  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
- * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
- * | 1  | fromId       |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
- * | 2  | fromClient   |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
- * | 3  | toId         |   -  |    -      |  M  |     O     |     M    |        O       |    -     |       todo        |         todo        |
- * | 4  | toClient     |   -  |    -      |  O  |     O     |     O    |        O       |    -     |       todo        |         todo        |
- * | 5  | groupId      |   -  |    -      |  -  |     M     |     -    |        M       |    -     |       todo        |         todo        |
- * | 6  | msgId        |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
- * | 7  | seq(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |       todo        |         todo        |
- * | 8  | ack(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |       todo        |         todo        |
- * | 9  | content      |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
- * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
- * | 11 | sessionId    |   -  |    -      |  M  |     M     |     M    |        M       |    M     |       todo        |         todo        |
- * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
- * NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX
- * +----+--------------+------------+------------+-------------+------------+
- * | 1  | fromId       |      M     |      M     |      M      |      -     |
- * | 2  | fromClient   |      M     |      M     |      M      |      -     |
- * | 3  | toId         |      -     |      -     |      -      |      -     |
- * | 4  | toClient     |      -     |      -     |      -      |      -     |
- * | 5  | groupId      |      -     |      -     |      -      |      M     |
- * | 6  | msgId        |      -     |      -     |      -      |      M     |
- * | 7  | seq(todo)    |      -     |      -     |      -      |      -     |
- * | 8  | ack(todo)    |      -     |      -     |      -      |      -     |
- * | 9  | content      |      M     |      M     |      M      |      M     |
- * | 10 | tempMsgId    |      -     |      -     |      -      |      -     |
- * | 11 | sessionId    |      -     |      -     |      -      |      M     |
- * +----+--------------+------------+------------+-------------+------------+
+ * NO      filed      HELLO  HEART_BEAT  CHAT(up)  CHAT(down)  GROUP_CHAT(up)  GROUP_CHAT(down)  CHAT_READ  GROUP_CHAT_READ  DELIVERED  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
+ * +---+--------------+------+-----------+---------|-----------+---------------+-----------------+----------+----------------+----------+-------------------+---------------------+
+ * | 1 | fromId       |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    -     |       todo        |         todo        |
+ * | 2 | fromClient   |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    -     |       todo        |         todo        |
+ * | 3 | toId         |   -  |    -      |    M    |     M     |       -       |        M        |     M    |        O       |    -     |       todo        |         todo        |
+ * | 4 | toClient     |   -  |    -      |    -    |     M     |       -       |        M        |     O    |        O       |    -     |       todo        |         todo        |
+ * | 5 | groupId      |   -  |    -      |    -    |     -     |       M       |        M        |     -    |        M       |    -     |       todo        |         todo        |
+ * | 6 | msgId        |   -  |    -      |    -    |     M     |       -       |        M        |     O    |        O       |    M     |       todo        |         todo        |
+ * | 7 | content      |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    -     |       todo        |         todo        |
+ * | 8 | seq          |   -  |    -      |    M    |     M     |       M       |        M        |     O    |        O       |    M     |       todo        |         todo        |
+ * | 9 | sessionId    |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    M     |       todo        |         todo        |
+ * +---+--------------+------+-----------+---------|-----------+---------------+-----------------+----------+----------------+----------+-------------------+---------------------+
+ * NO      filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX
+ * +---+--------------+------------+------------+-------------+------------+
+ * | 1 | fromId       |      M     |      M     |      M      |      -     |
+ * | 2 | fromClient   |      M     |      M     |      M      |      -     |
+ * | 3 | toId         |      -     |      -     |      -      |      -     |
+ * | 4 | toClient     |      -     |      -     |      -      |      -     |
+ * | 5 | groupId      |      -     |      -     |      -      |      M     |
+ * | 6 | msgId        |      -     |      -     |      -      |      M     |
+ * | 7 | content      |      M     |      M     |      M      |      M     |
+ * | 8 | seq          |      -     |      -     |      -      |      -     |
+ * | 9 | sessionId    |      -     |      -     |      -      |      M     |
+ * +---+--------------+------------+------------+-------------+------------+
  * </pre>
  *
  * Protobuf type {@code com.hibob.anyim.common.protobuf.Body}
@@ -65,7 +61,7 @@ private static final long serialVersionUID = 0L;
     toClient_ = "";
     groupId_ = "";
     content_ = "";
-    tempMsgId_ = "";
+    seq_ = "";
     sessionId_ = "";
   }
 
@@ -321,6 +317,10 @@ private static final long serialVersionUID = 0L;
   public static final int MSGID_FIELD_NUMBER = 6;
   private long msgId_ = 0L;
   /**
+   * <pre>
+   * 服务端生成的消息ID，会话内单调递增，可用于消息排序
+   * </pre>
+   *
    * <code>optional int64 msgId = 6;</code>
    * @return Whether the msgId field is set.
    */
@@ -329,6 +329,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000020) != 0);
   }
   /**
+   * <pre>
+   * 服务端生成的消息ID，会话内单调递增，可用于消息排序
+   * </pre>
+   *
    * <code>optional int64 msgId = 6;</code>
    * @return The msgId.
    */
@@ -337,57 +341,19 @@ private static final long serialVersionUID = 0L;
     return msgId_;
   }
 
-  public static final int SEQ_FIELD_NUMBER = 7;
-  private int seq_ = 0;
-  /**
-   * <code>optional int32 seq = 7;</code>
-   * @return Whether the seq field is set.
-   */
-  @java.lang.Override
-  public boolean hasSeq() {
-    return ((bitField0_ & 0x00000040) != 0);
-  }
-  /**
-   * <code>optional int32 seq = 7;</code>
-   * @return The seq.
-   */
-  @java.lang.Override
-  public int getSeq() {
-    return seq_;
-  }
-
-  public static final int ACK_FIELD_NUMBER = 8;
-  private int ack_ = 0;
-  /**
-   * <code>optional int32 ack = 8;</code>
-   * @return Whether the ack field is set.
-   */
-  @java.lang.Override
-  public boolean hasAck() {
-    return ((bitField0_ & 0x00000080) != 0);
-  }
-  /**
-   * <code>optional int32 ack = 8;</code>
-   * @return The ack.
-   */
-  @java.lang.Override
-  public int getAck() {
-    return ack_;
-  }
-
-  public static final int CONTENT_FIELD_NUMBER = 9;
+  public static final int CONTENT_FIELD_NUMBER = 7;
   @SuppressWarnings("serial")
   private volatile java.lang.Object content_ = "";
   /**
-   * <code>optional string content = 9;</code>
+   * <code>optional string content = 7;</code>
    * @return Whether the content field is set.
    */
   @java.lang.Override
   public boolean hasContent() {
-    return ((bitField0_ & 0x00000100) != 0);
+    return ((bitField0_ & 0x00000040) != 0);
   }
   /**
-   * <code>optional string content = 9;</code>
+   * <code>optional string content = 7;</code>
    * @return The content.
    */
   @java.lang.Override
@@ -404,7 +370,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>optional string content = 9;</code>
+   * <code>optional string content = 7;</code>
    * @return The bytes for content.
    */
   @java.lang.Override
@@ -422,66 +388,66 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int TEMPMSGID_FIELD_NUMBER = 10;
+  public static final int SEQ_FIELD_NUMBER = 8;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object tempMsgId_ = "";
+  private volatile java.lang.Object seq_ = "";
   /**
    * <pre>
-   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string tempMsgId = 10;</code>
-   * @return Whether the tempMsgId field is set.
+   * <code>optional string seq = 8;</code>
+   * @return Whether the seq field is set.
    */
   @java.lang.Override
-  public boolean hasTempMsgId() {
-    return ((bitField0_ & 0x00000200) != 0);
+  public boolean hasSeq() {
+    return ((bitField0_ & 0x00000080) != 0);
   }
   /**
    * <pre>
-   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string tempMsgId = 10;</code>
-   * @return The tempMsgId.
+   * <code>optional string seq = 8;</code>
+   * @return The seq.
    */
   @java.lang.Override
-  public java.lang.String getTempMsgId() {
-    java.lang.Object ref = tempMsgId_;
+  public java.lang.String getSeq() {
+    java.lang.Object ref = seq_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      tempMsgId_ = s;
+      seq_ = s;
       return s;
     }
   }
   /**
    * <pre>
-   * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+   * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string tempMsgId = 10;</code>
-   * @return The bytes for tempMsgId.
+   * <code>optional string seq = 8;</code>
+   * @return The bytes for seq.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getTempMsgIdBytes() {
-    java.lang.Object ref = tempMsgId_;
+      getSeqBytes() {
+    java.lang.Object ref = seq_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      tempMsgId_ = b;
+      seq_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
   }
 
-  public static final int SESSIONID_FIELD_NUMBER = 11;
+  public static final int SESSIONID_FIELD_NUMBER = 9;
   @SuppressWarnings("serial")
   private volatile java.lang.Object sessionId_ = "";
   /**
@@ -489,19 +455,19 @@ private static final long serialVersionUID = 0L;
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 11;</code>
+   * <code>optional string sessionId = 9;</code>
    * @return Whether the sessionId field is set.
    */
   @java.lang.Override
   public boolean hasSessionId() {
-    return ((bitField0_ & 0x00000400) != 0);
+    return ((bitField0_ & 0x00000100) != 0);
   }
   /**
    * <pre>
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 11;</code>
+   * <code>optional string sessionId = 9;</code>
    * @return The sessionId.
    */
   @java.lang.Override
@@ -522,7 +488,7 @@ private static final long serialVersionUID = 0L;
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 11;</code>
+   * <code>optional string sessionId = 9;</code>
    * @return The bytes for sessionId.
    */
   @java.lang.Override
@@ -573,19 +539,13 @@ private static final long serialVersionUID = 0L;
       output.writeInt64(6, msgId_);
     }
     if (((bitField0_ & 0x00000040) != 0)) {
-      output.writeInt32(7, seq_);
+      com.google.protobuf.GeneratedMessage.writeString(output, 7, content_);
     }
     if (((bitField0_ & 0x00000080) != 0)) {
-      output.writeInt32(8, ack_);
+      com.google.protobuf.GeneratedMessage.writeString(output, 8, seq_);
     }
     if (((bitField0_ & 0x00000100) != 0)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 9, content_);
-    }
-    if (((bitField0_ & 0x00000200) != 0)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 10, tempMsgId_);
-    }
-    if (((bitField0_ & 0x00000400) != 0)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 11, sessionId_);
+      com.google.protobuf.GeneratedMessage.writeString(output, 9, sessionId_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -616,21 +576,13 @@ private static final long serialVersionUID = 0L;
         .computeInt64Size(6, msgId_);
     }
     if (((bitField0_ & 0x00000040) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(7, seq_);
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(7, content_);
     }
     if (((bitField0_ & 0x00000080) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(8, ack_);
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(8, seq_);
     }
     if (((bitField0_ & 0x00000100) != 0)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(9, content_);
-    }
-    if (((bitField0_ & 0x00000200) != 0)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(10, tempMsgId_);
-    }
-    if (((bitField0_ & 0x00000400) != 0)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(11, sessionId_);
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(9, sessionId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -677,25 +629,15 @@ private static final long serialVersionUID = 0L;
       if (getMsgId()
           != other.getMsgId()) return false;
     }
-    if (hasSeq() != other.hasSeq()) return false;
-    if (hasSeq()) {
-      if (getSeq()
-          != other.getSeq()) return false;
-    }
-    if (hasAck() != other.hasAck()) return false;
-    if (hasAck()) {
-      if (getAck()
-          != other.getAck()) return false;
-    }
     if (hasContent() != other.hasContent()) return false;
     if (hasContent()) {
       if (!getContent()
           .equals(other.getContent())) return false;
     }
-    if (hasTempMsgId() != other.hasTempMsgId()) return false;
-    if (hasTempMsgId()) {
-      if (!getTempMsgId()
-          .equals(other.getTempMsgId())) return false;
+    if (hasSeq() != other.hasSeq()) return false;
+    if (hasSeq()) {
+      if (!getSeq()
+          .equals(other.getSeq())) return false;
     }
     if (hasSessionId() != other.hasSessionId()) return false;
     if (hasSessionId()) {
@@ -738,21 +680,13 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getMsgId());
     }
-    if (hasSeq()) {
-      hash = (37 * hash) + SEQ_FIELD_NUMBER;
-      hash = (53 * hash) + getSeq();
-    }
-    if (hasAck()) {
-      hash = (37 * hash) + ACK_FIELD_NUMBER;
-      hash = (53 * hash) + getAck();
-    }
     if (hasContent()) {
       hash = (37 * hash) + CONTENT_FIELD_NUMBER;
       hash = (53 * hash) + getContent().hashCode();
     }
-    if (hasTempMsgId()) {
-      hash = (37 * hash) + TEMPMSGID_FIELD_NUMBER;
-      hash = (53 * hash) + getTempMsgId().hashCode();
+    if (hasSeq()) {
+      hash = (37 * hash) + SEQ_FIELD_NUMBER;
+      hash = (53 * hash) + getSeq().hashCode();
     }
     if (hasSessionId()) {
       hash = (37 * hash) + SESSIONID_FIELD_NUMBER;
@@ -859,34 +793,30 @@ private static final long serialVersionUID = 0L;
    * <pre>
    * *
    * 每种消息需要携带的字段规定：M必须，o非必须，-不带
-   * NO       filed      HELLO  HEART_BEAT  CHAT  GROUP_CHAT  CHAT_READ  GROUP_CHAT_READ  DELIVERED  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
-   * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
-   * | 1  | fromId       |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
-   * | 2  | fromClient   |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
-   * | 3  | toId         |   -  |    -      |  M  |     O     |     M    |        O       |    -     |       todo        |         todo        |
-   * | 4  | toClient     |   -  |    -      |  O  |     O     |     O    |        O       |    -     |       todo        |         todo        |
-   * | 5  | groupId      |   -  |    -      |  -  |     M     |     -    |        M       |    -     |       todo        |         todo        |
-   * | 6  | msgId        |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
-   * | 7  | seq(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |       todo        |         todo        |
-   * | 8  | ack(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |       todo        |         todo        |
-   * | 9  | content      |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
-   * | 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
-   * | 11 | sessionId    |   -  |    -      |  M  |     M     |     M    |        M       |    M     |       todo        |         todo        |
-   * +----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
-   * NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX
-   * +----+--------------+------------+------------+-------------+------------+
-   * | 1  | fromId       |      M     |      M     |      M      |      -     |
-   * | 2  | fromClient   |      M     |      M     |      M      |      -     |
-   * | 3  | toId         |      -     |      -     |      -      |      -     |
-   * | 4  | toClient     |      -     |      -     |      -      |      -     |
-   * | 5  | groupId      |      -     |      -     |      -      |      M     |
-   * | 6  | msgId        |      -     |      -     |      -      |      M     |
-   * | 7  | seq(todo)    |      -     |      -     |      -      |      -     |
-   * | 8  | ack(todo)    |      -     |      -     |      -      |      -     |
-   * | 9  | content      |      M     |      M     |      M      |      M     |
-   * | 10 | tempMsgId    |      -     |      -     |      -      |      -     |
-   * | 11 | sessionId    |      -     |      -     |      -      |      M     |
-   * +----+--------------+------------+------------+-------------+------------+
+   * NO      filed      HELLO  HEART_BEAT  CHAT(up)  CHAT(down)  GROUP_CHAT(up)  GROUP_CHAT(down)  CHAT_READ  GROUP_CHAT_READ  DELIVERED  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
+   * +---+--------------+------+-----------+---------|-----------+---------------+-----------------+----------+----------------+----------+-------------------+---------------------+
+   * | 1 | fromId       |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    -     |       todo        |         todo        |
+   * | 2 | fromClient   |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    -     |       todo        |         todo        |
+   * | 3 | toId         |   -  |    -      |    M    |     M     |       -       |        M        |     M    |        O       |    -     |       todo        |         todo        |
+   * | 4 | toClient     |   -  |    -      |    -    |     M     |       -       |        M        |     O    |        O       |    -     |       todo        |         todo        |
+   * | 5 | groupId      |   -  |    -      |    -    |     -     |       M       |        M        |     -    |        M       |    -     |       todo        |         todo        |
+   * | 6 | msgId        |   -  |    -      |    -    |     M     |       -       |        M        |     O    |        O       |    M     |       todo        |         todo        |
+   * | 7 | content      |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    -     |       todo        |         todo        |
+   * | 8 | seq          |   -  |    -      |    M    |     M     |       M       |        M        |     O    |        O       |    M     |       todo        |         todo        |
+   * | 9 | sessionId    |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    M     |       todo        |         todo        |
+   * +---+--------------+------+-----------+---------|-----------+---------------+-----------------+----------+----------------+----------+-------------------+---------------------+
+   * NO      filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX
+   * +---+--------------+------------+------------+-------------+------------+
+   * | 1 | fromId       |      M     |      M     |      M      |      -     |
+   * | 2 | fromClient   |      M     |      M     |      M      |      -     |
+   * | 3 | toId         |      -     |      -     |      -      |      -     |
+   * | 4 | toClient     |      -     |      -     |      -      |      -     |
+   * | 5 | groupId      |      -     |      -     |      -      |      M     |
+   * | 6 | msgId        |      -     |      -     |      -      |      M     |
+   * | 7 | content      |      M     |      M     |      M      |      M     |
+   * | 8 | seq          |      -     |      -     |      -      |      -     |
+   * | 9 | sessionId    |      -     |      -     |      -      |      M     |
+   * +---+--------------+------------+------------+-------------+------------+
    * </pre>
    *
    * Protobuf type {@code com.hibob.anyim.common.protobuf.Body}
@@ -928,10 +858,8 @@ private static final long serialVersionUID = 0L;
       toClient_ = "";
       groupId_ = "";
       msgId_ = 0L;
-      seq_ = 0;
-      ack_ = 0;
       content_ = "";
-      tempMsgId_ = "";
+      seq_ = "";
       sessionId_ = "";
       return this;
     }
@@ -992,24 +920,16 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000020;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
-        result.seq_ = seq_;
+        result.content_ = content_;
         to_bitField0_ |= 0x00000040;
       }
       if (((from_bitField0_ & 0x00000080) != 0)) {
-        result.ack_ = ack_;
+        result.seq_ = seq_;
         to_bitField0_ |= 0x00000080;
       }
       if (((from_bitField0_ & 0x00000100) != 0)) {
-        result.content_ = content_;
-        to_bitField0_ |= 0x00000100;
-      }
-      if (((from_bitField0_ & 0x00000200) != 0)) {
-        result.tempMsgId_ = tempMsgId_;
-        to_bitField0_ |= 0x00000200;
-      }
-      if (((from_bitField0_ & 0x00000400) != 0)) {
         result.sessionId_ = sessionId_;
-        to_bitField0_ |= 0x00000400;
+        to_bitField0_ |= 0x00000100;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -1054,25 +974,19 @@ private static final long serialVersionUID = 0L;
       if (other.hasMsgId()) {
         setMsgId(other.getMsgId());
       }
-      if (other.hasSeq()) {
-        setSeq(other.getSeq());
-      }
-      if (other.hasAck()) {
-        setAck(other.getAck());
-      }
       if (other.hasContent()) {
         content_ = other.content_;
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000040;
         onChanged();
       }
-      if (other.hasTempMsgId()) {
-        tempMsgId_ = other.tempMsgId_;
-        bitField0_ |= 0x00000200;
+      if (other.hasSeq()) {
+        seq_ = other.seq_;
+        bitField0_ |= 0x00000080;
         onChanged();
       }
       if (other.hasSessionId()) {
         sessionId_ = other.sessionId_;
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000100;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -1131,31 +1045,21 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000020;
               break;
             } // case 48
-            case 56: {
-              seq_ = input.readInt32();
+            case 58: {
+              content_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000040;
               break;
-            } // case 56
-            case 64: {
-              ack_ = input.readInt32();
+            } // case 58
+            case 66: {
+              seq_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000080;
               break;
-            } // case 64
+            } // case 66
             case 74: {
-              content_ = input.readStringRequireUtf8();
+              sessionId_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000100;
               break;
             } // case 74
-            case 82: {
-              tempMsgId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000200;
-              break;
-            } // case 82
-            case 90: {
-              sessionId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000400;
-              break;
-            } // case 90
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1570,6 +1474,10 @@ private static final long serialVersionUID = 0L;
 
     private long msgId_ ;
     /**
+     * <pre>
+     * 服务端生成的消息ID，会话内单调递增，可用于消息排序
+     * </pre>
+     *
      * <code>optional int64 msgId = 6;</code>
      * @return Whether the msgId field is set.
      */
@@ -1578,6 +1486,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
+     * <pre>
+     * 服务端生成的消息ID，会话内单调递增，可用于消息排序
+     * </pre>
+     *
      * <code>optional int64 msgId = 6;</code>
      * @return The msgId.
      */
@@ -1586,6 +1498,10 @@ private static final long serialVersionUID = 0L;
       return msgId_;
     }
     /**
+     * <pre>
+     * 服务端生成的消息ID，会话内单调递增，可用于消息排序
+     * </pre>
+     *
      * <code>optional int64 msgId = 6;</code>
      * @param value The msgId to set.
      * @return This builder for chaining.
@@ -1598,6 +1514,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * 服务端生成的消息ID，会话内单调递增，可用于消息排序
+     * </pre>
+     *
      * <code>optional int64 msgId = 6;</code>
      * @return This builder for chaining.
      */
@@ -1608,96 +1528,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int seq_ ;
-    /**
-     * <code>optional int32 seq = 7;</code>
-     * @return Whether the seq field is set.
-     */
-    @java.lang.Override
-    public boolean hasSeq() {
-      return ((bitField0_ & 0x00000040) != 0);
-    }
-    /**
-     * <code>optional int32 seq = 7;</code>
-     * @return The seq.
-     */
-    @java.lang.Override
-    public int getSeq() {
-      return seq_;
-    }
-    /**
-     * <code>optional int32 seq = 7;</code>
-     * @param value The seq to set.
-     * @return This builder for chaining.
-     */
-    public Builder setSeq(int value) {
-
-      seq_ = value;
-      bitField0_ |= 0x00000040;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional int32 seq = 7;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearSeq() {
-      bitField0_ = (bitField0_ & ~0x00000040);
-      seq_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int ack_ ;
-    /**
-     * <code>optional int32 ack = 8;</code>
-     * @return Whether the ack field is set.
-     */
-    @java.lang.Override
-    public boolean hasAck() {
-      return ((bitField0_ & 0x00000080) != 0);
-    }
-    /**
-     * <code>optional int32 ack = 8;</code>
-     * @return The ack.
-     */
-    @java.lang.Override
-    public int getAck() {
-      return ack_;
-    }
-    /**
-     * <code>optional int32 ack = 8;</code>
-     * @param value The ack to set.
-     * @return This builder for chaining.
-     */
-    public Builder setAck(int value) {
-
-      ack_ = value;
-      bitField0_ |= 0x00000080;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional int32 ack = 8;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearAck() {
-      bitField0_ = (bitField0_ & ~0x00000080);
-      ack_ = 0;
-      onChanged();
-      return this;
-    }
-
     private java.lang.Object content_ = "";
     /**
-     * <code>optional string content = 9;</code>
+     * <code>optional string content = 7;</code>
      * @return Whether the content field is set.
      */
     public boolean hasContent() {
-      return ((bitField0_ & 0x00000100) != 0);
+      return ((bitField0_ & 0x00000040) != 0);
     }
     /**
-     * <code>optional string content = 9;</code>
+     * <code>optional string content = 7;</code>
      * @return The content.
      */
     public java.lang.String getContent() {
@@ -1713,7 +1553,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional string content = 9;</code>
+     * <code>optional string content = 7;</code>
      * @return The bytes for content.
      */
     public com.google.protobuf.ByteString
@@ -1730,7 +1570,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional string content = 9;</code>
+     * <code>optional string content = 7;</code>
      * @param value The content to set.
      * @return This builder for chaining.
      */
@@ -1738,22 +1578,22 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       content_ = value;
-      bitField0_ |= 0x00000100;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string content = 9;</code>
+     * <code>optional string content = 7;</code>
      * @return This builder for chaining.
      */
     public Builder clearContent() {
       content_ = getDefaultInstance().getContent();
-      bitField0_ = (bitField0_ & ~0x00000100);
+      bitField0_ = (bitField0_ & ~0x00000040);
       onChanged();
       return this;
     }
     /**
-     * <code>optional string content = 9;</code>
+     * <code>optional string content = 7;</code>
      * @param value The bytes for content to set.
      * @return This builder for chaining.
      */
@@ -1762,38 +1602,38 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       content_ = value;
-      bitField0_ |= 0x00000100;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
 
-    private java.lang.Object tempMsgId_ = "";
+    private java.lang.Object seq_ = "";
     /**
      * <pre>
-     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string tempMsgId = 10;</code>
-     * @return Whether the tempMsgId field is set.
+     * <code>optional string seq = 8;</code>
+     * @return Whether the seq field is set.
      */
-    public boolean hasTempMsgId() {
-      return ((bitField0_ & 0x00000200) != 0);
+    public boolean hasSeq() {
+      return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <pre>
-     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string tempMsgId = 10;</code>
-     * @return The tempMsgId.
+     * <code>optional string seq = 8;</code>
+     * @return The seq.
      */
-    public java.lang.String getTempMsgId() {
-      java.lang.Object ref = tempMsgId_;
+    public java.lang.String getSeq() {
+      java.lang.Object ref = seq_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        tempMsgId_ = s;
+        seq_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1801,20 +1641,20 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string tempMsgId = 10;</code>
-     * @return The bytes for tempMsgId.
+     * <code>optional string seq = 8;</code>
+     * @return The bytes for seq.
      */
     public com.google.protobuf.ByteString
-        getTempMsgIdBytes() {
-      java.lang.Object ref = tempMsgId_;
+        getSeqBytes() {
+      java.lang.Object ref = seq_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        tempMsgId_ = b;
+        seq_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -1822,50 +1662,50 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string tempMsgId = 10;</code>
-     * @param value The tempMsgId to set.
+     * <code>optional string seq = 8;</code>
+     * @param value The seq to set.
      * @return This builder for chaining.
      */
-    public Builder setTempMsgId(
+    public Builder setSeq(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      tempMsgId_ = value;
-      bitField0_ |= 0x00000200;
+      seq_ = value;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string tempMsgId = 10;</code>
+     * <code>optional string seq = 8;</code>
      * @return This builder for chaining.
      */
-    public Builder clearTempMsgId() {
-      tempMsgId_ = getDefaultInstance().getTempMsgId();
-      bitField0_ = (bitField0_ & ~0x00000200);
+    public Builder clearSeq() {
+      seq_ = getDefaultInstance().getSeq();
+      bitField0_ = (bitField0_ & ~0x00000080);
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * 客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
+     * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string tempMsgId = 10;</code>
-     * @param value The bytes for tempMsgId to set.
+     * <code>optional string seq = 8;</code>
+     * @param value The bytes for seq to set.
      * @return This builder for chaining.
      */
-    public Builder setTempMsgIdBytes(
+    public Builder setSeqBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      tempMsgId_ = value;
-      bitField0_ |= 0x00000200;
+      seq_ = value;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -1876,18 +1716,18 @@ private static final long serialVersionUID = 0L;
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 11;</code>
+     * <code>optional string sessionId = 9;</code>
      * @return Whether the sessionId field is set.
      */
     public boolean hasSessionId() {
-      return ((bitField0_ & 0x00000400) != 0);
+      return ((bitField0_ & 0x00000100) != 0);
     }
     /**
      * <pre>
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 11;</code>
+     * <code>optional string sessionId = 9;</code>
      * @return The sessionId.
      */
     public java.lang.String getSessionId() {
@@ -1907,7 +1747,7 @@ private static final long serialVersionUID = 0L;
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 11;</code>
+     * <code>optional string sessionId = 9;</code>
      * @return The bytes for sessionId.
      */
     public com.google.protobuf.ByteString
@@ -1928,7 +1768,7 @@ private static final long serialVersionUID = 0L;
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 11;</code>
+     * <code>optional string sessionId = 9;</code>
      * @param value The sessionId to set.
      * @return This builder for chaining.
      */
@@ -1936,7 +1776,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       sessionId_ = value;
-      bitField0_ |= 0x00000400;
+      bitField0_ |= 0x00000100;
       onChanged();
       return this;
     }
@@ -1945,12 +1785,12 @@ private static final long serialVersionUID = 0L;
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 11;</code>
+     * <code>optional string sessionId = 9;</code>
      * @return This builder for chaining.
      */
     public Builder clearSessionId() {
       sessionId_ = getDefaultInstance().getSessionId();
-      bitField0_ = (bitField0_ & ~0x00000400);
+      bitField0_ = (bitField0_ & ~0x00000100);
       onChanged();
       return this;
     }
@@ -1959,7 +1799,7 @@ private static final long serialVersionUID = 0L;
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 11;</code>
+     * <code>optional string sessionId = 9;</code>
      * @param value The bytes for sessionId to set.
      * @return This builder for chaining.
      */
@@ -1968,7 +1808,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       sessionId_ = value;
-      bitField0_ |= 0x00000400;
+      bitField0_ |= 0x00000100;
       onChanged();
       return this;
     }

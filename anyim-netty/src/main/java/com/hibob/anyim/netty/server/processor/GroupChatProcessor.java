@@ -28,8 +28,15 @@ public class GroupChatProcessor extends MsgProcessor{
             return;
         }
         String sessionId = msg.getBody().getSessionId();
+        Long msgIdCache = getSeqMsgIdCache(msg);
+        if (msgIdCache != null) {
+            sendDeliveredMsg(ctx, msg, msgIdCache); //只回复已送达，不做其他动作
+            return;
+        }
+
         Long msgId = refMsgIdConfig.generateMsgId(sessionId); // 生成msgId
         saveMsg(msg, msgId); //消息入库，当前采用服务方异步入库，因此不支持等待回调结果。
+        setSeqMsgIdCache(msg, msgId); // 缓存seq和msgId，用于msg重复性校验
         sendDeliveredMsg(ctx, msg, msgId); //回复已送达
         syncOtherClients(msg, msgId); // 扩散给自己的其他客户端
         sendToMembers(msg, members, msgId); // 发给群成员

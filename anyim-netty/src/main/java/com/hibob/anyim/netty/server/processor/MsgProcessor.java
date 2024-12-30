@@ -19,6 +19,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.time.Duration;
 import java.util.*;
 
+import static com.hibob.anyim.common.constants.Const.SPLIT_C;
 import static com.hibob.anyim.common.constants.Const.SPLIT_V;
 import static com.hibob.anyim.netty.server.ws.WebSocketServer.getLocalRoute;
 
@@ -35,6 +36,31 @@ public abstract class MsgProcessor {
 
 
     public abstract void process(ChannelHandlerContext ctx, Msg msg) throws Exception;
+
+    /**
+     * 用于msg重复性校验，按照客户端填写的seq校验，如果重复则返回对应的msgId，否则返回null
+     * @param msg
+     * @return
+     */
+    protected Long getSeqMsgIdCache(Msg msg) {
+        String sessionId = msg.getBody().getSessionId();
+        String seq = msg.getBody().getSeq();
+        String key = RedisKey.NETTY_SEQ_MSG_ID + sessionId + SPLIT_C + seq;
+        Integer value = (Integer)redisTemplate.opsForValue().get(key); //这里redis返回的是Integer
+        return value == null ? null : value.longValue();
+    }
+
+    /**
+     * 用于msg重复性校验的seq缓存，过期时间为1800s
+     * @param msg
+     * @param msgId
+     */
+    protected void setSeqMsgIdCache(Msg msg, Long msgId) {
+        String sessionId = msg.getBody().getSessionId();
+        String seq = msg.getBody().getSeq();
+        String key = RedisKey.NETTY_SEQ_MSG_ID + sessionId + SPLIT_C + seq;
+        redisTemplate.opsForValue().set(key, msgId, Duration.ofSeconds(Const.SEQ_EXPIRE));
+    }
 
     /**
      * 消息入库，当前采用服务方异步入库，因此不支持等待回调结果。
@@ -79,7 +105,7 @@ public abstract class MsgProcessor {
                 .build();
         Body body = Body.newBuilder()
                 .setSessionId(msg.getBody().getSessionId())
-                .setTempMsgId(msg.getBody().getTempMsgId())
+                .setSeq(msg.getBody().getSeq())
                 .setMsgId(msgId)
                 .build();
         Msg deliveredMsg = Msg.newBuilder().setHeader(header).setBody(body).build();

@@ -67,6 +67,11 @@ public class Const {
     public static final int CHANNEL_EXPIRE = 1800;
 
     /**
+     * msg的seq重复性校验缓存过期时间
+     */
+    public static final int SEQ_EXPIRE = 1800;
+
+    /**
      * 在线客户端缓存过期时间
      */
     public static final int CACHE_ONLINE_EXPIRE = 3600;

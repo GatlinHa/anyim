@@ -62,6 +62,12 @@ public class RedisKey {
     public static final String NETTY_REF_MSG_ID = NETTY_PREFIX + "refMsgId:";
 
     /**
+     * 保存的seq对应的msgId, 后面接sessionId + seq，value是msgId
+     */
+    public static final String NETTY_SEQ_MSG_ID = NETTY_PREFIX + "sessionId:seq:";
+
+
+    /**
      * 保存的SessionId下都有哪些MSG ID, 后面接sessionId
      */
     public static final String CHAT_SESSION_MSG_ID = CHAT_PREFIX + "sessionId:";

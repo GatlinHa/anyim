@@ -58,34 +58,30 @@ message Header {
 
 /**
 每种消息需要携带的字段规定：M必须，o非必须，-不带
-  NO       filed      HELLO  HEART_BEAT  CHAT  GROUP_CHAT  CHAT_READ  GROUP_CHAT_READ  DELIVERED  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
-+----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
-| 1  | fromId       |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
-| 2  | fromClient   |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
-| 3  | toId         |   -  |    -      |  M  |     O     |     M    |        O       |    -     |       todo        |         todo        |
-| 4  | toClient     |   -  |    -      |  O  |     O     |     O    |        O       |    -     |       todo        |         todo        |
-| 5  | groupId      |   -  |    -      |  -  |     M     |     -    |        M       |    -     |       todo        |         todo        |
-| 6  | msgId        |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
-| 7  | seq(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |       todo        |         todo        |
-| 8  | ack(todo)    |   -  |    -      |  -  |     -     |     -    |        -       |    -     |       todo        |         todo        |
-| 9  | content      |   -  |    -      |  M  |     M     |     M    |        M       |    -     |       todo        |         todo        |
-| 10 | tempMsgId    |   -  |    -      |  O  |     O     |     O    |        O       |    M     |       todo        |         todo        |
-| 11 | sessionId    |   -  |    -      |  M  |     M     |     M    |        M       |    M     |       todo        |         todo        |
-+----+--------------+------+-----------+-----+-----------+----------+----------------+----------+-------------------+---------------------+
-  NO       filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX
-+----+--------------+------------+------------+-------------+------------+
-| 1  | fromId       |      M     |      M     |      M      |      -     |
-| 2  | fromClient   |      M     |      M     |      M      |      -     |
-| 3  | toId         |      -     |      -     |      -      |      -     |
-| 4  | toClient     |      -     |      -     |      -      |      -     |
-| 5  | groupId      |      -     |      -     |      -      |      M     |
-| 6  | msgId        |      -     |      -     |      -      |      M     |
-| 7  | seq(todo)    |      -     |      -     |      -      |      -     |
-| 8  | ack(todo)    |      -     |      -     |      -      |      -     |
-| 9  | content      |      M     |      M     |      M      |      M     |
-| 10 | tempMsgId    |      -     |      -     |      -      |      -     |
-| 11 | sessionId    |      -     |      -     |      -      |      M     |
-+----+--------------+------------+------------+-------------+------------+
+  NO      filed      HELLO  HEART_BEAT  CHAT(up)  CHAT(down)  GROUP_CHAT(up)  GROUP_CHAT(down)  CHAT_READ  GROUP_CHAT_READ  DELIVERED  CLOSE_BY_READ_IDLE  CLOSE_BY_ERROR_MAGIC
++---+--------------+------+-----------+---------|-----------+---------------+-----------------+----------+----------------+----------+-------------------+---------------------+
+| 1 | fromId       |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    -     |       todo        |         todo        |
+| 2 | fromClient   |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    -     |       todo        |         todo        |
+| 3 | toId         |   -  |    -      |    M    |     M     |       -       |        M        |     M    |        O       |    -     |       todo        |         todo        |
+| 4 | toClient     |   -  |    -      |    -    |     M     |       -       |        M        |     O    |        O       |    -     |       todo        |         todo        |
+| 5 | groupId      |   -  |    -      |    -    |     -     |       M       |        M        |     -    |        M       |    -     |       todo        |         todo        |
+| 6 | msgId        |   -  |    -      |    -    |     M     |       -       |        M        |     O    |        O       |    M     |       todo        |         todo        |
+| 7 | content      |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    -     |       todo        |         todo        |
+| 8 | seq          |   -  |    -      |    M    |     M     |       M       |        M        |     O    |        O       |    M     |       todo        |         todo        |
+| 9 | sessionId    |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    M     |       todo        |         todo        |
++---+--------------+------+-----------+---------|-----------+---------------+-----------------+----------+----------------+----------+-------------------+---------------------+
+  NO      filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX
++---+--------------+------------+------------+-------------+------------+
+| 1 | fromId       |      M     |      M     |      M      |      -     |
+| 2 | fromClient   |      M     |      M     |      M      |      -     |
+| 3 | toId         |      -     |      -     |      -      |      -     |
+| 4 | toClient     |      -     |      -     |      -      |      -     |
+| 5 | groupId      |      -     |      -     |      -      |      M     |
+| 6 | msgId        |      -     |      -     |      -      |      M     |
+| 7 | content      |      M     |      M     |      M      |      M     |
+| 8 | seq          |      -     |      -     |      -      |      -     |
+| 9 | sessionId    |      -     |      -     |      -      |      M     |
++---+--------------+------------+------------+-------------+------------+
  */
 message Body {
   optional string fromId = 1;
@@ -93,12 +89,10 @@ message Body {
   optional string toId = 3;
   optional string toClient = 4;
   optional string groupId = 5;
-  optional int64 msgId = 6;
-  optional int32 seq = 7;
-  optional int32 ack = 8;
-  optional string content = 9;
-  optional string tempMsgId = 10; //客户端生成的临时msgId，不能用于消息排序，所以必须照服务端换正式的msgId
-  optional string sessionId = 11; //MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
+  optional int64 msgId = 6; //服务端生成的消息ID，会话内单调递增，可用于消息排序
+  optional string content = 7;
+  optional string seq = 8; //客户端生成的序列号ID，会话内唯一，可用于消息去重
+  optional string sessionId = 9; //MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
 }
 
 message Extension {
