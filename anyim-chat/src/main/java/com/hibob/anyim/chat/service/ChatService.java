@@ -365,6 +365,9 @@ public class ChatService {
                 .filter(item -> item.getSessionType() == MsgType.GROUP_CHAT.getNumber())
                 .map(Session::getRemoteId)
                 .collect(Collectors.toList());
+        if (groupIdList.size() == 0) {
+            return  voMap;
+        }
         Map<String, Map<String, Object>> groupInfoMap = rpcClient.getGroupMngRpcService().queryGroupInfoBatch(groupIdList);
 
         for (Session item : sessionList) {
