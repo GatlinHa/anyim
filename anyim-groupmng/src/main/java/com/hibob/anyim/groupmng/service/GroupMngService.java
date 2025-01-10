@@ -475,7 +475,7 @@ public class GroupMngService {
                 operator.put("account", myAccount);
                 operator.put("nickName", member.getNickName());
             } else if (member.getAccount().equals(memberAccount)){
-                updatedMember.put("account", myAccount);
+                updatedMember.put("account", member.getAccount());
                 updatedMember.put("nickName", member.getNickName());
             }
         }
@@ -614,7 +614,7 @@ public class GroupMngService {
                 operator.put("account", myAccount);
                 operator.put("nickName", member.getNickName());
             } else if (member.getAccount().equals(targetAccount)){
-                target.put("account", myAccount);
+                target.put("account", member.getAccount());
                 target.put("nickName", member.getNickName());
             }
         }
