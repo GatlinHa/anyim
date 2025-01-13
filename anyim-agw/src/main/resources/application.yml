@@ -28,6 +28,11 @@ spring:
           predicates:
             - Path=/ws/**
 
+        - id: anyim-mts
+          uri: lb://anyim-mts
+          predicates:
+            - Path=/mts/**
+
   main:
 #    解决这个问题：Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway at this time
 #    这个错误信息是因为你的项目中同时存在Spring MVC和Spring Cloud Gateway，这两者是不兼容的。

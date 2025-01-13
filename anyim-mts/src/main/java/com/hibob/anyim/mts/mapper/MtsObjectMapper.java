@@ -1,11 +1,8 @@
-package com.hibob.anyim.user.mapper;
+package com.hibob.anyim.mts.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.hibob.anyim.user.entity.MtsObject;
+import com.hibob.anyim.mts.entity.MtsObject;
 
-/**
- * TODO 待迁移至MTS
- */
 public interface MtsObjectMapper extends BaseMapper<MtsObject> {
 
 }

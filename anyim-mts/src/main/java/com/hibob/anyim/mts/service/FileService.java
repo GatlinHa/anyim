@@ -1,15 +1,15 @@
-package com.hibob.anyim.user.service;
+package com.hibob.anyim.mts.service;
 
 import com.hibob.anyim.common.enums.ServiceErrorCode;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.common.utils.ResultUtil;
-import com.hibob.anyim.user.dto.request.*;
-import com.hibob.anyim.user.dto.vo.UploadImageVO;
-import com.hibob.anyim.user.entity.MtsObject;
-import com.hibob.anyim.user.enums.FileType;
-import com.hibob.anyim.user.mapper.MtsObjectMapper;
-import com.hibob.anyim.user.minio.MinioConfig;
-import com.hibob.anyim.user.minio.MinioService;
+import com.hibob.anyim.mts.dto.request.*;
+import com.hibob.anyim.mts.dto.vo.UploadImageVO;
+import com.hibob.anyim.mts.entity.MtsObject;
+import com.hibob.anyim.mts.enums.FileType;
+import com.hibob.anyim.mts.mapper.MtsObjectMapper;
+import com.hibob.anyim.mts.minio.MinioConfig;
+import com.hibob.anyim.mts.minio.MinioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -24,9 +24,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
-/**
- * TODO 待迁移至MTS
- */
 @Slf4j
 @Service
 @RequiredArgsConstructor

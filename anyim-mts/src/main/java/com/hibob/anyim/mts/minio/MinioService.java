@@ -1,6 +1,6 @@
-package com.hibob.anyim.user.minio;
+package com.hibob.anyim.mts.minio;
 
-import com.hibob.anyim.user.enums.FileType;
+import com.hibob.anyim.mts.enums.FileType;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
@@ -16,9 +16,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-/**
- * TODO 待迁移至MTS
- */
 @Service
 @Slf4j
 @RequiredArgsConstructor

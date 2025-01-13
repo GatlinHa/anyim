@@ -1,10 +1,7 @@
-package com.hibob.anyim.user.enums;
+package com.hibob.anyim.mts.enums;
 
 import java.util.Arrays;
 
-/**
- * TODO 待迁移至MTS
- */
 public enum FileType {
     IMAGE("jpg", "jpeg", "png", "gif", "bmp", "webp"),
     DOCUMENT("doc", "docx", "pdf", "txt"),

@@ -36,6 +36,7 @@
         <module>anyim-user</module>
         <module>anyim-chat</module>
         <module>anyim-groupmng</module>
+        <module>anyim-mts</module>
     </modules>
 
     <dependencies>

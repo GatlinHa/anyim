@@ -6,6 +6,11 @@ spring:
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
 
+  servlet:
+    multipart:
+      max-file-size: 50MB #设置上传文件的最大大小，默认为 1MB
+      max-request-size: 50MB #设置请求中最大允许的文件大小，默认为 10MB
+
 # 解决这个错误：org.springframework.context.ApplicationContextException: Failed to start bean 'documentationPluginsBootstrapper';
   mvc:
     pathmatch:
@@ -22,20 +27,18 @@ spring:
       min-idle: 0
     timeout: 1200
 
-
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-jwt:
-  accessToken:
-    expire: 1800 #半个小时
-    secret: ${jwt.accessToken.secret}
-  refreshToken:
-    expire: 604800 #7天
-    secret: ${jwt.refreshToken.secret}
-
-#自定义配置
-custom:
-  snow-flake:
-    worker-datacenter-config: ${worker-datacenter-config}
+minio:
+  url: http://127.0.0.1:9001
+  username: admin
+  password: 12345678
+  bucketName: anyim
+  image:
+    max-limit: 10 #单位M
+    thumb-size: 51200  #单位B
+  file:
+    max-limit: 200 #单位M
+  ttl: 365 #单位天

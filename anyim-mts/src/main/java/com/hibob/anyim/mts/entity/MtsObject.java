@@ -1,4 +1,4 @@
-package com.hibob.anyim.user.entity;
+package com.hibob.anyim.mts.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -7,9 +7,6 @@ import lombok.Data;
 
 import java.util.Date;
 
-/**
- * TODO 待迁移至MTS
- */
 @Data
 @TableName("anyim_mts_object")
 public class MtsObject {

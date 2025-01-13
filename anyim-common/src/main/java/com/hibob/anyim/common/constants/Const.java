@@ -30,6 +30,11 @@ public class Const {
     public static final int SERVICE_CODE_GROUP_MNG = 500;
 
     /**
+     * 服务编码：anyim-mts服务
+     */
+    public static final int SERVICE_CODE_MTS = 600;
+
+    /**
      * 服务编码：default占位
      */
     public static final int SERVICE_CODE_DEFAULT = 5000;

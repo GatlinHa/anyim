@@ -1,4 +1,4 @@
-package com.hibob.anyim.user.minio;
+package com.hibob.anyim.mts.minio;
 
 import io.minio.MinioClient;
 import lombok.Data;
@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-/**
- * TODO 待迁移至MTS
- */
 @Slf4j
 @Component
 @Data

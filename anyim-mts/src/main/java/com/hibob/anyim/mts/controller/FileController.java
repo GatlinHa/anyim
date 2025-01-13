@@ -1,8 +1,8 @@
-package com.hibob.anyim.user.controller;
+package com.hibob.anyim.mts.controller;
 
 import com.hibob.anyim.common.model.IMHttpResponse;
-import com.hibob.anyim.user.dto.request.*;
-import com.hibob.anyim.user.service.FileService;
+import com.hibob.anyim.mts.dto.request.*;
+import com.hibob.anyim.mts.service.FileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -12,14 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-/**
- * TODO 待迁移至MTS
- */
 @Slf4j
 @Api(tags = "文件操作的接口")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/mts")
 public class FileController {
 
     private final FileService fileService;
