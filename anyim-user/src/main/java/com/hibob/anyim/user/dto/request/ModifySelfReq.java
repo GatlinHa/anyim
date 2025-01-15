@@ -1,13 +1,12 @@
 package com.hibob.anyim.user.dto.request;
 
-import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
 @ApiModel("修改自己信息请求的参数")
-public class ModifySelfReq extends BaseRequest {
+public class ModifySelfReq {
 
     @ApiModelProperty(value = "昵称")
     private String nickName;

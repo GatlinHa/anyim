@@ -73,7 +73,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success();
     }
 
-    public ResponseEntity<IMHttpResponse> deregister(DeregisterReq dto) {
+    public ResponseEntity<IMHttpResponse> deregister() {
         log.info("UserService::deregister");
         ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
@@ -89,7 +89,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success();
     }
 
-    public ResponseEntity<IMHttpResponse> login(LoginReq dto) {
+    public ResponseEntity<IMHttpResponse> login(int clientType, String clientName, String clientVersion, LoginReq dto) {
         log.info("UserService::login");
         String account = dto.getAccount();
         String clientId = dto.getClientId();
@@ -119,7 +119,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             insertClient(dto, uniqueId);
         }
         else {
-            updateClient(dto, uniqueId);
+            updateClient(dto, uniqueId, clientType, clientName, clientVersion);
         }
         insertLogin(account, uniqueId);
 
@@ -158,7 +158,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success(map);
     }
 
-    public ResponseEntity<IMHttpResponse> logout(LogoutReq dto) {
+    public ResponseEntity<IMHttpResponse> logout() {
         log.info("UserService::logout");
         ReqSession session = ReqSession.getSession();
         String uniqueId = CommonUtil.conUniqueId(session.getAccount(), session.getClientId());
@@ -199,7 +199,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success();
     }
 
-    public ResponseEntity<IMHttpResponse> refreshToken(String refreshToken, RefreshTokenReq dto) {
+    public ResponseEntity<IMHttpResponse> refreshToken(String refreshToken) {
         log.info("UserService::refreshToken");
         String account = JwtUtil.getAccount(refreshToken);
         String client = JwtUtil.getInfo(refreshToken);
@@ -224,7 +224,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return ResultUtil.success(map);
     }
 
-    public ResponseEntity<IMHttpResponse> querySelf(QuerySelfReq dto) {
+    public ResponseEntity<IMHttpResponse> querySelf() {
         log.info("UserService::querySelf");
         ReqSession session = ReqSession.getSession();
         String account = session.getAccount();
@@ -302,9 +302,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     public ResponseEntity<IMHttpResponse> findByNick(FindByNickReq dto) {
         // TODO 这里要分页查询
         log.info("UserService::findByNick");
-        String nickNameKeyWords = dto.getNickNameKeyWords();
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.like(User::getNickName, nickNameKeyWords);
+        queryWrapper.like(User::getNickName, dto.getKeyWords());
         List<User> lists = this.list(queryWrapper);
         List<String> accountList = lists.stream().map(User::getAccount).collect(Collectors.toList());
         Map<String, Integer> statusMap;
@@ -359,11 +358,11 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return clientMapper.insert(client);
     }
 
-    private int updateClient(LoginReq dto, String uniqueId) {
+    private int updateClient(LoginReq dto, String uniqueId, int clientType, String clientName, String clientVersion) {
         LambdaUpdateWrapper<Client> updateWrapper = Wrappers.lambdaUpdate();
-        updateWrapper.set(Client::getClientType, dto.getClientType());
-        updateWrapper.set(Client::getClientName, dto.getClientName());
-        updateWrapper.set(Client::getClientVersion, dto.getClientVersion());
+        updateWrapper.set(Client::getClientType, clientType);
+        updateWrapper.set(Client::getClientName, clientName);
+        updateWrapper.set(Client::getClientVersion, clientVersion);
         updateWrapper.set(Client::getLastLoginTime, new Date(System.currentTimeMillis()));
         updateWrapper.eq(Client::getUniqueId, uniqueId);
         return clientMapper.update(updateWrapper);

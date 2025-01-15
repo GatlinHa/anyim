@@ -1,6 +1,5 @@
 package com.hibob.anyim.groupmng.dao.request;
 
-import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +11,7 @@ import java.util.Map;
 
 @Data
 @ApiModel("群组减人请求的参数")
-public class DelMembersReq extends BaseRequest {
+public class DelMembersReq {
 
     @ApiModelProperty(value = "操作者id")
     @NotEmpty

@@ -1,6 +1,5 @@
 package com.hibob.anyim.user.dto.request;
 
-import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -9,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 @ApiModel("修改密码请求的参数")
-public class ModifyPwdReq extends BaseRequest {
+public class ModifyPwdReq {
 
     @NotEmpty(message = "旧密码不可为空")
     @ApiModelProperty(value = "旧密码")

@@ -1,6 +1,5 @@
 package com.hibob.anyim.groupmng.dao.request;
 
-import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,7 +10,7 @@ import java.util.Map;
 
 @Data
 @ApiModel("群组加人请求的参数")
-public class AddMembersReq extends BaseRequest {
+public class AddMembersReq {
 
     @ApiModelProperty(value = "操作者id")
     @NotEmpty

@@ -69,7 +69,7 @@ public class ChatService {
         return ResultUtil.success(getMsgFromDB(sessionId, startTime, endTime, 0, pageSize));
     }
 
-    public ResponseEntity<IMHttpResponse> sessionList(ChatSessionListReq dto) {
+    public ResponseEntity<IMHttpResponse> sessionList() {
         ReqSession reqSession = ReqSession.getSession();
         String account = reqSession.getAccount();
         List<Session> sessionList = sessionMapper.selectSessionListForChat(account);
@@ -180,7 +180,7 @@ public class ChatService {
         return ResultUtil.success(vo);
     }
 
-    public ResponseEntity<IMHttpResponse> queryPartition(PartitionQueryReq dto) {
+    public ResponseEntity<IMHttpResponse> queryPartition() {
         log.info("UserService::queryPartition");
         String account = ReqSession.getSession().getAccount();
         LambdaQueryWrapper<Partition> queryWrapper = Wrappers.lambdaQuery();

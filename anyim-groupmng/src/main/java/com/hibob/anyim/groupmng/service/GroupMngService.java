@@ -123,10 +123,9 @@ public class GroupMngService {
 
     /**
      * 查询某个用户下的所有群组列表
-     * @param dto 当前用户账号
      * @return 群组信息列表, 外加当前用户在这个群的role, 不返回成员信息
      */
-    public ResponseEntity<IMHttpResponse> queryGroupList(QueryGroupListReq dto) {
+    public ResponseEntity<IMHttpResponse> queryGroupList() {
         log.info("GroupMngService::queryGroupList");
         String account = ReqSession.getSession().getAccount();
         List<GroupInfo> groupInfos = groupInfoMapper.selectGroupList(account);

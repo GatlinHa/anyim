@@ -1,6 +1,5 @@
 package com.hibob.anyim.chat.dto.request;
 
-import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @ApiModel("创建会话记录接口的请求体参数")
-public class CreateSessionReq extends BaseRequest {
+public class CreateSessionReq {
 
     @NotEmpty
     @ApiModelProperty(value = "会话Id")

@@ -1,6 +1,5 @@
 package com.hibob.anyim.groupmng.dao.request;
 
-import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,7 +10,7 @@ import java.util.Map;
 
 @Data
 @ApiModel("创建群组请求的参数")
-public class CreateGroupReq extends BaseRequest {
+public class CreateGroupReq {
 
     @ApiModelProperty(value = "群组名称")
     @NotEmpty(message = "群组名称不能为空")

@@ -1,6 +1,5 @@
 package com.hibob.anyim.groupmng.dao.request;
 
-import com.hibob.anyim.common.model.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -9,7 +8,7 @@ import javax.validation.constraints.*;
 
 @Data
 @ApiModel("修改自己的群昵称")
-public class UpdateMuteReq extends BaseRequest {
+public class UpdateMuteReq {
 
     @ApiModelProperty(value = "群组id")
     @NotEmpty
