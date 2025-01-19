@@ -6,7 +6,10 @@ import lombok.Data;
 
 @Data
 @ApiModel("上传文件后返回的参数")
-public class UploadImageVO {
+public class ImageVO {
+    @ApiModelProperty(value = "文件id")
+    private String objectId;
+
     @ApiModelProperty(value = "原图")
     private String originUrl;
 

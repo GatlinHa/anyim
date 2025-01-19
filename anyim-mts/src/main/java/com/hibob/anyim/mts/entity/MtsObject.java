@@ -12,20 +12,20 @@ import java.util.Date;
 public class MtsObject {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "obj_id")
-    private String objId;
+    @TableId(value = "object_id")
+    private String objectId;
 
-    @TableField(value = "obj_name")
-    private String objName;
+    @TableField(value = "object_name")
+    private String objectName;
 
-    @TableField(value = "obj_type")
-    private String objType;
+    @TableField(value = "object_type")
+    private String objectType;
 
-    @TableField(value = "obj_size")
-    private long objSize;
+    @TableField(value = "object_size")
+    private long objectSize;
 
-    @TableField(value = "ori_url")
-    private String oriUrl;
+    @TableField(value = "origin_url")
+    private String originUrl;
 
     @TableField(value = "thumb_url")
     private String thumbUrl;

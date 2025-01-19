@@ -1,5 +1,6 @@
 package com.hibob.anyim.mts.controller;
 
+import com.hibob.anyim.common.annotation.ApiCommonHeader;
 import com.hibob.anyim.common.model.IMHttpResponse;
 import com.hibob.anyim.mts.dto.request.*;
 import com.hibob.anyim.mts.service.FileService;
@@ -8,12 +9,14 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @Slf4j
 @Api(tags = "文件操作的接口")
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/mts")
@@ -31,6 +34,16 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<IMHttpResponse> upload(@Valid UploadReq dto) {
         return fileService.upload(dto);
+    }
+
+    /**
+     * 根据objectId查询image的url
+     */
+    @ApiOperation(value = "根据objectId查询image的url", notes = "根据objectId查询image的url")
+    @ApiCommonHeader
+    @GetMapping("/image")
+    public ResponseEntity<IMHttpResponse> image(@Validated ImageReq dto) {
+        return fileService.image(dto);
     }
 
 }

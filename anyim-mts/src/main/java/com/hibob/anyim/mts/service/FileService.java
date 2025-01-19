@@ -1,10 +1,12 @@
 package com.hibob.anyim.mts.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hibob.anyim.common.enums.ServiceErrorCode;
 import com.hibob.anyim.common.model.IMHttpResponse;
+import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.common.utils.ResultUtil;
 import com.hibob.anyim.mts.dto.request.*;
-import com.hibob.anyim.mts.dto.vo.UploadImageVO;
+import com.hibob.anyim.mts.dto.vo.ImageVO;
 import com.hibob.anyim.mts.entity.MtsObject;
 import com.hibob.anyim.mts.enums.FileType;
 import com.hibob.anyim.mts.mapper.MtsObjectMapper;
@@ -23,6 +25,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -64,11 +68,12 @@ public class FileService {
         }
 
 
-        UploadImageVO vo = new UploadImageVO();
-        String md5 = getMd5(file);
-        MtsObject mtsObject = mtsObjectMapper.selectById(md5);
+        ImageVO vo = new ImageVO();
+        String objectId = getMd5(file);
+        MtsObject mtsObject = mtsObjectMapper.selectById(objectId);
         if (mtsObject != null) {
-            vo.setOriginUrl(mtsObject.getOriUrl());
+            vo.setObjectId(objectId);
+            vo.setOriginUrl(mtsObject.getOriginUrl());
             vo.setThumbUrl(mtsObject.getThumbUrl());
             return ResultUtil.success(vo);
         }
@@ -91,20 +96,31 @@ public class FileService {
         }
 
         mtsObject = new MtsObject();
-        mtsObject.setObjId(md5);
-        mtsObject.setObjName(file.getOriginalFilename());
-        mtsObject.setObjType(FileType.determineFileType(file.getOriginalFilename()).name());
-        mtsObject.setObjSize(file.getSize());
-        mtsObject.setOriUrl(originUrl);
+        mtsObject.setObjectId(objectId);
+        mtsObject.setObjectName(file.getOriginalFilename());
+        mtsObject.setObjectType(FileType.determineFileType(file.getOriginalFilename()).name());
+        mtsObject.setObjectSize(file.getSize());
+        mtsObject.setOriginUrl(originUrl);
         mtsObject.setThumbUrl(thumbUrl);
         mtsObject.setExpire(minioConfig.getTtl() * 86400);
         mtsObjectMapper.insert(mtsObject);
 
+        vo.setObjectId(objectId);
         vo.setOriginUrl(originUrl);
         vo.setThumbUrl(thumbUrl);
         return ResultUtil.success(vo);
     }
 
+    public ResponseEntity<IMHttpResponse> image(ImageReq dto) {
+        LambdaQueryWrapper<MtsObject> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(MtsObject::getObjectId, dto.getObjectIds());
+        List<MtsObject> mtsObjects = mtsObjectMapper.selectList(queryWrapper);
+        List<ImageVO> voList = new ArrayList<>();
+        mtsObjects.forEach(item -> {
+            voList.add(BeanUtil.copyProperties(item, ImageVO.class));
+        });
+        return ResultUtil.success(voList);
+    }
 
     /**
      * 生成图片缩略图
@@ -112,7 +128,7 @@ public class FileService {
      * @param oriImageBytes 原图byte[]
      * @return 缩略图byte[]
      */
-    public byte[] getImageThumb(byte[] oriImageBytes) {
+    private byte[] getImageThumb(byte[] oriImageBytes) {
         int srcSize = oriImageBytes.length;
         byte[] destImageBytes = oriImageBytes;
         double accuracy = getAccuracy(srcSize);
