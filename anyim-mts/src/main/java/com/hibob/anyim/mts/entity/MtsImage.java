@@ -8,18 +8,27 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("anyim_mts_object")
-public class MtsObject {
+@TableName("anyim_mts_image")
+public class MtsImage {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "object_id")
-    private Long objectId;
+    @TableId(value = "image_id")
+    private String imageId;
 
-    @TableField(value = "object_type")
-    private int objectType;
+    @TableField(value = "image_type")
+    private String imageType;
 
-    @TableField(value = "foreign_id")
-    private String foreignId;
+    @TableField(value = "image_size")
+    private long imageSize;
+
+    @TableField(value = "origin_url")
+    private String originUrl;
+
+    @TableField(value = "thumb_url")
+    private String thumbUrl;
+
+    @TableField(value = "expire")
+    private long expire;
 
     @TableField(value = "created_account")
     private String createdAccount;

@@ -8,18 +8,24 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("anyim_mts_object")
-public class MtsObject {
+@TableName("anyim_mts_file")
+public class MtsFile {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "object_id")
-    private Long objectId;
+    @TableId(value = "file_id")
+    private String fileId;
 
-    @TableField(value = "object_type")
-    private int objectType;
+    @TableField(value = "file_type")
+    private String fileType;
 
-    @TableField(value = "foreign_id")
-    private String foreignId;
+    @TableField(value = "file_size")
+    private long fileSize;
+
+    @TableField(value = "file_url")
+    private String fileUrl;
+
+    @TableField(value = "expire")
+    private long expire;
 
     @TableField(value = "created_account")
     private String createdAccount;

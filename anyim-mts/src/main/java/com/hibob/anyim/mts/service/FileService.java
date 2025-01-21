@@ -1,14 +1,17 @@
 package com.hibob.anyim.mts.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hibob.anyim.common.enums.ServiceErrorCode;
 import com.hibob.anyim.common.model.IMHttpResponse;
+import com.hibob.anyim.common.session.ReqSession;
 import com.hibob.anyim.common.utils.BeanUtil;
 import com.hibob.anyim.common.utils.ResultUtil;
+import com.hibob.anyim.common.utils.SnowflakeId;
 import com.hibob.anyim.mts.dto.request.*;
 import com.hibob.anyim.mts.dto.vo.ImageVO;
+import com.hibob.anyim.mts.entity.MtsImage;
 import com.hibob.anyim.mts.entity.MtsObject;
 import com.hibob.anyim.mts.enums.FileType;
+import com.hibob.anyim.mts.mapper.MtsImageMapper;
 import com.hibob.anyim.mts.mapper.MtsObjectMapper;
 import com.hibob.anyim.mts.minio.MinioConfig;
 import com.hibob.anyim.mts.minio.MinioService;
@@ -17,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,6 +40,8 @@ public class FileService {
     private final MinioConfig minioConfig;
     private final MinioService minioService;
     private final MtsObjectMapper mtsObjectMapper;
+    private final MtsImageMapper mtsImageMapper;
+    private SnowflakeId snowflakeId = null;
 
     public ResponseEntity<IMHttpResponse> upload(UploadReq dto) {
         log.info("FileService::upload");
@@ -54,7 +60,8 @@ public class FileService {
         return ResultUtil.success();
     }
 
-    ResponseEntity<IMHttpResponse> uploadImage(UploadReq dto) {
+    @Transactional
+    public ResponseEntity<IMHttpResponse> uploadImage(UploadReq dto) {
         MultipartFile file = dto.getFile();
         String fileName = file.getOriginalFilename();
         // 大小校验
@@ -69,12 +76,20 @@ public class FileService {
 
 
         ImageVO vo = new ImageVO();
-        String objectId = getMd5(file);
-        MtsObject mtsObject = mtsObjectMapper.selectById(objectId);
-        if (mtsObject != null) {
-            vo.setObjectId(objectId);
-            vo.setOriginUrl(mtsObject.getOriginUrl());
-            vo.setThumbUrl(mtsObject.getThumbUrl());
+        String imageId = getMd5(file);
+        long objectId = generateObjectId();
+        MtsImage mtsImage = mtsImageMapper.selectById(imageId);
+        if (mtsImage != null) {
+            MtsObject mtsObject = new MtsObject();
+            mtsObject.setObjectId(objectId);
+            mtsObject.setObjectType(0);
+            mtsObject.setForeignId(mtsImage.getImageId());
+            mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
+            mtsObjectMapper.insert(mtsObject);
+
+            vo.setObjectId(Long.toString(objectId));
+            vo.setOriginUrl(mtsImage.getOriginUrl());
+            vo.setThumbUrl(mtsImage.getThumbUrl());
             return ResultUtil.success(vo);
         }
 
@@ -95,30 +110,31 @@ public class FileService {
             }
         }
 
-        mtsObject = new MtsObject();
+        mtsImage = new MtsImage();
+        mtsImage.setImageId(imageId);
+        mtsImage.setImageType(file.getContentType());
+        mtsImage.setImageSize(file.getSize());
+        mtsImage.setOriginUrl(originUrl);
+        mtsImage.setThumbUrl(thumbUrl);
+        mtsImage.setCreatedAccount(ReqSession.getSession().getAccount());
+        mtsImage.setExpire(minioConfig.getTtl() * 86400);
+        mtsImageMapper.insert(mtsImage);
+
+        MtsObject mtsObject = new MtsObject();
         mtsObject.setObjectId(objectId);
-        mtsObject.setObjectName(file.getOriginalFilename());
-        mtsObject.setObjectType(FileType.determineFileType(file.getOriginalFilename()).name());
-        mtsObject.setObjectSize(file.getSize());
-        mtsObject.setOriginUrl(originUrl);
-        mtsObject.setThumbUrl(thumbUrl);
-        mtsObject.setExpire(minioConfig.getTtl() * 86400);
+        mtsObject.setObjectType(0);
+        mtsObject.setForeignId(mtsImage.getImageId());
+        mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsObjectMapper.insert(mtsObject);
 
-        vo.setObjectId(objectId);
+        vo.setObjectId(Long.toString(objectId));
         vo.setOriginUrl(originUrl);
         vo.setThumbUrl(thumbUrl);
         return ResultUtil.success(vo);
     }
 
     public ResponseEntity<IMHttpResponse> image(ImageReq dto) {
-        LambdaQueryWrapper<MtsObject> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(MtsObject::getObjectId, dto.getObjectIds());
-        List<MtsObject> mtsObjects = mtsObjectMapper.selectList(queryWrapper);
-        List<ImageVO> voList = new ArrayList<>();
-        mtsObjects.forEach(item -> {
-            voList.add(BeanUtil.copyProperties(item, ImageVO.class));
-        });
+        List<ImageVO> voList = mtsObjectMapper.batchSelectImage(dto.getObjectIds());
         return ResultUtil.success(voList);
     }
 
@@ -188,5 +204,12 @@ public class FileService {
             log.error(e.getMessage());
         }
         return null;
+    }
+
+    private long generateObjectId() {
+        if (snowflakeId == null) { // 懒加载
+            snowflakeId = SnowflakeId.getInstance();
+        }
+        return snowflakeId.nextId();
     }
 }

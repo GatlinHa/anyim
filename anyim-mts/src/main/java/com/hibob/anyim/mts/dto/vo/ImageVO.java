@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @ApiModel("上传文件后返回的参数")
 public class ImageVO {
-    @ApiModelProperty(value = "文件id")
+    @ApiModelProperty(value = "富媒体对象id")
     private String objectId;
 
     @ApiModelProperty(value = "原图")
